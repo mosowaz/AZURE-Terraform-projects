@@ -9,6 +9,10 @@
 - Confirm access to a resource from a subnet
 - Confirm access is denied to a resource from a subnet and the internet
 
+
+
+
+
 ### Reference 
 https://learn.microsoft.com/en-us/azure/virtual-network/tutorial-restrict-network-access-to-resources?tabs=portal
 
