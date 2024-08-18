@@ -1,4 +1,4 @@
-# Restrict network access to PaaS resources with virtual network service endpoints using the Azure portal
+## Restrict network access to PaaS resources with virtual network service endpoints using the Azure portal
 
 ![diagram to lab1](https://learn.microsoft.com/en-us/azure/virtual-network/media/tutorial-connect-virtual-networks-portal/resources-diagram.png#lightbox)
 ## Tasks
