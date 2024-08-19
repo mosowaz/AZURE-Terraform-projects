@@ -85,3 +85,17 @@ resource "azurerm_storage_account" "storage" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
+
+resource "azurerm_subnet_service_endpoint_storage_policy" "example" {
+  name                = "example-policy"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  definition {
+    name        = "name1" # ********* To be modified *************
+    description = "definition1" # ******* To be modified *************
+    service     = "Microsoft.Storage"
+    service_resources = [
+      azurerm_resource_group.rg.id,
+      azurerm_storage_account.storage.id
+    ]
+  }
