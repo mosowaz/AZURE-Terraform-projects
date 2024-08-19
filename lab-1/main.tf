@@ -18,7 +18,7 @@ resource "azurerm_resource_group" "rg" {
   name     = var.rg_name
   location = "canadacentral"
   tags = {
-    az-lab4 = "Restrict network access to resources"
+    az-lab = var.lab_tag
   }
 }
 
@@ -86,7 +86,7 @@ resource "azurerm_storage_account" "storage" {
   account_replication_type = "LRS"
 }
 
-resource "azurerm_subnet_service_endpoint_storage_policy" "example" {
+resource "azurerm_subnet_service_endpoint_storage_policy" "policy" {
   name                = "example-policy"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
@@ -99,3 +99,22 @@ resource "azurerm_subnet_service_endpoint_storage_policy" "example" {
       azurerm_storage_account.storage.id
     ]
   }
+}
+
+resource "azurerm_network_security_group" "example" {
+  name                = "acceptanceTestSecurityGroup1"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+
+  security_rule {
+    name                       = "test123"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+}

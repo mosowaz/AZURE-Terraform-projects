@@ -18,3 +18,8 @@ variable "storage_acct" {
   type        = string
   description = "My storage account"
 }
+
+variable "lab_tag" {
+  type        = string
+  default     = "Restricting access to network resources"
+}
