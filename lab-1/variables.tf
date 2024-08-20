@@ -23,3 +23,17 @@ variable "lab_tag" {
   type        = string
   default     = "Restricting access to network resources"
 }
+
+variable "mypublic_ip" {
+  type        = string
+  description = "default public ip for ingress connection to Azure resources"
+}
+
+variable "nsg1" {
+  default     = "nsg-private"
+}
+
+variable "security_rule1" {
+  default     = "Allow-Storage-All"
+}
+

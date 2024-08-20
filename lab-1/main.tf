@@ -87,7 +87,7 @@ resource "azurerm_storage_account" "storage" {
 }
 
 resource "azurerm_subnet_service_endpoint_storage_policy" "policy" {
-  name                = "example-policy"
+  name                = "storage-policy"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   definition {
@@ -101,13 +101,13 @@ resource "azurerm_subnet_service_endpoint_storage_policy" "policy" {
   }
 }
 
-resource "azurerm_network_security_group" "example" {
-  name                = "acceptanceTestSecurityGroup1"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
-
+resource "azurerm_network_security_group" "nsg1" {
+  name                = var.nsg1
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+}
   security_rule {
-    name                       = "test123"
+    name                       = var.security_rule1
     priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
