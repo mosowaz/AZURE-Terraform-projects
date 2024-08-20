@@ -52,11 +52,15 @@ variable "mypublic_ip" {
 }
 
 variable "nsg1" {
-  default     = "nsg-private"
+  default     = "nsg-storage"
 }
 
 variable "security_rule1" {
   default     = "Allow-Storage-All"
+}
+
+variable "security_rule2" {
+  default     = "Deny-Internet-All"
 }
 
 variable "destination_ports" {
@@ -72,4 +76,14 @@ variable "source_service_tag1" {
 variable "destination_service_tag1" {
   type        = string
   default     = "Storage"
+}
+
+variable "destination_service_tag2" {
+  type        = string
+  default     = "Internet"
+}
+
+variable "vm_password" {
+  type        = string
+  # TF_VAR_vm_password is saved aas env variable
 }
