@@ -63,18 +63,18 @@ resource "azurerm_bastion_host" "bastion" {
 # ***** Create subnet-public where vm1 with restriction to storage will be located ******
 
 resource "azurerm_subnet" "subnet1" {
-  name                 = "subnet-public"
+  name                 = var.subnet1_name
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet1.name
-  address_prefixes     = ["10.0.1.0/24"]
+  address_prefixes     = [var.subnet1_address_prefix]
 }
 # ***** Subnet-private for service endpoint (storage) and allowed vm2 ******
 
 resource "azurerm_subnet" "subnet2" {
-  name                 = "subnet-private"
+  name                 = var.subnet2_name
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet1.name
-  address_prefixes     = ["10.0.2.0/24"]
+  address_prefixes     = [var.subnet2_address_prefix]
   service_endpoints    = ["Microsoft.Storage"]
 }
 
@@ -106,15 +106,17 @@ resource "azurerm_network_security_group" "nsg1" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 }
-  security_rule {
+
+resource "azurerm_network_security_rule" "rule1" {
     name                       = var.security_rule1
     priority                   = 100
-    direction                  = "Inbound"
+    direction                  = "Outbound"
     access                     = "Allow"
-    protocol                   = "Tcp"
+    protocol                   = "*"
     source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
+    destination_port_range     = [var.destination_ports]
+    source_address_prefix      = var.source_service_tag1
+    destination_address_prefix = var.destination_service_tag1
+    resource_group_name         = azurerm_resource_group.rg.name
+    network_security_group_name = azurerm_network_security_group.nsg1.name
 }

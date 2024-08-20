@@ -13,6 +13,28 @@ variable "vnet1_address_space" {
   default     = "10.0.0.0/16"
 }
 
+variable "subnet1_name" {
+  default     = "subnet-public"
+  description = "Name of public subnet"
+}
+
+variable "subnet2_name" {
+  default     = "subnet-private"
+  description = "Name of private subnet"
+}
+
+variable "subnet1_address_prefix" {
+  type        = string
+  description = "Cidr range for the public subnet"
+  default     = "10.0.1.0/24"
+}
+
+variable "subnet2_address_prefix" {
+  type        = string
+  description = "Cidr range for the private subnet"
+  default     = "10.0.2.0/24"
+}
+
 variable "storage_acct" {
   # Environment variable for the storage account name is stored in .bashrc file as "TF_VAR_storage_acct"
   type        = string
@@ -37,3 +59,17 @@ variable "security_rule1" {
   default     = "Allow-Storage-All"
 }
 
+variable "destination_ports" {
+  type        = string
+  default     = "445"
+}
+
+variable "source_service_tag1" {
+  type        = string
+  default     = "VirtualNetwork"
+}
+
+variable "destination_service_tag1" {
+  type        = string
+  default     = "Storage"
+}
