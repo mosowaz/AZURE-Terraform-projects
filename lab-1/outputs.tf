@@ -4,11 +4,11 @@ output "resource_group_id" {
 }
 
 output "virtual_network_id" {
-  value       = azurerm_virtual_network.vnet1.id
+  value = azurerm_virtual_network.vnet1.id
 }
 
 output "storage_accout_id" {
-   value 	= azurerm_storage_account.storage.id
+  value = azurerm_storage_account.storage.id
 }
 
 data "azurerm_public_ip" "pub-ip" {
@@ -17,13 +17,17 @@ data "azurerm_public_ip" "pub-ip" {
 }
 
 output "bastion_public_ip_address" {
-   value        = data.azurerm_public_ip.pub-ip.ip_address
+  value = data.azurerm_public_ip.pub-ip.ip_address
+}
+
+output "bastion_public_ip_address_id" {
+  value = data.azurerm_public_ip.pub-ip.id
 }
 
 output "nsg_association_1" {
-  value 	= azurerm_subnet_network_security_group_association.nsg-association-1.id
+  value = azurerm_subnet_network_security_group_association.nsg-association-1.id
 }
 
 output "storage_account_name" {
-  value 	= azurerm_storage_account.storage.name
+  value = azurerm_storage_account.storage.name
 }

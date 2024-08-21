@@ -60,6 +60,8 @@ resource "azurerm_bastion_host" "bastion" {
   }
 }
 
+# -----------------------------------------------------------------
+
 # ***** Create subnet-public, where vm1 with restriction to storage will be located ******
 
 resource "azurerm_subnet" "subnet1" {
@@ -87,39 +89,41 @@ resource "azurerm_network_security_group" "nsg1" {
 # ***** Security rule to allow access to Storage *****
 
 resource "azurerm_network_security_rule" "rule1" {
-    name                       = var.security_rule1
-    priority                   = 100
-    direction                  = "Outbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = [var.destination_ports]
-    source_address_prefix      = var.source_service_tag1
-    destination_address_prefix = var.destination_service_tag1
-    resource_group_name         = azurerm_resource_group.rg.name
-    network_security_group_name = azurerm_network_security_group.nsg1.name
+  name                        = var.security_rule1
+  priority                    = 100
+  direction                   = "Outbound"
+  access                      = "Allow"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = var.source_service_tag1
+  destination_address_prefix  = var.destination_service_tag1
+  resource_group_name         = azurerm_resource_group.rg.name
+  network_security_group_name = azurerm_network_security_group.nsg1.name
 }
 
 # ***** Security rule to deny access to the Internet *****
 
 resource "azurerm_network_security_rule" "rule2" {
-    name                       = var.security_rule2
-    priority                   = 110
-    direction                  = "Outbound"
-    access                     = "Deny"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = var.source_service_tag1
-    destination_address_prefix = var.destination_service_tag2
-    resource_group_name         = azurerm_resource_group.rg.name
-    network_security_group_name = azurerm_network_security_group.nsg1.name
+  name                        = var.security_rule2
+  priority                    = 110
+  direction                   = "Outbound"
+  access                      = "Deny"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = var.source_service_tag1
+  destination_address_prefix  = var.destination_service_tag2
+  resource_group_name         = azurerm_resource_group.rg.name
+  network_security_group_name = azurerm_network_security_group.nsg1.name
 }
 
 resource "azurerm_subnet_network_security_group_association" "nsg-association-1" {
   subnet_id                 = azurerm_subnet.subnet2.id
   network_security_group_id = azurerm_network_security_group.nsg1.id
 }
+
+# ------------------------------------------------------------------
 
 # ********* Storage Account creation ********
 
@@ -137,27 +141,121 @@ resource "azurerm_storage_account" "storage" {
   }
 }
 
-# ******* Create File share in Storage account *********
+# ******* Create blob in Storage account to host local file *********
 
-resource "azurerm_storage_share" "file-shares" {
-  name                 = "File-share"
-  storage_account_name = azurerm_storage_account.storage.name
-  quota                = 50
+resource "azurerm_storage_container" "container1" {
+  name                  = var.my_container1
+  storage_account_name  = azurerm_storage_account.storage.name
+  container_access_type = "private"
 }
 
-resource "azurerm_subnet_service_endpoint_storage_policy" "policy" {
-  name                = "storage-policy"
-  resource_group_name = azurerm_resource_group.rg.name
+resource "azurerm_storage_blob" "blob1" {
+  name                   = var.my_blob1
+  storage_account_name   = azurerm_storage_account.storage.name
+  storage_container_name = azurerm_storage_container.container1.name
+  type                   = "Block"
+  source                 = var.my_source_file
+}
+
+# ----------------------------------------------------------------------
+
+########## This block can be used alternatively to network security group ######### 
+##########          for securing access to endpoints                      ######### 
+# 										  #
+#resource "azurerm_subnet_service_endpoint_storage_policy" "policy" {		  #
+#  name                = "storage-policy"					  #
+#  resource_group_name = azurerm_resource_group.rg.name				  #
+#  location            = azurerm_resource_group.rg.location			  #
+#  definition {									  #
+#    name        = "storage-policy"						  #
+#    description = "storage policy for service endpoint"			  #
+#    service     = "Microsoft.Storage"						  #
+#    service_resources = [							  #
+#      azurerm_resource_group.rg.id,						  #
+#      azurerm_storage_account.storage.id					  #
+#    ]										  #
+#  }										  #
+#} 										  #
+###################################################################################
+
+
+# ****************     Linux Virtual Machine block 1   *****************
+
+resource "azurerm_network_interface" "vm1-nic1" {
+  name                = var.vm1_nic1
   location            = azurerm_resource_group.rg.location
-  definition {
-    name        = "storage-policy"
-    description = "storage policy for service endpoint"
-    service     = "Microsoft.Storage"
-    service_resources = [
-      azurerm_resource_group.rg.id,
-      azurerm_storage_account.storage.id
-    ]
+  resource_group_name = azurerm_resource_group.rg.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.subnet1.id
+    private_ip_address_allocation = "Static"
+    public_ip_address_id          = azurerm_public_ip.pub-ip.id
   }
 }
 
+resource "azurerm_linux_virtual_machine" "vm1" {
+  name                = var.vm_1
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  size                = var.vm_size
+  admin_username      = "adminuser"
+  admin_password      = var.vm_password
+  network_interface_ids = [
+    azurerm_network_interface.vm1-nic1.id,
+  ]
 
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts"
+    version   = "latest"
+  }
+}
+
+# -----------------------------------------------------------------------
+
+# ****************     Linux Virtual Machine block 2   *****************
+
+resource "azurerm_network_interface" "vm2-nic1" {
+  name                = var.vm2_nic1
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.subnet2.id
+    private_ip_address_allocation = "Static"
+  }
+}
+
+resource "azurerm_linux_virtual_machine" "vm2" {
+  name                = var.vm_2
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  size                = var.vm_size
+  admin_username      = "adminuser"
+  admin_password      = var.vm_password
+  network_interface_ids = [
+    azurerm_network_interface.vm2-nic1.id,
+  ]
+
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts"
+    version   = "latest"
+  }
+}

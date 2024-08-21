@@ -42,8 +42,8 @@ variable "storage_acct" {
 }
 
 variable "lab_tag" {
-  type        = string
-  default     = "Restricting access to network resources"
+  type    = string
+  default = "Restricting access to network resources"
 }
 
 variable "mypublic_ip" {
@@ -52,38 +52,66 @@ variable "mypublic_ip" {
 }
 
 variable "nsg1" {
-  default     = "nsg-storage"
+  default = "nsg-storage"
 }
 
 variable "security_rule1" {
-  default     = "Allow-Storage-All"
+  default = "Allow-Storage-All"
 }
 
 variable "security_rule2" {
-  default     = "Deny-Internet-All"
-}
-
-variable "destination_ports" {
-  type        = string
-  default     = "445"
+  default = "Deny-Internet-All"
 }
 
 variable "source_service_tag1" {
-  type        = string
-  default     = "VirtualNetwork"
+  type    = string
+  default = "VirtualNetwork"
 }
 
 variable "destination_service_tag1" {
-  type        = string
-  default     = "Storage"
+  type    = string
+  default = "Storage"
 }
 
 variable "destination_service_tag2" {
-  type        = string
-  default     = "Internet"
+  type    = string
+  default = "Internet"
 }
 
 variable "vm_password" {
-  type        = string
+  type = string
   # TF_VAR_vm_password is saved aas env variable
+}
+
+variable "my_container1" {
+  default = "my-container1"
+}
+
+variable "my_blob1" {
+  default = "my-main.tf"
+}
+
+variable "my_source_file" {
+  type    = string
+  default = "/$HOME/project/AZURE-Terraform/lab-1/main.tf"
+}
+
+variable "vm1_nic1" {
+  default = "vm1-nic1"
+}
+
+variable "vm2_nic1" {
+  default = "vm2-nic1"
+}
+
+variable "vm_1" {
+  default = "ubuntu-pub"
+}
+
+variable "vm_2" {
+  default = "ubuntu-priv"
+}
+
+variable "vm_size" {
+  default = "Standard_B1s"
 }
