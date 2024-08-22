@@ -49,6 +49,7 @@ variable "lab_tag" {
 variable "mypublic_ip" {
   type        = string
   description = "default public ip for ingress connection to Azure resources"
+  sensitive   = true
 }
 
 variable "nsg1" {
@@ -81,6 +82,7 @@ variable "destination_service_tag2" {
 variable "vm_password" {
   type = string
   # TF_VAR_vm_password is saved aas env variable
+  sensitive = true
 }
 
 variable "my_container1" {
