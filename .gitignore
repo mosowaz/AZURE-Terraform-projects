@@ -1,5 +1,5 @@
-.terraform
-.terraform.lock.hcl
-terraform.tfstate
-terraform.tfstate.backup
+project-1/.terraform
+project-1/.terraform.lock.hcl
+project-1/terraform.tfstate
+project-1/terraform.tfstate.backup
 ssh-add.sh

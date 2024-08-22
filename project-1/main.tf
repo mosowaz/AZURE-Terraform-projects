@@ -190,9 +190,11 @@ resource "azurerm_network_interface" "vm1-nic1" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.subnet1.id
     private_ip_address_allocation = "Static"
-    private_ip_address		        = [var.vm1_nic1_private_ip]
-    public_ip_address_id          = azurerm_public_ip.pub-ip.id
+    private_ip_address		  = var.vm1_nic1_private_ip
   }
+  depends_on          = [
+    azurerm_subnet.subnet1, azurerm_public_ip.pub-ip
+  ]
 }
 
 resource "azurerm_linux_virtual_machine" "vm1" {
@@ -202,10 +204,14 @@ resource "azurerm_linux_virtual_machine" "vm1" {
   size                = var.vm_size
   admin_username      = "adminuser"
   admin_password      = var.vm_password
+  disable_password_authentication = false
   network_interface_ids = [
     azurerm_network_interface.vm1-nic1.id,
   ]
-
+ 
+  depends_on	      = [
+    azurerm_network_interface.vm1-nic1
+  ] 
 
   os_disk {
     caching              = "ReadWrite"
@@ -233,8 +239,13 @@ resource "azurerm_network_interface" "vm2-nic1" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.subnet2.id
     private_ip_address_allocation = "Static"
-    private_ip_address            = [var.vm2_nic1_private_ip]
+    private_ip_address            = var.vm2_nic1_private_ip
   }
+
+  depends_on          = [
+    azurerm_subnet.subnet2
+  ] 
+
 }
 
 resource "azurerm_linux_virtual_machine" "vm2" {
@@ -244,10 +255,14 @@ resource "azurerm_linux_virtual_machine" "vm2" {
   size                = var.vm_size
   admin_username      = "adminuser"
   admin_password      = var.vm_password
+  disable_password_authentication = false
   network_interface_ids = [
-    azurerm_network_interface.vm2-nic1.id,
+    azurerm_network_interface.vm2-nic1.id
   ]
 
+  depends_on          = [
+    azurerm_network_interface.vm2-nic1
+  ]
 
   os_disk {
     caching              = "ReadWrite"
