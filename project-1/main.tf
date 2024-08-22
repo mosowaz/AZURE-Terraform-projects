@@ -146,7 +146,7 @@ resource "azurerm_storage_account" "storage" {
 resource "azurerm_storage_container" "container1" {
   name                  = var.my_container1
   storage_account_name  = azurerm_storage_account.storage.name
-  container_access_type = "private"
+  container_access_type = "container"
 }
 
 resource "azurerm_storage_blob" "blob1" {
