@@ -27,7 +27,3 @@ output "bastion_public_ip_address_id" {
 output "nsg_association_1" {
   value = azurerm_subnet_network_security_group_association.nsg-association-1.id
 }
-
-output "storage_account_name" {
-  value = azurerm_storage_account.storage.name
-}

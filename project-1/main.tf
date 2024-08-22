@@ -136,7 +136,7 @@ resource "azurerm_storage_account" "storage" {
 
   network_rules {
     default_action             = "Deny"
-    ip_rules                   = [azurerm_subnet.subnet2.address_prefixes]
+ #   ip_rules                   = [var.mypublic_ip]
     virtual_network_subnet_ids = [azurerm_subnet.subnet2.id]
   }
 }

@@ -39,6 +39,7 @@ variable "storage_acct" {
   # Environment variable for the storage account name is stored in .bashrc file as "TF_VAR_storage_acct"
   type        = string
   description = "My storage account"
+  sensitive   = true
 }
 
 variable "lab_tag" {
