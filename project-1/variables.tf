@@ -107,6 +107,16 @@ variable "vm2_nic1" {
   default = "vm2-nic1"
 }
 
+variable "vm1_nic1_private_ip" {
+  default = "10.0.1.11"
+  type    = string
+}
+
+variable "vm2_nic1_private_ip" {
+  default = "10.0.2.22"
+  type    = string
+}
+
 variable "vm_1" {
   default = "ubuntu-pub"
 }

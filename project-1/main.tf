@@ -190,6 +190,7 @@ resource "azurerm_network_interface" "vm1-nic1" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.subnet1.id
     private_ip_address_allocation = "Static"
+    private_ip_address		  = [var.vm1_nic1_private_ip]
     public_ip_address_id          = azurerm_public_ip.pub-ip.id
   }
 }
@@ -232,6 +233,7 @@ resource "azurerm_network_interface" "vm2-nic1" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.subnet2.id
     private_ip_address_allocation = "Static"
+    private_ip_address            = [var.vm2_nic1_private_ip]
   }
 }
 
