@@ -9,4 +9,4 @@ Links to lab scenerio and the details can be found in each sub-directory of this
 2. Install and configure terraform https://developer.hashicorp.com/terraform/install
    
 ## Contents
-Lab 1 - [Restrict network access to PaaS resources with virtual network service endpoints using the Azure portal](lab-1)
+1 - [Restrict network access to PaaS resources with virtual network service endpoints using the Azure portal](project-1)
