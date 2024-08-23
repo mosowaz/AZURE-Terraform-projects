@@ -5,9 +5,15 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 3.0.2"
     }
+    azapi = {
+      source  = "azure/azapi"
+      version = ">=0.1.0"
+    }
   }
 
-  required_version = ">= 1.1.0"
+}
+
+provider "azapi" {
 }
 
 provider "azurerm" {
@@ -143,18 +149,39 @@ resource "azurerm_storage_account" "storage" {
 
 # ******* Create blob in Storage account to host local file *********
 
-resource "azurerm_storage_container" "container1" {
-  name                  = var.my_container1
-  storage_account_name  = azurerm_storage_account.storage.name
-  container_access_type = "container"
+resource "azapi_resource" "BlobService" {
+  type = "Microsoft.Storage/storageAccounts/blobServices@2023-01-01"
+  name = "default"
+  parent_id = azurerm_storage_account.storage.id
+  body = jsonencode({
+    properties = {
+    }
+  })
+  
+  depends_on = [azurerm_storage_account.storage]
+}
+
+resource "azapi_resource" "container1" {
+  type = "Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01"
+  name = var.my_container1
+  parent_id = azapi_resource.BlobService.id
+  body = jsonencode({
+    properties = {
+      publicAccess = "Container"
+    }
+  })
+  
+  depends_on  = [azapi_resource.BlobService] 
 }
 
 resource "azurerm_storage_blob" "blob1" {
   name                   = var.my_blob1
   storage_account_name   = azurerm_storage_account.storage.name
-  storage_container_name = azurerm_storage_container.container1.name
+  storage_container_name = azapi_resource.container1.name
   type                   = "Block"
   source                 = var.my_source_file
+
+  depends_on  = [azapi_resource.container1]
 }
 
 # ----------------------------------------------------------------------

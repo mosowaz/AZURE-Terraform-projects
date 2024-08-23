@@ -96,7 +96,7 @@ variable "my_blob1" {
 
 variable "my_source_file" {
   type    = string
-  default = "/$HOME/project/AZURE-Terraform/project-1/main.tf"
+  default = "/$HOME/projects/AZURE-Terraform/project-1/main.tf"
 }
 
 variable "vm1_nic1" {

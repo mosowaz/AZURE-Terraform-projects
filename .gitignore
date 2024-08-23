@@ -3,3 +3,5 @@ project-1/.terraform.lock.hcl
 project-1/terraform.tfstate
 project-1/terraform.tfstate.backup
 ssh-add.sh
+project-1/main.tfplan
+project-1/.terraform.tfstate.lock.info
