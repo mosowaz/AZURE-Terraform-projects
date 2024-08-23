@@ -149,7 +149,7 @@ resource "azurerm_storage_account" "storage" {
 
 # ******* Create blob in Storage account to host local file *********
 
-resource "azapi_resource" "BlobService" {
+resource "azapi_resource" "mytechlab_BlobService" {
   type = "Microsoft.Storage/storageAccounts/blobServices@2023-01-01"
   name = "default"
   parent_id = azurerm_storage_account.storage.id
@@ -164,14 +164,14 @@ resource "azapi_resource" "BlobService" {
 resource "azapi_resource" "container1" {
   type = "Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01"
   name = var.my_container1
-  parent_id = azapi_resource.BlobService.id
+  parent_id = azapi_resource.mytechlab_BlobService.id
   body = jsonencode({
     properties = {
       publicAccess = "Container"
     }
   })
   
-  depends_on  = [azapi_resource.BlobService] 
+  depends_on  = [azapi_resource.mytechlab_BlobService] 
 }
 
 resource "azurerm_storage_blob" "blob1" {

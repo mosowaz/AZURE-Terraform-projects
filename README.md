@@ -10,3 +10,33 @@ Links to lab scenerio and the details can be found in each sub-directory of this
    
 ## Contents
 1 - [Restrict network access to PaaS resources with virtual network service endpoints using the Azure portal](project-1)
+
+## Terraform Commands for execution of resource code
+```
+terraform init -upgrade
+
+terraform fmt && terraform validate
+
+terraform plan -out main.tfplan
+
+terraform apply main.tfplan       # or terraform apply --auto-approve
+```
+
+## To verify list of resources created, and details of resources
+```
+terraform state list
+
+terraform state show <resource>   # detailed list on the resource
+```
+
+## Clean up resources
+```
+terraform plan -destroy -out main.destroy.tfplan  
+
+terraform apply main.destroy.tfplan       # or terraform destroy
+```
+ 
+## Other helpful commands
+```
+terraform -install-autocomplete   # for autocompletion
+```
