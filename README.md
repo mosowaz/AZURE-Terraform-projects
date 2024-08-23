@@ -1,4 +1,4 @@
-# AZURE-Terraform-labs
+# AZURE-Terraform-projects
 
 This lab is created to demonstrate the implementation of Azure resources with terraform.
 Links to lab scenerio and the details can be found in each sub-directory of this repository (under Reference).
