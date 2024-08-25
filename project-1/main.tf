@@ -161,6 +161,11 @@ resource "azapi_resource" "mytechlab_BlobService" {
   depends_on = [azurerm_storage_account.storage]
 }
 
+import {
+  to = azapi_resource.mytechlab_BlobService
+  id = "/subscriptions/1aee2a43-227e-4c4e-8c2a-26293b290b85/resourceGroups/lab4-1/providers/Microsoft.Storage/storageAccounts/mytechlabstorageacct4/blobServices/default"
+}
+
 resource "azapi_resource" "container1" {
   type = "Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01"
   name = var.my_container1

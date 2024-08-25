@@ -80,9 +80,10 @@ variable "destination_service_tag2" {
   default = "Internet"
 }
 
+
+# TF_VAR_vm_password is saved aas env variable
 variable "vm_password" {
   type = string
-  # TF_VAR_vm_password is saved aas env variable
   sensitive = true
 }
 

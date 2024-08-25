@@ -5,3 +5,4 @@ project-1/terraform.tfstate.backup
 ssh-add.sh
 project-1/main.tfplan
 project-1/.terraform.tfstate.lock.info
+project-1/main.destroy.tfplan
