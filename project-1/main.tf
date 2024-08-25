@@ -147,46 +147,22 @@ resource "azurerm_storage_account" "storage" {
   }
 }
 
-# ******* Create blob in Storage account to host local file *********
+# ******* Create a share (with access restriction) in Storage account to host local file *********
 
-resource "azapi_resource" "mytechlab_BlobService" {
-  type = "Microsoft.Storage/storageAccounts/blobServices@2023-01-01"
-  name = "default"
-  parent_id = azurerm_storage_account.storage.id
-  body = jsonencode({
-    properties = {
-    }
-  })
-  
-  depends_on = [azurerm_storage_account.storage]
+resource "azurerm_storage_share" "share" {
+  name                 = var.my_share
+  storage_account_name = azurerm_storage_account.storage.name
+  quota                = 100
+
+  depends_on	       = [azurerm_storage_account.storage]
 }
 
-import {
-  to = azapi_resource.mytechlab_BlobService
-  id = "/subscriptions/1aee2a43-227e-4c4e-8c2a-26293b290b85/resourceGroups/lab4-1/providers/Microsoft.Storage/storageAccounts/mytechlabstorageacct4/blobServices/default"
-}
+resource "azurerm_storage_share_file" "file" {
+  name             = var.my_file
+  storage_share_id = azurerm_storage_share.storage.id
+  source           = var.my_source_file
 
-resource "azapi_resource" "container1" {
-  type = "Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01"
-  name = var.my_container1
-  parent_id = azapi_resource.mytechlab_BlobService.id
-  body = jsonencode({
-    properties = {
-      publicAccess = "Container"
-    }
-  })
-  
-  depends_on  = [azapi_resource.mytechlab_BlobService] 
-}
-
-resource "azurerm_storage_blob" "blob1" {
-  name                   = var.my_blob1
-  storage_account_name   = azurerm_storage_account.storage.name
-  storage_container_name = azapi_resource.container1.name
-  type                   = "Block"
-  source                 = var.my_source_file
-
-  depends_on  = [azapi_resource.container1]
+  depends_on           = [azurerm_storage_share.share]
 }
 
 # ----------------------------------------------------------------------

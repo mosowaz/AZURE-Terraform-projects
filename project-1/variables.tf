@@ -87,11 +87,11 @@ variable "vm_password" {
   sensitive = true
 }
 
-variable "my_container1" {
-  default = "my-container1"
+variable "my_share" {
+  default = "my-share"
 }
 
-variable "my_blob1" {
+variable "my_file" {
   default = "my-main.tf"
 }
 
