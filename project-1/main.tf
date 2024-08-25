@@ -159,7 +159,7 @@ resource "azurerm_storage_share" "share" {
 
 resource "azurerm_storage_share_file" "file" {
   name             = var.my_file
-  storage_share_id = azurerm_storage_share.storage.id
+  storage_share_id = azurerm_storage_share.share.id
   source           = var.my_source_file
 
   depends_on           = [azurerm_storage_share.share]
