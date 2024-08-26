@@ -14,7 +14,6 @@ terraform {
 }
 
 provider "azapi" {
-  storage_use_azuread  = true
 }
 
 provider "azurerm" {
@@ -135,90 +134,36 @@ resource "azurerm_subnet_network_security_group_association" "nsg-association-1"
 
 # ********* Storage Account creation ********
 
-resource "azapi_resource" "storage" {
-  type 			= "Microsoft.Storage/storageAccounts@2023-01-01"
-  name 			= var.storage_acct
-  location 		= azurerm_resource_group.rg.location 	
-  parent_id 		= azurerm_resource_group.rg.id
+resource "azurerm_storage_account" "storage" {
+  name                     = var.storage_acct
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
 
-  body = jsonencode({
-    properties = {
-      accessTier = "Hot"
-      allowBlobPublicAccess = false
-      allowedCopyScope = "AAD"
-      allowSharedKeyAccess = false
-      isHnsEnabled = true
-      isLocalUserEnabled = true
-      isNfsV3Enabled = true
-      keyPolicy = {
-        keyExpirationPeriodInDays = 30
-      }
-      largeFileSharesState = "Enabled"
-      networkAcls = {
-        defaultAction = "Deny"
-        ipRules = [
-          {
-            action = "Allow"
-            value = [azurerm_subnet.subnet2.id]
-          }
-
-          {
-	    action = "Allow"
-            value = [var.mypublic_ip]
-          }
-        ]
-        resourceAccessRules = [
-          {
-            resourceId = azurerm_resource_group.rg.id
-            tenantId = var.tenant_id
-          }
-        ]
-        virtualNetworkRules = [
-          {
-            action = "Allow"
-            id = [azurerm_subnet.subnet2.id]
-            state = "succeeded"
-          }
-        ]
-      }
-       
-      publicNetworkAccess = "Disabled" 
-     
-    sku = {
-      name = "Standard_LRS"
-    }
-    kind = "StorageV2"
-    }
-  })
+  network_rules {
+    default_action             = "Deny"
+ #   ip_rules                   = [var.mypublic_ip]
+    virtual_network_subnet_ids = [azurerm_subnet.subnet2.id]
+  }
 }
 
-# ******* Create a container blob (with access restriction) in Storage account to host local file *********
+# ******* Create a share (with access restriction) in Storage account to host local file *********
 
-resource "azapi_resource" "container" {
-  type = "Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01"
-  name = var.my_container
-  parent_id = "${azapi_resource.storage.id}/blobService/default"
-  body = jsonencode({
-    properties = {
-      publicAccess = "None"
-    }
-  })
-  depends_on  = [
-    azapi_resource.storage
-  ]
+resource "azurerm_storage_share" "share" {
+  name                 = var.my_share
+  storage_account_name = azurerm_storage_account.storage.name
+  quota                = 100
+
+  depends_on	       = [azurerm_storage_account.storage]
 }
 
-resource "azurerm_storage_blob" "blob" {
+resource "azurerm_storage_share_file" "file" {
   name             = var.my_file
-  storage_account_name   = azapi_resource.storage.name
-  storage_container_name = azapi_resource.container.name
-  type                   = "Block"
+  storage_share_id = azurerm_storage_share.share.id
   source           = var.my_source_file
 
-  depends_on           = [
-    azapi_resource.storage,
-    azapi_resource.container
-  ]
+  depends_on           = [azurerm_storage_share.share]
 }
 
 # ----------------------------------------------------------------------

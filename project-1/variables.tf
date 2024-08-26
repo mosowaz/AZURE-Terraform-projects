@@ -39,7 +39,12 @@ variable "storage_acct" {
   # Environment variable for the storage account name is stored in .bashrc file as "TF_VAR_storage_acct"
   type        = string
   description = "My storage account"
-  default     = "mytechlabstorageacct4"
+  default     = "mytechlabstorageacct6"
+}
+
+variable "tenent_id" {
+  type	      = "string"
+  default     = "f58329dc-5de0-4684-87f8-5dcca83663f7"
 }
 
 variable "lab_tag" {
@@ -87,8 +92,8 @@ variable "vm_password" {
   sensitive = true
 }
 
-variable "my_share" {
-  default = "my-share"
+variable "my_container" {
+  default = "my-container"
 }
 
 variable "my_file" {
