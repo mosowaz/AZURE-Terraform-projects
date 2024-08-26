@@ -14,12 +14,11 @@ terraform {
 }
 
 provider "azapi" {
-  storage_use_azuread  = true
 }
 
 provider "azurerm" {
   features {}
-  storage_use_azuread  = true
+  storage_use_azuread = true
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -136,20 +135,20 @@ resource "azurerm_subnet_network_security_group_association" "nsg-association-1"
 # ********* Storage Account creation ********
 
 resource "azapi_resource" "storage" {
-  type 			= "Microsoft.Storage/storageAccounts@2023-01-01"
-  name 			= var.storage_acct
-  location 		= azurerm_resource_group.rg.location 	
-  parent_id 		= azurerm_resource_group.rg.id
+  type      = "Microsoft.Storage/storageAccounts@2023-01-01"
+  name      = var.storage_acct
+  location  = azurerm_resource_group.rg.location
+  parent_id = azurerm_resource_group.rg.id
 
   body = jsonencode({
     properties = {
-      accessTier = "Hot"
+      accessTier            = "Hot"
       allowBlobPublicAccess = false
-      allowedCopyScope = "AAD"
-      allowSharedKeyAccess = false
-      isHnsEnabled = true
-      isLocalUserEnabled = true
-      isNfsV3Enabled = true
+      allowedCopyScope      = "AAD"
+      allowSharedKeyAccess  = false
+      isHnsEnabled          = true
+      isLocalUserEnabled    = true
+      isNfsV3Enabled        = true
       keyPolicy = {
         keyExpirationPeriodInDays = 30
       }
@@ -159,63 +158,65 @@ resource "azapi_resource" "storage" {
         ipRules = [
           {
             action = "Allow"
-            value = [azurerm_subnet.subnet2.id]
-          }
+            value  = [azurerm_subnet.subnet2.id]
+          },
 
           {
-	    action = "Allow"
-            value = [var.mypublic_ip]
+            action = "Allow"
+            value  = [var.mypublic_ip]
           }
         ]
         resourceAccessRules = [
           {
             resourceId = azurerm_resource_group.rg.id
-            tenantId = var.tenant_id
+            tenantId   = var.tenant_id
           }
         ]
         virtualNetworkRules = [
           {
             action = "Allow"
-            id = [azurerm_subnet.subnet2.id]
-            state = "succeeded"
+            id     = [azurerm_subnet.subnet2.id]
+            state  = "succeeded"
           }
         ]
       }
-       
-      publicNetworkAccess = "Disabled" 
-     
+
+      publicNetworkAccess = "Disabled"
+    }
     sku = {
       name = "Standard_LRS"
     }
     kind = "StorageV2"
-    }
+
   })
+
+  depends_on = [azurerm_subnet.subnet2]
 }
 
 # ******* Create a container blob (with access restriction) in Storage account to host local file *********
 
 resource "azapi_resource" "container" {
-  type = "Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01"
-  name = var.my_container
+  type      = "Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01"
+  name      = var.my_container
   parent_id = "${azapi_resource.storage.id}/blobService/default"
   body = jsonencode({
     properties = {
       publicAccess = "None"
     }
   })
-  depends_on  = [
+  depends_on = [
     azapi_resource.storage
   ]
 }
 
 resource "azurerm_storage_blob" "blob" {
-  name             = var.my_file
+  name                   = var.my_file
   storage_account_name   = azapi_resource.storage.name
   storage_container_name = azapi_resource.container.name
   type                   = "Block"
-  source           = var.my_source_file
+  source                 = var.my_source_file
 
-  depends_on           = [
+  depends_on = [
     azapi_resource.storage,
     azapi_resource.container
   ]
@@ -254,28 +255,28 @@ resource "azurerm_network_interface" "vm1-nic1" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.subnet1.id
     private_ip_address_allocation = "Static"
-    private_ip_address		  = var.vm1_nic1_private_ip
+    private_ip_address            = var.vm1_nic1_private_ip
   }
-  depends_on          = [
+  depends_on = [
     azurerm_subnet.subnet1, azurerm_public_ip.pub-ip
   ]
 }
 
 resource "azurerm_linux_virtual_machine" "vm1" {
-  name                = var.vm_1
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  size                = var.vm_size
-  admin_username      = "adminuser"
-  admin_password      = var.vm_password
+  name                            = var.vm_1
+  resource_group_name             = azurerm_resource_group.rg.name
+  location                        = azurerm_resource_group.rg.location
+  size                            = var.vm_size
+  admin_username                  = "adminuser"
+  admin_password                  = var.vm_password
   disable_password_authentication = false
   network_interface_ids = [
     azurerm_network_interface.vm1-nic1.id,
   ]
- 
-  depends_on	      = [
+
+  depends_on = [
     azurerm_network_interface.vm1-nic1
-  ] 
+  ]
 
   os_disk {
     caching              = "ReadWrite"
@@ -306,25 +307,25 @@ resource "azurerm_network_interface" "vm2-nic1" {
     private_ip_address            = var.vm2_nic1_private_ip
   }
 
-  depends_on          = [
+  depends_on = [
     azurerm_subnet.subnet2
-  ] 
+  ]
 
 }
 
 resource "azurerm_linux_virtual_machine" "vm2" {
-  name                = var.vm_2
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  size                = var.vm_size
-  admin_username      = "adminuser"
-  admin_password      = var.vm_password
+  name                            = var.vm_2
+  resource_group_name             = azurerm_resource_group.rg.name
+  location                        = azurerm_resource_group.rg.location
+  size                            = var.vm_size
+  admin_username                  = "adminuser"
+  admin_password                  = var.vm_password
   disable_password_authentication = false
   network_interface_ids = [
     azurerm_network_interface.vm2-nic1.id
   ]
 
-  depends_on          = [
+  depends_on = [
     azurerm_network_interface.vm2-nic1
   ]
 

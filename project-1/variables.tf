@@ -42,9 +42,9 @@ variable "storage_acct" {
   default     = "mytechlabstorageacct6"
 }
 
-variable "tenent_id" {
-  type	      = "string"
-  default     = "f58329dc-5de0-4684-87f8-5dcca83663f7"
+variable "tenant_id" {
+  type    = string
+  default = "f58329dc-5de0-4684-87f8-5dcca83663f7"
 }
 
 variable "lab_tag" {
@@ -88,7 +88,7 @@ variable "destination_service_tag2" {
 
 # TF_VAR_vm_password is saved aas env variable
 variable "vm_password" {
-  type = string
+  type      = string
   sensitive = true
 }
 
