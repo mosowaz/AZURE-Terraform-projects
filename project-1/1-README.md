@@ -16,4 +16,8 @@
 ### Reference 
 https://learn.microsoft.com/en-us/azure/virtual-network/tutorial-restrict-network-access-to-resources?tabs=portal
 
-
+## Command to import remote resource into terraform state
+i.e azapi_resource.blobService needs to be imported to terraform state file to be managed
+```
+ terraform import azapi_resource.blobService "/subscriptions/<YOUR_SUBSCRIPTION_ID>/resourceGroups/lab4-1/providers/Microsoft.Storage/storageAccounts/<STORAGE_ACCOUNT_NAME>/blobServices/default"
+```

@@ -14,11 +14,13 @@ variable "vnet1_address_space" {
 }
 
 variable "subnet1_name" {
+  type        = string
   default     = "subnet-public"
   description = "Name of public subnet"
 }
 
 variable "subnet2_name" {
+  type        = string
   default     = "subnet-private"
   description = "Name of private subnet"
 }
@@ -39,7 +41,7 @@ variable "storage_acct" {
   # Environment variable for the storage account name is stored in .bashrc file as "TF_VAR_storage_acct"
   type        = string
   description = "My storage account"
-  default     = "mytechlabstorageacct6"
+  default     = "mytechlabstorageacct7"
 }
 
 variable "tenant_id" {

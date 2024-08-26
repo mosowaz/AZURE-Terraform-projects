@@ -7,7 +7,7 @@ terraform {
     }
     azapi = {
       source  = "azure/azapi"
-      version = ">=0.1.0"
+      version = ">=1.15.0"
     }
   }
 
@@ -155,27 +155,10 @@ resource "azapi_resource" "storage" {
       largeFileSharesState = "Enabled"
       networkAcls = {
         defaultAction = "Deny"
-        ipRules = [
-          {
-            action = "Allow"
-            value  = [azurerm_subnet.subnet2.id]
-          },
-
-          {
-            action = "Allow"
-            value  = [var.mypublic_ip]
-          }
-        ]
-        resourceAccessRules = [
-          {
-            resourceId = azurerm_resource_group.rg.id
-            tenantId   = var.tenant_id
-          }
-        ]
         virtualNetworkRules = [
           {
             action = "Allow"
-            id     = [azurerm_subnet.subnet2.id]
+            id     = azurerm_subnet.subnet2.id
             state  = "succeeded"
           }
         ]
@@ -195,17 +178,30 @@ resource "azapi_resource" "storage" {
 
 # ******* Create a container blob (with access restriction) in Storage account to host local file *********
 
+resource "azapi_resource" "blobService" {
+  type = "Microsoft.Storage/storageAccounts/blobServices@2023-01-01"
+  name = "default"
+  parent_id = azapi_resource.storage.id
+  body = jsonencode({
+    properties = {
+    }
+  })
+  depends_on = [
+    azapi_resource.storage
+  ]
+}
+
 resource "azapi_resource" "container" {
   type      = "Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01"
   name      = var.my_container
-  parent_id = "${azapi_resource.storage.id}/blobService/default"
+  parent_id = azapi_resource.blobService.id
   body = jsonencode({
     properties = {
       publicAccess = "None"
     }
   })
   depends_on = [
-    azapi_resource.storage
+    azapi_resource.blobService
   ]
 }
 
