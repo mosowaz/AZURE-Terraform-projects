@@ -143,7 +143,7 @@ resource "azapi_resource" "storage" {
   body = jsonencode({
     properties = {
       accessTier            = "Hot"
-      allowBlobPublicAccess = false
+      allowBlobPublicAccess = true
       allowedCopyScope      = "AAD"
       allowSharedKeyAccess  = false
       isHnsEnabled          = true
@@ -197,7 +197,7 @@ resource "azapi_resource" "container" {
   parent_id = azapi_resource.blobService.id
   body = jsonencode({
     properties = {
-      publicAccess = "None"
+      publicAccess = "Blob"
     }
   })
   depends_on = [

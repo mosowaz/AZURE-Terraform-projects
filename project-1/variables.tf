@@ -99,6 +99,7 @@ variable "my_container" {
 }
 
 variable "my_file" {
+  type    = string
   default = "my-main.tf"
 }
 
