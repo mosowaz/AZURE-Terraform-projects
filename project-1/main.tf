@@ -155,6 +155,12 @@ resource "azapi_resource" "storage" {
       largeFileSharesState = "Enabled"
       networkAcls = {
         defaultAction = "Deny"
+        ipRules = [
+          {
+            action = "Allow"
+            value = "${var.mypublic_ip}"
+          }
+        ]
         virtualNetworkRules = [
           {
             action = "Allow"
@@ -176,7 +182,7 @@ resource "azapi_resource" "storage" {
   depends_on = [azurerm_subnet.subnet2]
 }
 
-# ******* Create a container blob (with access restriction) in Storage account to host local file *********
+# ******* Create a container (with access restriction) in Storage account to host local file *********
 
 resource "azapi_resource" "blobService" {
   type = "Microsoft.Storage/storageAccounts/blobServices@2023-01-01"
@@ -197,24 +203,11 @@ resource "azapi_resource" "container" {
   parent_id = azapi_resource.blobService.id
   body = jsonencode({
     properties = {
-      publicAccess = "Blob"
+      publicAccess = "Container"
     }
   })
   depends_on = [
     azapi_resource.blobService
-  ]
-}
-
-resource "azurerm_storage_blob" "blob" {
-  name                   = var.my_file
-  storage_account_name   = azapi_resource.storage.name
-  storage_container_name = azapi_resource.container.name
-  type                   = "Block"
-  source                 = var.my_source_file
-
-  depends_on = [
-    azapi_resource.storage,
-    azapi_resource.container
   ]
 }
 
