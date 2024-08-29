@@ -13,6 +13,7 @@
 https://learn.microsoft.com/en-us/azure/virtual-network/tutorial-restrict-network-access-to-resources?tabs=portal
 
 ## Dirctory Structure
+```
 .
 ├── 1-README.md
 ├── main.destroy.tfplan
@@ -30,6 +31,7 @@ https://learn.microsoft.com/en-us/azure/virtual-network/tutorial-restrict-networ
     ├── terraform.tfstate
     ├── terraform.tfstate.backup
     └── variables.tf
+```
 
 ## Step 1 - Run plan and apply commands
 ``` 
