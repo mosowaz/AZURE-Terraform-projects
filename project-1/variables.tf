@@ -103,6 +103,11 @@ variable "my_file" {
   default = "my-main.tf"
 }
 
+variable "subscription_id" {  #TF_VAR_subscription_id
+  type		= string
+  sensitive 	= true
+}
+
 variable "my_source_file" {
   type    = string
   default = "/$HOME/projects/AZURE-Terraform/project-1/main.tf"
