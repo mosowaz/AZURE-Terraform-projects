@@ -125,20 +125,6 @@ resource "azurerm_network_security_rule" "rule2" {
   network_security_group_name = azurerm_network_security_group.nsg1.name
 }
 
-resource "azurerm_network_security_rule" "rule3" {
-  name                        = "local-to-storage"
-  priority                    = 100
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = var.mypublic_ip
-  destination_address_prefix  = var.destination_service_tag1
-  resource_group_name         = azurerm_resource_group.rg.name
-  network_security_group_name = azurerm_network_security_group.nsg1.name
-}
-
 resource "azurerm_subnet_network_security_group_association" "nsg-association-1" {
   subnet_id                 = azurerm_subnet.subnet2.id
   network_security_group_id = azurerm_network_security_group.nsg1.id
@@ -184,7 +170,9 @@ resource "azapi_resource" "storage" {
         ]
       }
 
-      publicNetworkAccess = "Disabled"
+      #### Public network access from selected network/IPrules
+ 
+      publicNetworkAccess = "Enabled"
     }
     sku = {
       name = "Standard_LRS"

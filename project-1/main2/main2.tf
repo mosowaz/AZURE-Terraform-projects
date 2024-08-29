@@ -165,7 +165,9 @@ resource "azapi_resource" "storage" {
         ]
       }
 
-      publicNetworkAccess = "Disabled"
+      #### Public network access from selected network/IPrules
+
+      publicNetworkAccess = "Enabled"
     }
     sku = {
       name = "Standard_LRS"
@@ -191,6 +193,13 @@ resource "azapi_resource" "blobService" {
     azapi_resource.storage
   ]
 }
+
+/*
+import {
+  to = azapi_resource.storage
+  id = "/subscriptions/'var.subscription_id'/resourceGroups/lab4-1/providers/Microsoft.Storage/storageAccounts/mytechlabstorageacct7/blobServices/default"
+}
+*/
 
 resource "azapi_resource" "container" {
   type      = "Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01"
