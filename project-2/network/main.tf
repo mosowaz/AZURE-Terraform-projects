@@ -2,6 +2,11 @@ resource "azurerm_resource_group" "rg" {
   for_each = var.location
   name     = var.rg_name
   location = each.key
+
+  tags     = {
+    intersite_network = var.lab_tag
+  }
+}
 }
 
 resource "azurerm_virtual_network" "vnet" {
@@ -11,4 +16,7 @@ resource "azurerm_virtual_network" "vnet" {
   location            = each.value.location
   resource_group_name = azurerm_resource_group.rg.name
 
+  tags     = {
+    intersite_network = var.lab_tag
+  }
 }
