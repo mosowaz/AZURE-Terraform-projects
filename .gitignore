@@ -11,3 +11,7 @@ project-1/main2/.terraform
 project-1/main2/.terraform.lock.hcl
 project-1/main2/terraform.tfstate
 project-1/main2/terraform.tfstate.backup
+**/test1/*
+#**/test2/*
+**/testfile1
+#**/testfile2
