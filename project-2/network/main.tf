@@ -7,7 +7,6 @@ resource "azurerm_resource_group" "rg" {
     intersite_network = var.lab_tag
   }
 }
-}
 
 resource "azurerm_virtual_network" "vnet" {
   for_each            = var.vnet_address_space
