@@ -11,3 +11,5 @@ ssh-add.sh
 **/main.destroy.tfplan
 
 **/main2.tfplan
+
+**/.terraform.tfstate.lock.info
