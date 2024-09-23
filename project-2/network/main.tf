@@ -28,7 +28,7 @@ resource "azurerm_virtual_network" "vnet2" {
   name                = var.vnet2.vnet_name
   address_space       = [var.vnet2.address_space]
   location            = azurerm_resource_group.rg2.location
-  resource_group_name = azurerm_resource_group.rg1.name
+  resource_group_name = azurerm_resource_group.rg2.name
   tags = {
     intersite_network = "${var.lab_tag}-spoke1"
   }
@@ -46,7 +46,7 @@ resource "azurerm_virtual_network" "vnet3" {
 
 resource "azurerm_virtual_network_peering" "peering1-2" {
   name                      = format("peering-%s-to-%s", var.vnet1.vnet_name, var.vnet2.vnet_name)
-  resource_group_name       = azurerm_resource_group.rg1.name
+  resource_group_name       = azurerm_resource_group.rg2.name
   virtual_network_name      = azurerm_virtual_network.vnet1.name
   remote_virtual_network_id = data.azurerm_virtual_network.vnet2.id
   allow_virtual_network_access = true
@@ -56,7 +56,7 @@ resource "azurerm_virtual_network_peering" "peering1-2" {
 
 resource "azurerm_virtual_network_peering" "peering2-1" {
   name                      = format("peering-%s-to-%s", var.vnet2.vnet_name, var.vnet1.vnet_name)
-  resource_group_name       = azurerm_resource_group.rg1.name
+  resource_group_name       = azurerm_resource_group.rg2.name
   virtual_network_name      = azurerm_virtual_network.vnet2.name
   remote_virtual_network_id = data.azurerm_virtual_network.vnet1.id
   allow_virtual_network_access = true
