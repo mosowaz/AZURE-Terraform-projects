@@ -20,7 +20,7 @@ variable "lab_tag" {
   default = "vnet peering"
 }
 
-variable "vnet_peering-1" { 
+variable "vnet1" { 
   type = object({
     address_space = string
     vnet_name     = string
@@ -31,7 +31,7 @@ variable "vnet_peering-1" {
   }
 }
 
-variable "vnet_peering-2" { 
+variable "vnet2" { 
   type = object({
     address_space = string
     vnet_name     = string
@@ -42,7 +42,7 @@ variable "vnet_peering-2" {
   }
 }
 
-variable "vnet_peering-3" { 
+variable "vnet3" { 
   type = object({
     address_space = string
     vnet_name     = string
