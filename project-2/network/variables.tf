@@ -2,10 +2,6 @@ variable "subscription_id" {
   type = string
 }
 
-variable "rg_name" {
-  type = string
-  default = "hub-and-spokes"
-}
 variable "location1" {
   type = string
   default = "canadacentral" 
