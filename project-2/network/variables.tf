@@ -13,7 +13,7 @@ variable "location2" {
 }
 
 variable "lab_tag" {
-  default = "vnet peering"
+  default = "vnet"
 }
 
 variable "vnet1" { 
