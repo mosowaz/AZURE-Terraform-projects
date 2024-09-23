@@ -15,8 +15,8 @@ resource "azurerm_resource_group" "rg2" {
 }
 
 resource "azurerm_virtual_network" "vnet1" {
-  name                = var.vnet_peering-1.vnet_name
-  address_space       = [var.vnet_peering-1.address_space]
+  name                = var.vnet1.vnet_name
+  address_space       = [var.vnet1.address_space]
   location            = azurerm_resource_group.rg1.location
   resource_group_name = azurerm_resource_group.rg1.name
   tags = {
@@ -25,8 +25,8 @@ resource "azurerm_virtual_network" "vnet1" {
 }
 
 resource "azurerm_virtual_network" "vnet2" {
-  name                = var.vnet_peering-2.vnet_name
-  address_space       = [var.vnet_peering-2.address_space]
+  name                = var.vnet2.vnet_name
+  address_space       = [var.vnet2.address_space]
   location            = azurerm_resource_group.rg2.location
   resource_group_name = azurerm_resource_group.rg1.name
   tags = {
@@ -35,8 +35,8 @@ resource "azurerm_virtual_network" "vnet2" {
 }
 
 resource "azurerm_virtual_network" "vnet3" {
-  name                = var.vnet_peering-3.vnet_name
-  address_space       = [var.vnet_peering-3.address_space]
+  name                = var.vnet3.vnet_name
+  address_space       = [var.vnet3.address_space]
   location            = azurerm_resource_group.rg1.location
   resource_group_name = azurerm_resource_group.rg1.name
   tags = {
@@ -45,7 +45,7 @@ resource "azurerm_virtual_network" "vnet3" {
 }
 
 resource "azurerm_virtual_network_peering" "peering1-2" {
-  name                      = format("peering-%s-to-%s", var.vnet_peering-1.vnet_name, var.vnet_peering-2.vnet_name)
+  name                      = format("peering-%s-to-%s", var.vnet1.vnet_name, var.vnet2.vnet_name)
   resource_group_name       = azurerm_resource_group.rg1.name
   virtual_network_name      = azurerm_virtual_network.vnet1.name
   remote_virtual_network_id = data.azurerm_virtual_network.vnet2.id
@@ -55,7 +55,7 @@ resource "azurerm_virtual_network_peering" "peering1-2" {
 }
 
 resource "azurerm_virtual_network_peering" "peering2-1" {
-  name                      = format("peering-%s-to-%s", var.vnet_peering-2.vnet_name, var.vnet_peering-1.vnet_name)
+  name                      = format("peering-%s-to-%s", var.vnet2.vnet_name, var.vnet1.vnet_name)
   resource_group_name       = azurerm_resource_group.rg1.name
   virtual_network_name      = azurerm_virtual_network.vnet2.name
   remote_virtual_network_id = data.azurerm_virtual_network.vnet1.id
@@ -65,7 +65,7 @@ resource "azurerm_virtual_network_peering" "peering2-1" {
 }
 
 resource "azurerm_virtual_network_peering" "peering1-3" {
-  name                      = format("peering-%s-to-%s", var.vnet_peering-1.vnet_name, var.vnet_peering-3.vnet_name)
+  name                      = format("peering-%s-to-%s", var.vnet1.vnet_name, var.vnet3.vnet_name)
   resource_group_name       = azurerm_resource_group.rg1.name
   virtual_network_name      = azurerm_virtual_network.vnet1.name
   remote_virtual_network_id = data.azurerm_virtual_network.vnet3.id
@@ -75,7 +75,7 @@ resource "azurerm_virtual_network_peering" "peering1-3" {
 }
 
 resource "azurerm_virtual_network_peering" "peering3-1" {
-  name                      = format("peering-%s-to-%s", var.vnet_peering-3.vnet_name, var.vnet_peering-1.vnet_name)
+  name                      = format("peering-%s-to-%s", var.vnet3.vnet_name, var.vnet1.vnet_name)
   resource_group_name       = azurerm_resource_group.rg1.name
   virtual_network_name      = azurerm_virtual_network.vnet3.name
   remote_virtual_network_id = data.azurerm_virtual_network.vnet1.id
