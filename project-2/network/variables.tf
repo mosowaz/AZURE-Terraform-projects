@@ -2,20 +2,18 @@ variable "subscription_id" {
   type = string
 }
 
-variable "rg1" {
-  type = object({
-    name = string 
-    location = string 
-  })
-  default = { name = "rg-canadacentral", location = "canadacentral" }
+variable "rg_name" {
+  type = string
+  default = "hub-and-spokes"
+}
+variable "location1" {
+  type = string
+  default = "canadacentral" 
 }
 
-variable "rg2" {
-  type = object({
-    name = string 
-    location = string 
-  })
-  default = { name = "rg-canadaeast", location = "canadaeast" }
+variable "location2" {
+  type = string
+  default = "canadaeast" 
 }
 
 variable "lab_tag" {
