@@ -1,21 +1,50 @@
-variable "lab_tag" {
-  default = "vnet peering with nva"
+variable "subscription_id" {
+  type = string
 }
 
-variable "vnet_address_space" { # chaining "for_each" between resources
-  type = map(object({
-    name          = string
+variable "location1" {
+  type = string
+  default = "canadacentral" 
+}
+
+variable "location2" {
+  type = string
+  default = "canadaeast" 
+}
+
+variable "lab_tag" {
+  default = "vnet"
+}
+
+variable "vnet1" { 
+  type = object({
     address_space = string
-    location      = string
-  }))
+    vnet_name     = string
+  })
   default = {
-    vnet-1 = { name          = "vnet1", 
-               address_space = "10.0.0.0/16",
-               location      = "canadacentral" 
-    },
-    vnet-2 = { name          = "vnet2", 
-               address_space = "172.16.0.0/16", 
-               location      = "canadaeast"
-    }
+    address_space = "10.0.0.0/16"
+    vnet_name     = "vnet-1"
+  }
+}
+
+variable "vnet2" { 
+  type = object({
+    address_space = string
+    vnet_name     = string
+  })
+  default = {
+    address_space = "172.16.0.0/16"
+    vnet_name     = "vnet-2"
+  }
+}
+
+variable "vnet3" { 
+  type = object({
+    address_space = string
+    vnet_name     = string
+  })
+  default = {
+    address_space = "192.168.0.0/16"
+    vnet_name     = "vnet-3"
   }
 }

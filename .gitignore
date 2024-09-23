@@ -4,8 +4,6 @@
 
 **/terraform.tfstate.backup
 
-ssh-add.sh
-
 **/main.tfplan
 
 **/main.destroy.tfplan
