@@ -2,11 +2,13 @@ output "rg" {
   value = {
     rg1 = { 
       name = azurerm_resource_group.rg1.name
-      location = azurerm_resource_group.rg1.location  
+      location = azurerm_resource_group.rg1.location 
+      id = azurerm_resource_group.rg1.id 
     }
     rg2 = { 
       name = azurerm_resource_group.rg2.name
-      location = azurerm_resource_group.rg2.location  
+      location = azurerm_resource_group.rg2.location 
+      id = azurerm_resource_group.rg2.id 
     }
   }
 }

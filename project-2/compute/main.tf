@@ -1,3 +1,13 @@
+import {
+  id = data.terraform_remote_state.network.outputs.rg.rg1.id
+  to = azurerm_resource_group.rg1
+}
+
+import {
+  id = data.terraform_remote_state.network.outputs.rg.rg2.id
+  to = azurerm_resource_group.rg2
+}
+
 resource "azurerm_resource_group" "rg1" {
   name = data.terraform_remote_state.network.outputs.rg.rg1.name
   location = data.terraform_remote_state.network.outputs.rg.rg1.location
