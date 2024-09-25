@@ -1,28 +1,28 @@
 resource "azurerm_resource_group" "rg1" {
-  name = data.terraform_remote_state.network.outputs.rg1.name
-  location = data.terraform_remote_state.network.outputs.rg1.location
+  name = data.terraform_remote_state.network.outputs.rg.rg1.name
+  location = data.terraform_remote_state.network.outputs.rg.rg1.location
 }
 
 resource "azurerm_resource_group" "rg2" {
-  name = data.terraform_remote_state.network.outputs.rg2.name
-  location = data.terraform_remote_state.network.outputs.rg2.location
+  name = data.terraform_remote_state.network.outputs.rg.rg2.name
+  location = data.terraform_remote_state.network.outputs.rg.rg2.location
 }
 
 resource "azurerm_network_interface" "spoke-nic" {
   for_each      = tomap({
     spoke1 = {
-      name = "${data.terraform_remote_state.network.outputs.subnet2.name}-nic"
+      name = "${data.terraform_remote_state.network.outputs.subnets.subnet2.name}-nic"
       location = azurerm_resource_group.rg2.location
       rg_name = azurerm_resource_group.rg2.name
-      subnet_id = data.terraform_remote_state.network.outputs.subnet2.subnet_id
-      private_ip = ["172.16.1.12"]
+      subnet_id = data.terraform_remote_state.network.outputs.subnets.subnet2.subnet_id
+      private_ip = "172.16.1.12"
     }
     spoke2 = {
-      name = "${data.terraform_remote_state.network.outputs.subnet3.name}-nic"
+      name = "${data.terraform_remote_state.network.outputs.subnets.subnet3.name}-nic"
       location = azurerm_resource_group.rg1.location
       rg_name = azurerm_resource_group.rg1.name
-      subnet_id = data.terraform_remote_state.network.outputs.subnet3.subnet_id
-      private_ip = ["192.168.1.13"]
+      subnet_id = data.terraform_remote_state.network.outputs.subnets.subnet3.subnet_id
+      private_ip = "192.168.1.13"
     }
   })
   name                = each.value.name
@@ -50,13 +50,13 @@ data "azurerm_public_ip" "pub_ip" {
 }
 
 resource "azurerm_network_interface" "hub-nic" {
-  name                = "${data.terraform_remote_state.network.outputs.subnet1.name}-nic"
+  name                = "${data.terraform_remote_state.network.outputs.subnets.subnet1.name}-nic"
   location            = azurerm_resource_group.rg1.location
   resource_group_name = azurerm_resource_group.rg1.name
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = data.terraform_remote_state.network.outputs.subnet1.subnet_id
+    subnet_id                     = data.terraform_remote_state.network.outputs.subnets.subnet1.subnet_id
     private_ip_address_allocation = "Static"
     private_ip_address = "10.0.1.11"
     public_ip_address_id = data.azurerm_public_ip.pub_ip.id
