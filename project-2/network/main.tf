@@ -87,3 +87,24 @@ resource "azurerm_virtual_network_peering" "peering3-1" {
   allow_gateway_transit     = false
   depends_on = [ azurerm_virtual_network.vnet3, data.azurerm_virtual_network.vnet1 ]
 }
+
+resource "azurerm_subnet" "subnet1" {
+  name                 = "${var.vnet1.vnet_name}-subnet"
+  resource_group_name  = azurerm_virtual_network.vnet1.resource_group_name
+  virtual_network_name = azurerm_virtual_network.vnet1.name
+  address_prefixes     = [var.vnet1.address_prefixes]
+}
+
+resource "azurerm_subnet" "subnet2" {
+  name                 = "${var.vnet2.vnet_name}-subnet"
+  resource_group_name  = azurerm_virtual_network.vnet2.resource_group_name
+  virtual_network_name = azurerm_virtual_network.vnet2.name
+  address_prefixes     = [var.vnet2.address_prefixes]
+}
+
+resource "azurerm_subnet" "subnet3" {
+  name                 = "${var.vnet3.vnet_name}-subnet"
+  resource_group_name  = azurerm_virtual_network.vnet3.resource_group_name
+  virtual_network_name = azurerm_virtual_network.vnet3.name
+  address_prefixes     = [var.vnet3.address_prefixes]
+}
