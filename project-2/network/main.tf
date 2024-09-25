@@ -96,7 +96,7 @@ resource "azurerm_subnet" "subnet1" {
 }
 
 resource "azurerm_subnet" "subnet2" {
-  name                 = "${var.vnet1.vnet_name}-subnet"
+  name                 = "${var.vnet2.vnet_name}-subnet"
   resource_group_name  = azurerm_virtual_network.vnet2.resource_group_name
   virtual_network_name = azurerm_virtual_network.vnet2.name
   address_prefixes     = [var.vnet2.address_prefixes]
