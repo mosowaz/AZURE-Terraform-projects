@@ -64,27 +64,29 @@ resource "azurerm_network_interface" "hub-nic" {
     public_ip_address_id = data.azurerm_public_ip.pub_ip.id
   }
 }
-/*
-resource "azurerm_linux_virtual_machine" "name" {
-  name                = "example-machine"
-  resource_group_name = azurerm_resource_group.example.name
-  location            = azurerm_resource_group.example.location
-  size                = "Standard_F2"
-  admin_username      = "adminuser"
+
+resource "azurerm_linux_virtual_machine" "spokes-vm" {
+  for_each = var.spokes-vm
+  name                = each.value.name
+  resource_group_name = azurerm_resource_group.rg1[each.key].name
+  location            = each.value.rg_location
+  size                = each.value.size
+  admin_username      = each.value.admin_username
   network_interface_ids = [
-    data.azurerm_network_interface.hub-nic.id
+    data.azurerm_network_interface.spoke-nic[each.key].id
   ]
+  user_data = each.value.user_data
 
   admin_ssh_key {
-    username   = "adminuser"
-    public_key = file("~/.ssh/id_rsa.pub")
+    username   = each.value.admin_username
+    public_key = file(each.value.public_key)
   }
 
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
-
+ 
   source_image_reference {
     publisher = "Canonical"
     offer     = "0001-com-ubuntu-server-jammy"
@@ -92,4 +94,32 @@ resource "azurerm_linux_virtual_machine" "name" {
     version   = "latest"
   }
 }
-*/
+
+resource "azurerm_linux_virtual_machine" "hub-vm" {
+  name                = var.hub-vm.name
+  resource_group_name = azurerm_resource_group.rg1.name
+  location            = azurerm_resource_group.rg1.location
+  size                = var.hub-vm.size
+  admin_username      = var.hub-vm.admin_username
+  network_interface_ids = [
+    data.azurerm_network_interface.hub-nic[each.key].id
+  ]
+  user_data = var.hub-vm.user_data
+
+  admin_ssh_key {
+    username   = var.hub-vm.admin_username
+    public_key = file(var.hub-vm.public_key)
+  }
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+ 
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts"
+    version   = "latest"
+  }
+}
