@@ -15,3 +15,8 @@ data "azurerm_network_interface" spoke-nic {
   name                = each.value.name
   resource_group_name = each.value.resource_group_name
 }
+
+data "azurerm_public_ip" "pub_ip" {
+  name                = azurerm_public_ip.pub_ip.name
+  resource_group_name = azurerm_public_ip.pub_ip.resource_group_name
+}

@@ -2,7 +2,7 @@ resource "azurerm_resource_group" "rg1" {
   name     = "rg-${var.location1}"
   location = var.location1
   tags = {
-    intersite_network = "${var.lab_tag}-peering-central"
+    resource = "${var.lab_tag}-Central-rg"
   }
 }
 
@@ -10,7 +10,7 @@ resource "azurerm_resource_group" "rg2" {
   name     = "rg-${var.location2}"
   location = var.location2
   tags = {
-    intersite_network = "${var.lab_tag}-peering-east"
+    resource = "${var.lab_tag}-east-rg"
   }
 }
 
@@ -20,7 +20,7 @@ resource "azurerm_virtual_network" "vnet1" {
   location            = azurerm_resource_group.rg1.location
   resource_group_name = azurerm_resource_group.rg1.name
   tags = {
-    intersite_network = "${var.lab_tag}-hub"
+    resource = "${var.lab_tag}-hub-vnet"
   }
 }
 
@@ -30,7 +30,7 @@ resource "azurerm_virtual_network" "vnet2" {
   location            = azurerm_resource_group.rg2.location
   resource_group_name = azurerm_resource_group.rg2.name
   tags = {
-    intersite_network = "${var.lab_tag}-spoke1"
+    resource = "${var.lab_tag}-spoke1-vnet"
   }
 }
 
@@ -40,7 +40,7 @@ resource "azurerm_virtual_network" "vnet3" {
   location            = azurerm_resource_group.rg1.location
   resource_group_name = azurerm_resource_group.rg1.name
   tags = {
-    intersite_network = "${var.lab_tag}-spoke2"
+    resource = "${var.lab_tag}-spoke2-vnet"
   }
 }
 

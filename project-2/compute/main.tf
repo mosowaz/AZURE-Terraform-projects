@@ -1,21 +1,18 @@
-import {
-  id = data.terraform_remote_state.network.outputs.rg.rg1.id
-  to = azurerm_resource_group.rg1
-}
-
-import {
-  id = data.terraform_remote_state.network.outputs.rg.rg2.id
-  to = azurerm_resource_group.rg2
-}
 
 resource "azurerm_resource_group" "rg1" {
-  name = data.terraform_remote_state.network.outputs.rg.rg1.name
-  location = data.terraform_remote_state.network.outputs.rg.rg1.location
+  name = "${var.location1}-rg"
+  location = var.location1
+  tags = {
+    resource = "${var.lab_tag}-central-rg"
+  }
 }
 
 resource "azurerm_resource_group" "rg2" {
-  name = data.terraform_remote_state.network.outputs.rg.rg2.name
-  location = data.terraform_remote_state.network.outputs.rg.rg2.location
+  name = "${var.location2}-rg"
+  location = var.location2
+  tags = {
+    resource = "${var.lab_tag}-east-rg"
+  }
 }
 
 resource "azurerm_network_interface" "spoke-nic" {
@@ -52,11 +49,6 @@ resource "azurerm_public_ip" "pub_ip" {
   resource_group_name = azurerm_resource_group.rg1.name
   location            = azurerm_resource_group.rg1.location
   allocation_method   = "Static"
-}
-
-data "azurerm_public_ip" "pub_ip" {
-  name                = azurerm_public_ip.pub_ip.name
-  resource_group_name = azurerm_public_ip.pub_ip.resource_group_name
 }
 
 resource "azurerm_network_interface" "hub-nic" {
