@@ -68,14 +68,14 @@ resource "azurerm_network_interface" "hub-nic" {
 resource "azurerm_linux_virtual_machine" "spokes-vm" {
   for_each = var.spokes-vm
   name                = each.value.name
-  resource_group_name = azurerm_resource_group.rg1[each.key].name
+  resource_group_name = "${each.value.rg_location}-rg"
   location            = each.value.rg_location
   size                = each.value.size
   admin_username      = each.value.admin_username
   network_interface_ids = [
     data.azurerm_network_interface.spoke-nic[each.key].id
   ]
-  user_data = each.value.user_data
+  user_data = base64encoded(each.value.user_data)
 
   admin_ssh_key {
     username   = each.value.admin_username
@@ -104,7 +104,7 @@ resource "azurerm_linux_virtual_machine" "hub-vm" {
   network_interface_ids = [
     data.azurerm_network_interface.hub-nic.id
   ]
-  user_data = var.hub-vm.user_data
+  user_data = base64encoded(var.hub-vm.user_data)
 
   admin_ssh_key {
     username   = var.hub-vm.admin_username
