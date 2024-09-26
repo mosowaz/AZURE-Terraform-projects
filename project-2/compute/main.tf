@@ -102,7 +102,7 @@ resource "azurerm_linux_virtual_machine" "hub-vm" {
   size                = var.hub-vm.size
   admin_username      = var.hub-vm.admin_username
   network_interface_ids = [
-    data.azurerm_network_interface.hub-nic[each.key].id
+    data.azurerm_network_interface.hub-nic.id
   ]
   user_data = var.hub-vm.user_data
 
