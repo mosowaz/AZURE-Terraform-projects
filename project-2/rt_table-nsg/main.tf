@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "rg1" {
-  name = "${var.location1}-rg"
+  name = "${var.location1}-rt-rg"
   location = var.location1
   tags = {
     resource = "${var.lab_tag}-central-rg"
@@ -7,7 +7,7 @@ resource "azurerm_resource_group" "rg1" {
 }
 
 resource "azurerm_resource_group" "rg2" {
-  name = "${var.location2}-rg"
+  name = "${var.location2}-rt-rg"
   location = var.location2
   tags = {
     resource = "${var.lab_tag}-east-rg"
@@ -28,10 +28,7 @@ resource "azurerm_network_security_rule" "hub-rule1" {
     protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "*"
-    source_address_prefixes    = [ 
-                        data.terraform_remote_state.network.outputs.subnets.subnet2.address_prefixes,
-                        data.terraform_remote_state.network.outputs.subnets.subnet1.address_prefixes
-                        ]
+    source_address_prefixes    = [ "172.16.1.0/24", "192.168.1.0/24"] #spoke subnets
     destination_address_prefix = data.terraform_remote_state.compute.outputs.hub_private_ip
     resource_group_name         = azurerm_resource_group.rg1.name
     network_security_group_name = azurerm_network_security_group.hub-nsg.name 
@@ -63,7 +60,7 @@ resource "azurerm_route_table" "spoke1-2" {
 
   route {
     name                   = var.rt-spoke1-2
-    address_prefix         = data.terraform_remote_state.network.outputs.subnets.subnet3.address_prefixes
+    address_prefix         = "192.168.1.0/24" #spoke2 subnet
     next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = data.terraform_remote_state.compute.outputs.hub_private_ip
   }
@@ -81,7 +78,7 @@ resource "azurerm_route_table" "spoke2-1" {
 
   route {
     name                   = var.rt-spoke2-1
-    address_prefix         = data.terraform_remote_state.network.outputs.subnets.subnet2.address_prefixes
+    address_prefix         = "172.16.1.0/24" #spoke1 subnet
     next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = data.terraform_remote_state.compute.outputs.hub_private_ip
   }
