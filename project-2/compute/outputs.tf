@@ -11,4 +11,3 @@ output "spokes_private_ip" {
     for i, j in azurerm_network_interface.spoke-nic : i => j.private_ip_address
   }
 }
-

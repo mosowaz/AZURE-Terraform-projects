@@ -32,7 +32,7 @@ variable "spokes-vm" {
        admin_username = "adminuser"
        public_key     = "~/.ssh/spoke1-vm.pub"
        rg_location    = "canadaeast"
-       user_data      = "<< EOF #!/bin/bash ping -c4 hub-vm; echo $?; ping -c4 spoke2-vm; echo $? EOF"
+       user_data      = "<< EOF #!/bin/bash ping -c4 hub-vm && echo $? > ping.txt; ping -c4 spoke2-vm && echo $? >> ping.txt EOF"
     }
     "spoke2" = {
        name           = "spoke2-vm"
@@ -40,7 +40,7 @@ variable "spokes-vm" {
        admin_username = "adminuser"
        public_key     = "~/.ssh/spoke2-vm.pub"
        rg_location    = "canadacentral"
-       user_data      = "<< EOF #!/bin/bash ping -c4 hub-vm; echo $?; ping -c4 spoke1-vm; echo $? EOF"
+       user_data      = "<< EOF #!/bin/bash ping -c4 hub-vm && echo $? > ping.txt; ping -c4 spoke1-vm && echo $? >> ping.txt EOF"
     }
   }
 }
