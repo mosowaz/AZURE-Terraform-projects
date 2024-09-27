@@ -63,7 +63,7 @@ resource "azurerm_route_table" "spoke1-2" {
 
   route {
     name                   = var.rt-spoke1-2
-    address_prefix         = data.terraform_remote_state.network.outputs.subnets.subnet2.address_prefixes
+    address_prefix         = data.terraform_remote_state.network.outputs.subnets.subnet3.address_prefixes
     next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = data.terraform_remote_state.compute.outputs.hub_private_ip
   }
@@ -81,7 +81,7 @@ resource "azurerm_route_table" "spoke2-1" {
 
   route {
     name                   = var.rt-spoke2-1
-    address_prefix         = data.terraform_remote_state.network.outputs.subnets.subnet3.address_prefixes
+    address_prefix         = data.terraform_remote_state.network.outputs.subnets.subnet2.address_prefixes
     next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = data.terraform_remote_state.compute.outputs.hub_private_ip
   }
