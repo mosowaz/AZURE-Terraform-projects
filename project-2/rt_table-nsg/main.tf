@@ -21,7 +21,7 @@ resource "azurerm_network_security_group" "hub-nsg" {
 }
 
 resource "azurerm_network_security_rule" "hub-rule1" {
-    name                       = "hub-inbound"
+    name                       = "hub-inbound-private"
     priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
@@ -35,7 +35,7 @@ resource "azurerm_network_security_rule" "hub-rule1" {
 }
 
 resource "azurerm_network_security_rule" "hub-rule2" {
-    name                       = "hub-inbound"
+    name                       = "hub-inbound-public"
     priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
