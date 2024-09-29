@@ -13,16 +13,16 @@ data "terraform_remote_state" "compute" {
 }
 
 data "azurerm_network_security_group" "hub-nsg" {
-  name                = "hub-nsg-id"
+  name                = azurerm_network_security_group.hub-nsg.name
   resource_group_name = azurerm_resource_group.rg1.name
 }
 
 data "azurerm_route_table" "spoke1-2" {
-  name                = var.rt-spoke1-2
+  name                = azurerm_route_table.spoke1-2.name
   resource_group_name = azurerm_resource_group.rg2.name
 }
 
 data "azurerm_route_table" "spoke2-1" {
-  name                = var.rt-spoke2-1
+  name                = azurerm_route_table.spoke2-1.name
   resource_group_name = azurerm_resource_group.rg1.name
 }

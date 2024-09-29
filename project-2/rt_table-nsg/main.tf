@@ -34,7 +34,7 @@ resource "azurerm_network_security_rule" "hub-rule1" {
     network_security_group_name = azurerm_network_security_group.hub-nsg.name 
 }
 
-resource "azurerm_network_security_rule" "hub-rule12" {
+resource "azurerm_network_security_rule" "hub-rule2" {
     name                       = "hub-inbound"
     priority                   = 100
     direction                  = "Inbound"
