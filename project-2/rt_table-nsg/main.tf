@@ -36,7 +36,7 @@ resource "azurerm_network_security_rule" "hub-rule1" {
 
 resource "azurerm_network_security_rule" "hub-rule2" {
     name                       = "hub-inbound-public"
-    priority                   = 100
+    priority                   = 200
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "*"
