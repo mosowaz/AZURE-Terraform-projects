@@ -21,29 +21,29 @@ resource "azurerm_network_security_group" "hub-nsg" {
 }
 
 resource "azurerm_network_security_rule" "hub-rule1" {
-    name                       = "hub-inbound-private"
-    priority                   = 100
-    direction                  = "Inbound"
+    name                       = "hub-outbound-private"
+    priority                   = 200
+    direction                  = "Outbound"
     access                     = "Allow"
     protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "*"
-    source_address_prefixes    = [ "172.16.1.0/24", "192.168.1.0/24"] #spoke subnets
-    destination_address_prefix = data.terraform_remote_state.compute.outputs.hub_private_ip
+    source_address_prefix      = "*" #Any IP in the subnet associated with NSG rule
+    destination_address_prefixes = [ "172.16.1.0/24", "192.168.1.0/24"] #spoke subnets
     resource_group_name         = azurerm_resource_group.rg1.name
     network_security_group_name = azurerm_network_security_group.hub-nsg.name 
 }
 
 resource "azurerm_network_security_rule" "hub-rule2" {
     name                       = "hub-inbound-public"
-    priority                   = 200
+    priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
-    protocol                   = "*"
+    protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = "*"
+    destination_port_range     = "22"
     source_address_prefix      = var.mypublic_ip
-    destination_address_prefix = data.terraform_remote_state.compute.outputs.hub_public_ip
+    destination_address_prefix = "*" #Any IP in the subnet associated with NSG rule
     resource_group_name         = azurerm_resource_group.rg1.name
     network_security_group_name = azurerm_network_security_group.hub-nsg.name 
 }
@@ -60,7 +60,7 @@ resource "azurerm_route_table" "spoke1-2" {
 
   route {
     name                   = var.rt-spoke1-2
-    address_prefix         = "192.168.1.0/24" #spoke2 subnet
+    address_prefix         = "192.168.1.0/24" # to spoke2 subnet
     next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = data.terraform_remote_state.compute.outputs.hub_private_ip
   }
@@ -78,7 +78,7 @@ resource "azurerm_route_table" "spoke2-1" {
 
   route {
     name                   = var.rt-spoke2-1
-    address_prefix         = "172.16.1.0/24" #spoke1 subnet
+    address_prefix         = "172.16.1.0/24" #to spoke1 subnet
     next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = data.terraform_remote_state.compute.outputs.hub_private_ip
   }

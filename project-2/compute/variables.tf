@@ -30,17 +30,15 @@ variable "spokes-vm" {
        name           = "spoke1-vm"
        size           = "Standard_B1s"
        admin_username = "adminuser"
-       public_key     = "~/.ssh/spoke1-vm.pub"
+       public_key     = "~/.ssh/spoke1/id_rsa.pub"
        rg_location    = "canadaeast"
-       user_data      = "<< EOF #!/bin/bash ping -c4 hub-vm && echo $? > ping.txt; ping -c4 spoke2-vm && echo $? >> ping.txt EOF"
     }
     "spoke2" = {
        name           = "spoke2-vm"
        size           = "Standard_B1s"
        admin_username = "adminuser"
-       public_key     = "~/.ssh/spoke2-vm.pub"
+       public_key     = "~/.ssh/spoke2/id_rsa.pub"
        rg_location    = "canadacentral"
-       user_data      = "<< EOF #!/bin/bash ping -c4 hub-vm && echo $? > ping.txt; ping -c4 spoke1-vm && echo $? >> ping.txt EOF"
     }
   }
 }
@@ -51,13 +49,14 @@ variable "hub-vm" {
     size = string
     admin_username = string
     public_key = string
+    private_key = string
     user_data  = string
   })
   default = {
     name           = "hub-vm"
     size           = "Standard_B1s"
     admin_username = "adminuser"
-    public_key     = "~/.ssh/hub-vm.pub"
-    user_data      = "<< EOF #!/bin/bash ping -c4 spoke2-vm; echo $?; ping -c4 spoke1-vm; echo $? EOF"
+    public_key     = "~/.ssh/hub/id_rsa.pub"
+    private_key    = "~/.ssh/hun/id_rsa" 
   }
 }

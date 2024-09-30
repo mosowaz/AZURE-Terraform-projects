@@ -76,7 +76,6 @@ resource "azurerm_linux_virtual_machine" "spokes-vm" {
   network_interface_ids = [
     data.azurerm_network_interface.spoke-nic[each.key].id
   ]
-  user_data = base64encode(each.value.user_data)
 
   admin_ssh_key {
     username   = each.value.admin_username
@@ -105,7 +104,7 @@ resource "azurerm_linux_virtual_machine" "hub-vm" {
   network_interface_ids = [
     data.azurerm_network_interface.hub-nic.id
   ]
-  user_data = base64encode(var.hub-vm.user_data)
+  #user_data = base64encode(file(...))
 
   admin_ssh_key {
     username   = var.hub-vm.admin_username
