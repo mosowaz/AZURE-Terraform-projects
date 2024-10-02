@@ -77,10 +77,16 @@ resource "azurerm_linux_virtual_machine" "spokes-vm" {
     data.azurerm_network_interface.spoke-nic[each.key].id
   ]
 
-  admin_ssh_key {
-    username   = each.value.admin_username
-    public_key = file(each.value.public_key)
-  }
+  user_data = base64encode(<<-EOF
+              #!/bin/bash
+              echo -e \\n"10.0.1.11 hub-vm"\\n >> /etc/hosts
+              echo -e "172.16.1.12 spoke1-vm"\\n >> /etc/hosts
+              echo -e "192.168.1.13 spoke2-vm"\\n >> /etc/hosts
+              EOF
+              )
+
+  admin_password = var.mypassword
+  disable_password_authentication = false
 
   os_disk {
     caching              = "ReadWrite"
@@ -96,6 +102,7 @@ resource "azurerm_linux_virtual_machine" "spokes-vm" {
 }
 
 resource "azurerm_linux_virtual_machine" "hub-vm" {
+  depends_on = [ data.azurerm_network_interface.hub-nic, data.azurerm_public_ip.pub_ip ]
   name                = var.hub-vm.name
   resource_group_name = azurerm_resource_group.rg1.name
   location            = azurerm_resource_group.rg1.location
@@ -104,7 +111,16 @@ resource "azurerm_linux_virtual_machine" "hub-vm" {
   network_interface_ids = [
     data.azurerm_network_interface.hub-nic.id
   ]
-  #user_data = base64encode(file(...))
+  
+  # Enable IP forwarding on the NVA by uncommenting the line as shown below
+  user_data = base64encode(<<-EOF
+              #!/bin/bash
+              sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
+              echo -e \\n"10.0.1.11 hub-vm"\\n >> /etc/hosts
+              echo -e "172.16.1.12 spoke1-vm"\\n >> /etc/hosts
+              echo -e "192.168.1.13 spoke2-vm"\\n >> /etc/hosts
+              EOF
+              )
 
   admin_ssh_key {
     username   = var.hub-vm.admin_username
@@ -121,5 +137,17 @@ resource "azurerm_linux_virtual_machine" "hub-vm" {
     offer     = "0001-com-ubuntu-server-jammy"
     sku       = "22_04-lts"
     version   = "latest"
+  }
+
+  provisioner "local-exec" {
+    connection {
+    type = "ssh"
+    user = azurerm_linux_virtual_machine.hub-vm.admin_username
+    private_key = file("~/.ssh/hub/id_rsa")
+    host = data.azurerm_public_ip.pub_ip.ip_address
+    }
+
+    command = "echo ${data.azurerm_public_ip.pub_ip.ip_address} > hub-vm_pub-ip.txt"
+    on_failure = continue
   }
 }
