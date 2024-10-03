@@ -3,7 +3,7 @@
 ![diagram to lab2](https://learn.microsoft.com/en-us/azure/virtual-network/media/tutorial-connect-virtual-networks-portal/resources-diagram.png#lightbox)
 ## Order of code run
 ./network/main.tf    ---->    ./compute/main.tf    ---->    ./rt_table-nsg/main.tf \n
-Or run the bash script below \n
+Or run the bash script below \\n
 ``` bash tf-apply.sh ```
 
 ## Description
