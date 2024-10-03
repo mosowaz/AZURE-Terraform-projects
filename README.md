@@ -1,7 +1,7 @@
 # AZURE-Terraform-projects
 
 This lab is created to demonstrate the implementation of Azure resources with terraform.
-Links to lab scenerio and the details can be found in each sub-directory of this repository (under Reference).
+Links to lab scenerio and the details can be found in each sub-directory of this repository (under Contents).
 
 ### Prerequisites
 1. azure CLI is required for terraform to interact with azure resources
