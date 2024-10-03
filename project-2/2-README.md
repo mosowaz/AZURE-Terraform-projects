@@ -10,7 +10,7 @@ Or run the bash script below\
 ## Description
 
 ### Note
-the providers version are pinned to a specific version\
+The providers version are pinned to a specific version\
 terraform version = 1.9.5
 azurerm version = 4.0.1 
 
