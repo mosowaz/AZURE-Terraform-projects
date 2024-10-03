@@ -85,7 +85,7 @@ resource "azurerm_linux_virtual_machine" "spokes-vm" {
               EOF
               )
 
-  admin_password = var.mypassword[each.key]
+  admin_password = var.mypassword
   disable_password_authentication = false
 
   os_disk {
