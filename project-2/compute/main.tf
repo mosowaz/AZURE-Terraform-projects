@@ -1,6 +1,6 @@
 
 resource "azurerm_resource_group" "rg1" {
-  name = "${var.location1}-rg"
+  name     = "${var.location1}-rg"
   location = var.location1
   tags = {
     resource = "${var.lab_tag}-central-rg"
@@ -8,7 +8,7 @@ resource "azurerm_resource_group" "rg1" {
 }
 
 resource "azurerm_resource_group" "rg2" {
-  name = "${var.location2}-rg"
+  name     = "${var.location2}-rg"
   location = var.location2
   tags = {
     resource = "${var.lab_tag}-east-rg"
@@ -16,19 +16,19 @@ resource "azurerm_resource_group" "rg2" {
 }
 
 resource "azurerm_network_interface" "spoke-nic" {
-  for_each      = tomap({
+  for_each = tomap({
     spoke1 = {
-      name = "${data.terraform_remote_state.network.outputs.subnets.subnet2.name}-nic"
-      location = azurerm_resource_group.rg2.location
-      rg_name = azurerm_resource_group.rg2.name
-      subnet_id = data.terraform_remote_state.network.outputs.subnets.subnet2.subnet_id
+      name       = "${data.terraform_remote_state.network.outputs.subnets.subnet2.name}-nic"
+      location   = azurerm_resource_group.rg2.location
+      rg_name    = azurerm_resource_group.rg2.name
+      subnet_id  = data.terraform_remote_state.network.outputs.subnets.subnet2.subnet_id
       private_ip = "172.16.1.12"
     }
     spoke2 = {
-      name = "${data.terraform_remote_state.network.outputs.subnets.subnet3.name}-nic"
-      location = azurerm_resource_group.rg1.location
-      rg_name = azurerm_resource_group.rg1.name
-      subnet_id = data.terraform_remote_state.network.outputs.subnets.subnet3.subnet_id
+      name       = "${data.terraform_remote_state.network.outputs.subnets.subnet3.name}-nic"
+      location   = azurerm_resource_group.rg1.location
+      rg_name    = azurerm_resource_group.rg1.name
+      subnet_id  = data.terraform_remote_state.network.outputs.subnets.subnet3.subnet_id
       private_ip = "192.168.1.13"
     }
   })
@@ -40,7 +40,7 @@ resource "azurerm_network_interface" "spoke-nic" {
     name                          = "internal"
     subnet_id                     = each.value.subnet_id
     private_ip_address_allocation = "Static"
-    private_ip_address = each.value.private_ip
+    private_ip_address            = each.value.private_ip
   }
 }
 
@@ -52,22 +52,22 @@ resource "azurerm_public_ip" "pub_ip" {
 }
 
 resource "azurerm_network_interface" "hub-nic" {
-  name                = "${data.terraform_remote_state.network.outputs.subnets.subnet1.name}-nic"
-  location            = azurerm_resource_group.rg1.location
-  resource_group_name = azurerm_resource_group.rg1.name
+  name                  = "${data.terraform_remote_state.network.outputs.subnets.subnet1.name}-nic"
+  location              = azurerm_resource_group.rg1.location
+  resource_group_name   = azurerm_resource_group.rg1.name
   ip_forwarding_enabled = true
 
   ip_configuration {
     name                          = "internal"
     subnet_id                     = data.terraform_remote_state.network.outputs.subnets.subnet1.subnet_id
     private_ip_address_allocation = "Static"
-    private_ip_address = "10.0.1.11"
-    public_ip_address_id = data.azurerm_public_ip.pub_ip.id
+    private_ip_address            = "10.0.1.11"
+    public_ip_address_id          = data.azurerm_public_ip.pub_ip.id
   }
 }
 
 resource "azurerm_linux_virtual_machine" "spokes-vm" {
-  for_each = var.spokes-vm
+  for_each            = var.spokes-vm
   name                = each.value.name
   resource_group_name = "${each.value.rg_location}-rg"
   location            = each.value.rg_location
@@ -83,16 +83,20 @@ resource "azurerm_linux_virtual_machine" "spokes-vm" {
               echo -e "172.16.1.12 spoke1-vm"\\n >> /etc/hosts
               echo -e "192.168.1.13 spoke2-vm"\\n >> /etc/hosts
               EOF
-              )
+  )
 
-  admin_password = var.mypassword
-  disable_password_authentication = false
+  admin_ssh_key {
+    username   = each.value.admin_username
+    public_key = file(each.value.public_key)
+  }
+  #admin_password = var.mypassword
+  #disable_password_authentication = false
 
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
- 
+
   source_image_reference {
     publisher = "Canonical"
     offer     = "0001-com-ubuntu-server-jammy"
@@ -102,7 +106,7 @@ resource "azurerm_linux_virtual_machine" "spokes-vm" {
 }
 
 resource "azurerm_linux_virtual_machine" "hub-vm" {
-  depends_on = [ data.azurerm_network_interface.hub-nic, data.azurerm_public_ip.pub_ip ]
+  depends_on          = [data.azurerm_network_interface.hub-nic, data.azurerm_public_ip.pub_ip]
   name                = var.hub-vm.name
   resource_group_name = azurerm_resource_group.rg1.name
   location            = azurerm_resource_group.rg1.location
@@ -111,7 +115,7 @@ resource "azurerm_linux_virtual_machine" "hub-vm" {
   network_interface_ids = [
     data.azurerm_network_interface.hub-nic.id
   ]
-  
+
   # Enable IP forwarding on the NVA by uncommenting the line as shown below
   user_data = base64encode(<<-EOF
               #!/bin/bash
@@ -120,7 +124,7 @@ resource "azurerm_linux_virtual_machine" "hub-vm" {
               echo -e "172.16.1.12 spoke1-vm"\\n >> /etc/hosts
               echo -e "192.168.1.13 spoke2-vm"\\n >> /etc/hosts
               EOF
-              )
+  )
 
   admin_ssh_key {
     username   = var.hub-vm.admin_username
@@ -131,7 +135,7 @@ resource "azurerm_linux_virtual_machine" "hub-vm" {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
- 
+
   source_image_reference {
     publisher = "Canonical"
     offer     = "0001-com-ubuntu-server-jammy"
@@ -139,15 +143,15 @@ resource "azurerm_linux_virtual_machine" "hub-vm" {
     version   = "latest"
   }
 
-  provisioner "local-exec" {
-    connection {
-    type = "ssh"
-    user = azurerm_linux_virtual_machine.hub-vm.admin_username
+  connection {
+    type        = "ssh"
+    user        = self.admin_username
     private_key = file("~/.ssh/hub/id_rsa")
-    host = data.azurerm_public_ip.pub_ip.ip_address
-    }
+    host        = self.public_ip_address
+  }
 
-    command = "echo ${data.azurerm_public_ip.pub_ip.ip_address} > hub-vm_pub-ip.txt"
+  provisioner "local-exec" {
+    command    = "echo ${self.public_ip_address} > hub-vm_pub-ip.txt"
     on_failure = continue
   }
 }
