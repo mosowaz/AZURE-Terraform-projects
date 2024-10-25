@@ -229,26 +229,6 @@ resource "azurerm_storage_blob" "blob1" {
 
 # ----------------------------------------------------------------------
 
-########## This block can be used alternatively to network security group ######### 
-##########          for securing access to endpoints                      ######### 
-# 										  #
-#resource "azurerm_subnet_service_endpoint_storage_policy" "policy" {		  #
-#  name                = "storage-policy"					  #
-#  resource_group_name = azurerm_resource_group.rg.name				  #
-#  location            = azurerm_resource_group.rg.location			  #
-#  definition {									  #
-#    name        = "storage-policy"						  #
-#    description = "storage policy for service endpoint"			  #
-#    service     = "Microsoft.Storage"						  #
-#    service_resources = [							  #
-#      azurerm_resource_group.rg.id,						  #
-#      azurerm_storage_account.storage.id					  #
-#    ]										  #
-#  }										  #
-#} 										  #
-###################################################################################
-
-
 # ****************     Linux Virtual Machine block 1   *****************
 
 resource "azurerm_network_interface" "vm1-nic1" {
