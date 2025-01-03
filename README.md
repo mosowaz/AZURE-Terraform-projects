@@ -13,7 +13,7 @@ Links to lab scenerio and the details can be found in each sub-directory of this
 
 2 - [Connect virtual networks with virtual network peering](project-2)
 
-## Terraform Commands for execution of resource code
+## Terraform Commands 
 ```
 terraform init -upgrade
 
