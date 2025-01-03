@@ -9,9 +9,9 @@ Links to lab scenerio and the details can be found in each sub-directory of this
 2. Install and configure terraform https://developer.hashicorp.com/terraform/install
    
 ## Contents
-1 - [Restrict network access to PaaS resources with virtual network service endpoints](project-1)
+1 - [Restrict network access to PaaS resources with virtual network service endpoints](project-1/1-README.md)
 
-2 - [Connect virtual networks with virtual network peering](project-2)
+2 - [Connect virtual networks with virtual network peering](project-2/2-README.md)
 
 ## Terraform Commands 
 ```
