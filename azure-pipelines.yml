@@ -1,7 +1,6 @@
 name: Build_Pipeline
 
-trigger:
-- main
+trigger: none
 
 pool:
   vmImage: ubuntu-latest
