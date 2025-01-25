@@ -1,0 +1,41 @@
+name: Build_Pipeline_$(Date:yyyy-MM-dd)_v$(Rev:rr)
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - '*'
+    exclude: 
+    - main 
+  paths:
+    include:
+      - '*'
+
+pr:
+  branches:
+    include: 
+    - main
+
+  # Using build_template pipeline in submodules
+stages:
+- template: templates/azure_pipeline_template.yml
+  parameters:
+    SourceDirectory: 'infrastructure/network'   # change directory to network
+    infrastructure: 'Network'
+    tfplan: 'network.tflan'
+    BlobName: 'network.tfstate'
+
+- template: templates/azure_pipeline_template.yml
+  parameters:
+    SourceDirectory: 'infrastructure/compute'   # change directory to compute
+    infrastructure: 'Compute'
+    tfplan: 'compute.tflan'
+    BlobName: 'compute.tfstate'
+
+- template: templates/azure_pipeline_template.yml
+  parameters:
+    SourceDirectory: 'infrastructure/routes'    # change directory to routes 
+    infrastructure: 'Routes'
+    tfplan: 'routes.tflan'
+    BlobName: 'routes.tfstate'
+ 
