@@ -16,23 +16,29 @@ pr:
     include: 
     - main
 
+variables:
+- name: systm.debug
+  value: 'true'
+- group: 'service-connection'
+- group: 'ssh-keys'
+
   # Using build_template pipeline in submodules
 stages:
-- template: templates/azure_pipeline_template.yml
+- template: templates/build_template.yml
   parameters:
     SourceDirectory: 'infrastructure/network'   # change directory to network
     infrastructure: 'Network'
     tfplan: 'network.tflan'
     BlobName: 'network.tfstate'
 
-- template: templates/azure_pipeline_template.yml
+- template: templates/build_template.yml
   parameters:
     SourceDirectory: 'infrastructure/compute'   # change directory to compute
     infrastructure: 'Compute'
     tfplan: 'compute.tflan'
     BlobName: 'compute.tfstate'
 
-- template: templates/azure_pipeline_template.yml
+- template: templates/build_template.yml
   parameters:
     SourceDirectory: 'infrastructure/routes'    # change directory to routes 
     infrastructure: 'Routes'

@@ -5,23 +5,12 @@ stages:
     vmImage: ubuntu-latest
 
   jobs:
-  - job: tfvalidate_checkov
+  - job: tfvalidate
+    continueOnError: false
     condition: ne(variables['Build.SourceBranchName'], 'main')
     steps:
     - checkout: self
     - template: checkov-terraform_install.yml
-      
-    - bash: terraform version && checkov --version
-      name: tf_checkov_version_check
-      displayName: 'check terraform and checkov version'
-
-    - bash: |
-        checkov -d $(Pipeline.Workspace) --quiet --skip-check CKV2_AZURE_39,CKV2_AZURE_31,CKV_AZURE_50 \
-          --enable-secret-scan-all-files --deep-analysis \
-          --skip-path SPN-Terraform-Deployment/ 
-      continueOnError: false
-      displayName: 'Scan terraform and pipeline files with checkovexclude:
-      - destroy-pipelines.yml'
 
     - bash: |
         terraform init -input=false \
@@ -39,12 +28,13 @@ stages:
       displayName: 'terraform fmt and validate'
       workingDirectory: ${{parameters.SourceDirectory}}
 
-
-  - job: plan_scan_publish
-    dependsOn: tfvalidate_checkov
-    condition: eq(variables['Build.SourceBranchName'], 'main') 
+  - job: tfplan_scan_publish
+    dependsOn: tfvalidate
+    condition: succeeded()
     steps:
     - checkout: self
+    - template: checkov-terraform_install.yml
+
     - bash: | 
         terraform init -input=false \
           -backend-config="resource_group_name=$(RGName)" \
@@ -54,12 +44,10 @@ stages:
           -backend-config="use_azuread_auth=true"
         terraform plan -out='${{parameters.tfplan}}' -lock=false -input=false 
 
-        pipx install checkov
-        pipx ensurepath && source ~/.bashrc
         terraform show -json ${{parameters.tfplan}} | jq > {{parameters.tfplan}}.json
-        checkov -d $(Pipeline.Workspace) --quiet \
+        checkov -d $(Pipeline.Workspace) --output sarif --quiet \
           --skip-check CKV2_AZURE_39,CKV2_AZURE_31,CKV_AZURE_50 \
-          --enable-secret-scan-all-files --deep-analysis 
+          --enable-secret-scan-all-files --deep-analysis
       env:
         ARM_CLIENT_ID: $(SPN2-client-id)
         ARM_TENANT_ID: $(SPN2-tenant-id)
@@ -73,12 +61,13 @@ stages:
         TF_VAR_sp2-sshkey-pub: $(sp2-sshkey-pub)
         TF_VAR_mypublic-ip: $(mypublic-ip)
       workingDirectory: ${{parameters.SourceDirectory}}
-      displayName: 'terraform plan and scan planFile'
+      displayName: 'Plan and scan terraform files and pipeline'
+      continueOnError: false
     
     - task: PublishPipelineArtifact@1
       inputs:
-        targetPath: ${{parameters.SourceDirectory}}
-        artifact: '${{parameters.tfplan}}' # artifactName
+        targetPath: $(Pipeline.Workspace)
+        artifact: '${{parameters.tfplan}}-artifact' # artifactName
         publishLocation: 'pipeline' # upload artifact to pipeline
       displayName: 'Publishing artifact'
     continueOnError: false  
@@ -100,7 +89,7 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: '${{parameters.tfplan}}'
+              artifactName: '${{parameters.tfplan}}-artifact'
               targetPath: '$(Build.SourcesDirectory)'
             displayName: 'Downloading artifact'
 
@@ -121,3 +110,4 @@ stages:
               ARM_CLIENT_SECRET: $(SPN2-client-secret)
               ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
             displayName: 'terraform apply'
+            workingDirectory: ${{parameters.SourceDirectory}}
