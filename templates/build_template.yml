@@ -2,7 +2,7 @@ stages:
 - stage: Build_${{parameters.infrastructure}}
   displayName: '${{parameters.SourceDirectory}} Build Stage'
   pool:
-    vmImage: ubuntu-latest
+    vmImage: $(Pipeline-Agent)
 
   jobs:
   - job: tfvalidate
@@ -76,7 +76,7 @@ stages:
   condition: eq(variables['Build.SourceBranchName'], 'main')
   displayName: '${{parameters.SourceDirectory}} Deploy Stage'
   pool:
-    vmImage: ubuntu-latest
+    vmImage: $(Pipeline-Agent)
 
   jobs:
   - deployment: apply

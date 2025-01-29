@@ -23,7 +23,8 @@ variables:
 - name: systm.debug
   value: 'true'
 - group: 'service-connection'
-- group: 'ssh-keys'
+- name: Pipeline-Agent
+  value: 'ubuntu-latest'
 
   # Using build_template pipeline in submodules
 stages:
