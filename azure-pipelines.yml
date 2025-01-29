@@ -9,12 +9,15 @@ trigger:
     - main 
   paths:
     include:
-      - '*'
+      - 'project-3'
 
 pr:
   branches:
     include: 
     - main
+  paths:
+    include:
+      - 'project-3'
 
 variables:
 - name: systm.debug

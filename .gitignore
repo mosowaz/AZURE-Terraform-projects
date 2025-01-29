@@ -4,10 +4,6 @@
 
 **/terraform.tfstate.backup
 
-**/main.tfplan
-
-**/main.destroy.tfplan
-
-**/main2.tfplan
+**/*.tfplan
 
 **/.terraform.tfstate.lock.info
