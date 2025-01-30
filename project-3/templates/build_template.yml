@@ -4,37 +4,21 @@ stages:
   pool: $(Pipeline-Agent)
   
   jobs:
-  - job: tfvalidate
-    continueOnError: false
-    condition: ne(variables['Build.SourceBranchName'], 'main')
-    timeoutInMinutes: 5
+  - job: tfplan_scan_publish
+    timeoutInMinutes: 10
+    workspace:
+      clean: all
     steps:
     - checkout: self
     - template: checkov-terraform_install.yml
 
     - bash: |
-        terraform init -input=false \
-          -backend-config="resource_group_name=$(RGName)" \
-          -backend-config="storage_account_name=$(StorageAccName)" \
-          -backend-config="container_name=$(ContainerName)" \
-          -backend-config="key=${{parameters.BlobName}}" \
-          -backend-config="use_azuread_auth=true"
-        terraform fmt && terraform validate  
-      env:
-        ARM_CLIENT_ID: $(SPN2-client-id)
-        ARM_TENANT_ID: $(SPN2-tenant-id)
-        ARM_CLIENT_SECRET: $(SPN2-client-secret)
-        ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
-      displayName: 'terraform fmt and validate'
-      workingDirectory: ${{parameters.SourceDirectory}}
-
-  - job: tfplan_scan_publish
-    dependsOn: tfvalidate
-    condition: succeeded()
-    timeoutInMinutes: 20
-    steps:
-    - checkout: self
-    - template: checkov-terraform_install.yml
+        checkov -d '$(Build.SourcesDirectory)/project-3' --quiet --deep-analysis \
+          --enable-secret-scan-all-files --framework azure_pipelines
+      displayName: 'scan azure pipelines'
+      workingDirectory: '$(Build.SourcesDirectory)/project-3' 
+      continueOnError: false
+      condition: eq(variables['Build.SourceBranchName'], 'main')
 
     - bash: | 
         terraform init -input=false \
@@ -43,24 +27,32 @@ stages:
           -backend-config="container_name=$(ContainerName)" \
           -backend-config="key=${{parameters.BlobName}}" \
           -backend-config="use_azuread_auth=true"
+        terraform validate
         terraform plan -out='${{parameters.tfplan}}' -lock=false -input=false 
-
-        terraform show -json ${{parameters.tfplan}} | jq > {{parameters.tfplan}}.json
-        checkov -d $(Pipeline.Workspace) --output sarif --quiet \
-          --skip-check CKV2_AZURE_39,CKV2_AZURE_31,CKV_AZURE_50 \
-          --enable-secret-scan-all-files --deep-analysis
       env:
         ARM_CLIENT_ID: $(SPN2-client-id)
         ARM_TENANT_ID: $(SPN2-tenant-id)
         ARM_CLIENT_SECRET: $(SPN2-client-secret)
         ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
       workingDirectory: ${{parameters.SourceDirectory}}
-      displayName: 'Plan and scan terraform files and pipeline'
+      displayName: 'terraform validate and plan'
       continueOnError: false
-    
+
+    - bash: |
+        terraform show -json ${{parameters.tfplan}} | jq > '${{parameters.tfplan}}.json'
+        checkov -f '${{parameters.tfplan}}.json' --output sarif --quiet \
+          --enable-secret-scan-all-files --deep-analysis --framework terraform_plan
+      displayName: 'output tfplan.json file and scan'
+      workingDirectory: ${{parameters.SourceDirectory}}
+      continueOnError: true
+
+    - bash: mkdir Artifacts && mv 'results.sarif' '${{parameters.tfplan}}.json' Artifacts
+      displayName: 'move results scan into Artifacts folder'
+      workingDirectory: ${{parameters.SourceDirectory}}
+      
     - task: PublishPipelineArtifact@1
       inputs:
-        targetPath: $(Pipeline.Workspace)
+        targetPath: '${{parameters.SourceDirectory}}/Artifacts'
         artifact: '${{parameters.tfplan}}-artifact' # artifactName
         publishLocation: 'pipeline' # upload artifact to pipeline
       displayName: 'Publishing artifact'
@@ -74,6 +66,8 @@ stages:
 
   jobs:
   - deployment: apply
+    workspace:
+      clean: all
     environment: $(ADO-Environment)        
     strategy:
       runOnce:
@@ -84,7 +78,7 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: '${{parameters.tfplan}}-artifact'
-              targetPath: '$(Build.SourcesDirectory)'
+              targetPath: '${{parameters.SourceDirectory}}'
             displayName: 'Downloading artifact'
 
           - template: checkov-terraform_install.yml
@@ -105,3 +99,4 @@ stages:
               ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
             displayName: 'terraform apply'
             workingDirectory: ${{parameters.SourceDirectory}}
+            
