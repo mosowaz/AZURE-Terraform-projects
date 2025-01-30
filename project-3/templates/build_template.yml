@@ -1,13 +1,13 @@
 stages:
 - stage: Build_${{parameters.infrastructure}}
   displayName: '${{parameters.SourceDirectory}} Build Stage'
-  pool:
-    vmImage: $(Pipeline-Agent)
-
+  pool: $(Pipeline-Agent)
+  
   jobs:
   - job: tfvalidate
     continueOnError: false
     condition: ne(variables['Build.SourceBranchName'], 'main')
+    timeoutInMinutes: 5
     steps:
     - checkout: self
     - template: checkov-terraform_install.yml
@@ -31,6 +31,7 @@ stages:
   - job: tfplan_scan_publish
     dependsOn: tfvalidate
     condition: succeeded()
+    timeoutInMinutes: 20
     steps:
     - checkout: self
     - template: checkov-terraform_install.yml
@@ -53,13 +54,6 @@ stages:
         ARM_TENANT_ID: $(SPN2-tenant-id)
         ARM_CLIENT_SECRET: $(SPN2-client-secret)
         ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
-        TF_VAR_hub-sshkey: $(hub-sshkey)
-        TF_VAR_hub-sshkey-pub: $(hub-sshkey-pub)
-        TF_VAR_sp1-sshkey: $(sp1-sshkey)
-        TF_VAR_sp1-sshkey-pub: $(sp1-sshkey-pub)
-        TF_VAR_sp2-sshkey: $(sp2-sshkey)
-        TF_VAR_sp2-sshkey-pub: $(sp2-sshkey-pub)
-        TF_VAR_mypublic-ip: $(mypublic-ip)
       workingDirectory: ${{parameters.SourceDirectory}}
       displayName: 'Plan and scan terraform files and pipeline'
       continueOnError: false
@@ -76,7 +70,7 @@ stages:
   condition: eq(variables['Build.SourceBranchName'], 'main')
   displayName: '${{parameters.SourceDirectory}} Deploy Stage'
   pool:
-    vmImage: $(Pipeline-Agent)
+    name: $(Pipeline-Agent)
 
   jobs:
   - deployment: apply

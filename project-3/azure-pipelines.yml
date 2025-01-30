@@ -20,11 +20,19 @@ pr:
       - 'project-3'
 
 variables:
+- group: 'service-connection'
 - name: systm.debug
   value: 'true'
-- group: 'service-connection'
+- name: RGName
+  value: "rg-ADO-2"            
+- name: StorageAccName
+  value: "mystorageacct16425"  
+- name: ContainerName
+  value: "storage-container"         
+- name: ADO-Environment
+  value: "Staging"
 - name: Pipeline-Agent
-  value: 'ubuntu-latest'
+  value: 'My Agents'
 
   # Using build_template pipeline in submodules
 stages:
@@ -38,14 +46,14 @@ stages:
 - template: templates/build_template.yml
   parameters:
     SourceDirectory: 'infrastructure/compute'   # change directory to compute
-    infrastructure: 'Compute'
-    tfplan: 'compute.tflan'
-    BlobName: 'compute.tfstate'
+    infrastructure: 'Storage'
+    tfplan: 'storage.tflan'
+    BlobName: 'storage.tfstate'
 
 - template: templates/build_template.yml
   parameters:
     SourceDirectory: 'infrastructure/routes'    # change directory to routes 
-    infrastructure: 'Routes'
-    tfplan: 'routes.tflan'
-    BlobName: 'routes.tfstate'
+    infrastructure: 'Compute'
+    tfplan: 'compute.tflan'
+    BlobName: 'compute.tfstate'
  
