@@ -10,15 +10,7 @@ stages:
       clean: all
     steps:
     - checkout: self
-    - template: checkov-terraform_install.yml
-
-    - bash: |
-        checkov -d '$(Build.SourcesDirectory)/project-3' --quiet --deep-analysis \
-          --enable-secret-scan-all-files --framework azure_pipelines
-      displayName: 'scan azure pipelines'
-      workingDirectory: '$(Build.SourcesDirectory)/project-3' 
-      continueOnError: false
-      condition: eq(variables['Build.SourceBranchName'], 'main')
+    #- template: checkov-terraform_install.yml
 
     - bash: | 
         terraform init -input=false \
@@ -35,7 +27,7 @@ stages:
         ARM_CLIENT_SECRET: $(SPN2-client-secret)
         ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
       workingDirectory: ${{parameters.SourceDirectory}}
-      displayName: 'terraform validate and plan'
+      displayName: 'terraform init, validate and plan'
       continueOnError: false
 
     - bash: |
@@ -45,21 +37,31 @@ stages:
       displayName: 'output tfplan.json file and scan'
       workingDirectory: ${{parameters.SourceDirectory}}
       continueOnError: true
+  
+    - bash: mv 'results.sarif' '$(Common.TestResultsDirectory)'
+      displayName: 'move results scan into TestResults directory'
+      workingDirectory: ${{parameters.SourceDirectory}}
 
-    - bash: mkdir Artifacts && mv 'results.sarif' '${{parameters.tfplan}}.json' Artifacts
-      displayName: 'move results scan into Artifacts folder'
+    - bash: |
+        checkov -d . --output sarif --quiet --deep-analysis \
+          --enable-secret-scan-all-files --framework azure_pipelines
+        mv 'results.sarif' 'pipelines.sarif' && mv 'pipelines.sarif' '$(Common.TestResultsDirectory)'
+      displayName: 'scan azure pipelines and move results into TestResults directory'
+      workingDirectory: '$(Pipeline.Workspace)' 
+      continueOnError: true
+
+    - bash: mv '${{parameters.tfplan}}' '${{parameters.tfplan}}.json' '$(Build.ArtifactStagingDirectory)'
+      displayName: 'move Terraform Planfile and json file to Artifacts staging directory'
       workingDirectory: ${{parameters.SourceDirectory}}
       
     - task: PublishPipelineArtifact@1
       inputs:
-        targetPath: '${{parameters.SourceDirectory}}/Artifacts'
+        targetPath: '$(Build.ArtifactStagingDirectory)'
         artifact: '${{parameters.tfplan}}-artifact' # artifactName
         publishLocation: 'pipeline' # upload artifact to pipeline
-      displayName: 'Publishing artifact'
-    continueOnError: false  
+      displayName: 'Publish artifact'
    
 - stage: Deploy_${{parameters.infrastructure}}
-  condition: eq(variables['Build.SourceBranchName'], 'main')
   displayName: '${{parameters.SourceDirectory}} Deploy Stage'
   pool:
     name: $(Pipeline-Agent)
@@ -78,10 +80,10 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: '${{parameters.tfplan}}-artifact'
-              targetPath: '${{parameters.SourceDirectory}}'
-            displayName: 'Downloading artifact'
+              targetPath: '$(Build.ArtifactStagingDirectory)'
+            displayName: 'Download artifact'
 
-          - template: checkov-terraform_install.yml
+         #- template: checkov-terraform_install.yml
           
           - bash: |
               chmod -R a+x .terraform/*
@@ -98,5 +100,5 @@ stages:
               ARM_CLIENT_SECRET: $(SPN2-client-secret)
               ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
             displayName: 'terraform apply'
-            workingDirectory: ${{parameters.SourceDirectory}}
+            workingDirectory: '$(Build.ArtifactStagingDirectory)'
             

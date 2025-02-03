@@ -1,0 +1,43 @@
+stages:
+- stage: Build_${{parameters.infrastructure}}
+  displayName: '${{parameters.SourceDirectory}} Build Stage'
+  pool: $(Pipeline-Agent)
+  
+  jobs:
+  - job: tfplan_scan
+    timeoutInMinutes: 5
+    workspace:
+      clean: all
+    steps:
+    - checkout: self
+    #- template: checkov-terraform_install.yml
+
+    - bash: | 
+        terraform init -input=false \
+          -backend-config="resource_group_name=$(RGName)" \
+          -backend-config="storage_account_name=$(StorageAccName)" \
+          -backend-config="container_name=$(ContainerName)" \
+          -backend-config="key=${{parameters.BlobName}}" \
+          -backend-config="use_azuread_auth=true"
+        terraform validate
+        terraform plan -out='${{parameters.tfplan}}' -lock=false -input=false 
+      env:
+        ARM_CLIENT_ID: $(SPN2-client-id)
+        ARM_TENANT_ID: $(SPN2-tenant-id)
+        ARM_CLIENT_SECRET: $(SPN2-client-secret)
+        ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
+      workingDirectory: ${{parameters.SourceDirectory}}
+      displayName: 'terraform init, validate and plan'
+      continueOnError: false
+
+    - bash: |
+        terraform show -json ${{parameters.tfplan}} | jq > '${{parameters.tfplan}}.json'
+        checkov -f '${{parameters.tfplan}}.json' --output sarif --quiet \
+          --enable-secret-scan-all-files --deep-analysis --framework terraform_plan
+        mv 'results.sarif' '$(Common.TestResultsDirectory)'
+      displayName: 'output tfplan.json file, scan and move to TestResults directory'
+      workingDirectory: ${{parameters.SourceDirectory}}
+      continueOnError: true
+
+   
+      
