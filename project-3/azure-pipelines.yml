@@ -1,5 +1,16 @@
 name: 'Build and Release Pipeline $(Date:yyyy-MM-dd)_v$(Rev:rr)'
 
+trigger:
+  batch: true
+  branches:
+    include:
+    - '*'
+    exclude: 
+    - main 
+  paths:
+    include:
+      - 'project-3'
+
 pr:
   branches:
     include: 
@@ -25,24 +36,33 @@ variables:
 
   # Using build_template pipeline in submodules
 stages:
-- template: templates/build_template.yml
-  parameters:
-    SourceDirectory: 'project-3/infra/network'   # change directory to network
-    infrastructure: 'Network'
-    tfplan: 'network.tfplan'
-    BlobName: 'network.tfstate'
+- ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:  
+  - template: templates/build_template.yml
+- ${{ else }}:
+  - template: templates/ci_template.yml
+    parameters:
+      SourceDirectory: 'project-3/infra/network'   # change directory to network
+      infrastructure: 'Network'
+      tfplan: 'network.tfplan'
+      BlobName: 'network.tfstate'
 
-- template: templates/build_template.yml
-  parameters:
-    SourceDirectory: 'project-3/infra/storage'   # change directory to compute
-    infrastructure: 'Storage'
-    tfplan: 'storage.tfplan'
-    BlobName: 'storage.tfstate'
+- ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:  
+  - template: templates/build_template.yml
+- ${{ else }}:
+  - template: templates/ci_template.yml
+    parameters:
+      SourceDirectory: 'project-3/infra/storage'   # change directory to compute
+      infrastructure: 'Storage'
+      tfplan: 'storage.tfplan'
+      BlobName: 'storage.tfstate'
 
-- template: templates/build_template.yml
-  parameters:
-    SourceDirectory: 'project-3/infra/compute'    # change directory to routes 
-    infrastructure: 'Compute'
-    tfplan: 'compute.tfplan'
-    BlobName: 'compute.tfstate'
+- ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:  
+  - template: templates/build_template.yml
+- ${{ else }}:
+  - template: templates/ci_template.yml
+    parameters:
+      SourceDirectory: 'project-3/infra/compute'    # change directory to routes 
+      infrastructure: 'Compute'
+      tfplan: 'compute.tfplan'
+      BlobName: 'compute.tfstate'
  
