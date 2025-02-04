@@ -1,4 +1,4 @@
-name: Build_Pipeline_$(Date:yyyy-MM-dd)_v$(Rev:rr)
+name: 'Build and Release Pipeline $(Date:yyyy-MM-dd)_v$(Rev:rr)'
 
 pr:
   branches:

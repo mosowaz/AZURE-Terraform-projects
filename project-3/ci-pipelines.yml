@@ -1,4 +1,4 @@
-name: CI_Pipeline_$(Date:yyyy-MM-dd)_v$(Rev:rr)
+name: 'CI Pipeline $(Date:yyyy-MM-dd)_v$(Rev:rr)'
 
 trigger:
   batch: true
