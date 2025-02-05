@@ -4,9 +4,7 @@ trigger:
   batch: true
   branches:
     include:
-    - '*'
-    exclude: 
-    - main 
+    - main
   paths:
     include:
       - 'project-3'
@@ -14,7 +12,7 @@ trigger:
 pr:
   branches:
     include: 
-    - main
+    - '*'
   paths:
     include:
       - 'project-3'
