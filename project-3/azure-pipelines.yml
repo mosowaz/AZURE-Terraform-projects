@@ -1,5 +1,6 @@
 name: 'Build and Release Pipeline $(Date:yyyy-MM-dd)_v$(Rev:rr)'
 
+
 trigger:
   batch: true
   branches:
@@ -7,7 +8,7 @@ trigger:
     - '*'
   paths:
     include:
-      - 'project-3'
+    - 'project-3'
 
 variables:
 - group: 'service-connection'
