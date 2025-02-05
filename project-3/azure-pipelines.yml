@@ -5,16 +5,6 @@ trigger:
   branches:
     include:
     - '*'
-    exclude: 
-    - main 
-  paths:
-    include:
-      - 'project-3'
-
-pr:
-  branches:
-    include: 
-    - main
   paths:
     include:
       - 'project-3'
