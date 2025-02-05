@@ -5,18 +5,10 @@ trigger:
   batch: true
   branches:
     include:
-    - main
-  paths:
-    include:
-      - 'project-3'
-
-pr:
-  branches:
-    include: 
     - '*'
   paths:
     include:
-      - 'project-3'
+    - 'project-3'
 
 variables:
 - group: 'service-connection'
