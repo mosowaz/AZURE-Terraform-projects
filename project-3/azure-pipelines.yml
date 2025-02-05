@@ -51,7 +51,7 @@ stages:
 - ${{ else }}:
   - template: templates/ci_template.yml
     parameters:
-      SourceDirectory: 'project-3/infra/storage'   # change directory to compute
+      SourceDirectory: 'project-3/infra/storage'   # change directory to storage
       infrastructure: 'Storage'
       tfplan: 'storage.tfplan'
       BlobName: 'storage.tfstate'
@@ -61,7 +61,7 @@ stages:
 - ${{ else }}:
   - template: templates/ci_template.yml
     parameters:
-      SourceDirectory: 'project-3/infra/compute'    # change directory to routes 
+      SourceDirectory: 'project-3/infra/compute'    # change directory to compute
       infrastructure: 'Compute'
       tfplan: 'compute.tfplan'
       BlobName: 'compute.tfstate'

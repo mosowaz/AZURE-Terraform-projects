@@ -10,7 +10,7 @@ stages:
       clean: all
     steps:
     - checkout: self
-    #- template: checkov-terraform_install.yml
+    - template: checkov-terraform_install.yml
 
     - bash: | 
         terraform init -input=false \
@@ -83,7 +83,7 @@ stages:
               targetPath: '$(Build.ArtifactStagingDirectory)'
             displayName: 'Download artifact'
 
-         #- template: checkov-terraform_install.yml
+          - template: checkov-terraform_install.yml
           
           - bash: |
               chmod -R a+x .terraform/*
