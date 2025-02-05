@@ -10,7 +10,7 @@ stages:
       clean: all
     steps:
     - checkout: self
-    #- template: checkov-terraform_install.yml
+    - template: checkov-terraform_install.yml
 
     - bash: | 
         terraform init -input=false \
@@ -49,14 +49,10 @@ stages:
       displayName: 'scan azure pipelines and move results into TestResults directory'
       workingDirectory: '$(Pipeline.Workspace)' 
       continueOnError: true
-
-    - bash: mv '${{parameters.tfplan}}' '${{parameters.tfplan}}.json' '$(Build.ArtifactStagingDirectory)'
-      displayName: 'move Terraform Planfile and json file to Artifacts staging directory'
-      workingDirectory: ${{parameters.SourceDirectory}}
-      
+ 
     - task: PublishPipelineArtifact@1
       inputs:
-        targetPath: '$(Build.ArtifactStagingDirectory)'
+        targetPath: '${{parameters.SourceDirectory}}'
         artifact: '${{parameters.tfplan}}-artifact' # artifactName
         publishLocation: 'pipeline' # upload artifact to pipeline
       displayName: 'Publish artifact'
@@ -83,7 +79,7 @@ stages:
               targetPath: '$(Build.ArtifactStagingDirectory)'
             displayName: 'Download artifact'
 
-         #- template: checkov-terraform_install.yml
+          - template: checkov-terraform_install.yml
           
           - bash: |
               chmod -R a+x .terraform/*

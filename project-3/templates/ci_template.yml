@@ -10,10 +10,10 @@ stages:
       clean: all
     steps:
     - checkout: self
-    #- template: checkov-terraform_install.yml
+    - template: checkov-terraform_install.yml
 
     - bash: | 
-        terraform init -input=false \
+        terraform init -upgrade -reconfigure -input=false \
           -backend-config="resource_group_name=$(RGName)" \
           -backend-config="storage_account_name=$(StorageAccName)" \
           -backend-config="container_name=$(ContainerName)" \

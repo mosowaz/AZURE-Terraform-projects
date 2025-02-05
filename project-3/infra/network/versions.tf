@@ -17,7 +17,7 @@ terraform {
     }
 
     modtm = {
-      source  = "hashicorp/modtm"
+      source  = "Azure/modtm"
       version = "~> 0.3"
     }   
   }
