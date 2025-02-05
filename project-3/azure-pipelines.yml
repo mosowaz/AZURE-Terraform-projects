@@ -1,20 +1,19 @@
 name: 'Build and Release Pipeline $(Date:yyyy-MM-dd)_v$(Rev:rr)'
 
-# trigger:
-#   batch: true
-#   branches:
-#     include:
-#     - '*'
-#     exclude: 
-#     - main 
-#   paths:
-#     include:
-#       - 'project-3'
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - main
+  paths:
+    include:
+      - 'project-3'
 
 pr:
   branches:
     include: 
-    - main
+    - '*'
   paths:
     include:
       - 'project-3'
