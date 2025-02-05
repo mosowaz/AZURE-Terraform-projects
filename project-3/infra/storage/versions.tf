@@ -8,8 +8,18 @@ terraform {
 
     random = {
       source  = "hashicorp/random"
-      version = "3.6.3"
+      version = "~> 3.5"
     }
+
+    azapi = {
+      source = "Azure/azapi"
+      version = ">= 1.13, < 3"
+    }
+
+    modtm = {
+      source  = "hashicorp/modtm"
+      version = "~> 0.3"
+    }   
   }
 }
 
@@ -24,4 +34,10 @@ provider "azurerm" {
 }
 
 provider "random" {
+}
+
+provider "modtm" {
+}
+
+provider "azapi" {
 }
