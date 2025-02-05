@@ -1,5 +1,6 @@
 name: 'Build and Release Pipeline $(Date:yyyy-MM-dd)_v$(Rev:rr)'
 
+
 trigger:
   batch: true
   branches:
