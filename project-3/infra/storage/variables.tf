@@ -1,6 +1,6 @@
 variable "resource_group" {
   type = object({
-    name = string
+    name     = string
     location = string
   })
 }

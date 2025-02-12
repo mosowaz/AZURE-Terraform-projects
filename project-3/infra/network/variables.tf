@@ -12,3 +12,14 @@ variable "vnet" {
   })
 }
 
+variable "nsg_name" {
+  type = string
+}
+
+variable "nsg_rule1" {
+  type = string
+}
+
+variable "nsg_rule2" {
+  type = string
+}
