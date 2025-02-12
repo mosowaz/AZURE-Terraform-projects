@@ -11,22 +11,20 @@ module "avm-res-network-virtualnetwork" {
   location            = azurerm_resource_group.rg.location
   name                = var.vnet.name
   resource_group_name = azurerm_resource_group.rg.name
-  subnets = {
+ /* subnets = {
     "subnet1" = {
       name              = "AzureBastionSubnet"
       address_prefixes  = ["10.0.0.0/24"]
       service_endpoints = ["Microsoft.Storage"]
     }
-  }
+  }*/
   dns_servers = {
     dns_servers = ["8.8.8.8"]
   }
 }
-
+/*
 # Create network security group and rules to restrict access for AzureBastionSubnet
 module "network-security-group" {
-  depends_on = [ module.avm-res-network-virtualnetwork ]
-
   source                = "Azure/network-security-group/azurerm"
   resource_group_name   = azurerm_resource_group.rg.name
   location              = azurerm_resource_group.rg.location
@@ -69,8 +67,6 @@ module "network-security-group" {
 }
 
 resource "azurerm_subnet_network_security_group_association" "nsg-BastionSubnet" {
-  depends_on = [ module.avm-res-network-virtualnetwork ]
-
   subnet_id                 = data.azurerm_subnet.BastionSubnet.id
   network_security_group_id = module.network-security-group.network_security_group_id
-}
+}*/
