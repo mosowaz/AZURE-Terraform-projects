@@ -1,0 +1,90 @@
+name: 'Decommission-Pipeline $(Date:yyyy-MM-dd)_v$(Rev:rr)'
+
+trigger: none
+
+variables:
+- group: 'service-connection'
+- name: systm.debug
+  value: 'true'
+- name: RGName
+  value: "rg-ADO-2"            
+- name: StorageAccName
+  value: "mystorageacct16425"  
+- name: ContainerName
+  value: "storage-container"         
+- name: ADO-Environment
+  value: "Staging"
+- name: Pipeline-Agent
+  value: 'My Agents'
+- name: network-stateFile
+  value: 'network.tfstate'
+- name: storage-stateFile
+  value: 'storage.tfstate'
+- name: compute-stateFile
+  value: 'compute.tfstate'
+
+
+stages:
+- stage: 'Destroy_Resources' 
+  displayName: 'Destroy resoures'
+  pool: $(Pipeline-Agent)
+  
+  jobs:
+  - job: 
+    timeoutInMinutes: 15
+    workspace:
+      clean: all
+    steps:
+    - checkout: self
+    - template: checkov-terraform_install.yml
+
+    - bash: | 
+        terraform init -input=false \
+          -backend-config="resource_group_name=$(RGName)" \
+          -backend-config="storage_account_name=$(StorageAccName)" \
+          -backend-config="container_name=$(ContainerName)" \
+          -backend-config="key=$(compute-stateFile)" \
+          -backend-config="use_azuread_auth=true"
+      
+        terraform destroy -auto-approve -input=false '-lock-timeout=2m'
+      env:
+        ARM_CLIENT_ID: $(SPN2-client-id)
+        ARM_TENANT_ID: $(SPN2-tenant-id)
+        ARM_CLIENT_SECRET: $(SPN2-client-secret)
+        ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
+      workingDirectory: 'project-3/infra/compute'
+      displayName: 'destroy compute resoures'
+
+    - bash: | 
+        terraform init -input=false \
+          -backend-config="resource_group_name=$(RGName)" \
+          -backend-config="storage_account_name=$(StorageAccName)" \
+          -backend-config="container_name=$(ContainerName)" \
+          -backend-config="key=${{storage-stateFile}}" \
+          -backend-config="use_azuread_auth=true"
+      
+        terraform destroy -auto-approve -input=false '-lock-timeout=2m'
+      env:
+        ARM_CLIENT_ID: $(SPN2-client-id)
+        ARM_TENANT_ID: $(SPN2-tenant-id)
+        ARM_CLIENT_SECRET: $(SPN2-client-secret)
+        ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
+      workingDirectory: 'project-3/infra/storage'
+      displayName: 'destroy storage resoures'
+
+    - bash: | 
+        terraform init -input=false \
+          -backend-config="resource_group_name=$(RGName)" \
+          -backend-config="storage_account_name=$(StorageAccName)" \
+          -backend-config="container_name=$(ContainerName)" \
+          -backend-config="key=${{network-stateFile}}" \
+          -backend-config="use_azuread_auth=true"
+      
+        terraform destroy -auto-approve -input=false '-lock-timeout=2m'
+      env:
+        ARM_CLIENT_ID: $(SPN2-client-id)
+        ARM_TENANT_ID: $(SPN2-tenant-id)
+        ARM_CLIENT_SECRET: $(SPN2-client-secret)
+        ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
+      workingDirectory: 'project-3/infra/network'
+      displayName: 'destroy network resoures'

@@ -1,4 +1,4 @@
 resource_group = {
-  name = "RG-ServiceEndpoint-Compute"
+  name     = "RG-ServiceEndpoint-Compute"
   location = "canadacentral"
 }

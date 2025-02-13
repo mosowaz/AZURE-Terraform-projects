@@ -1,9 +1,9 @@
 terraform {
-
+  
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 4.16.0"
+      version = ">= 3.116, < 5"
     }
 
     random = {
@@ -12,14 +12,14 @@ terraform {
     }
 
     azapi = {
-      source = "Azure/azapi"
+      source  = "Azure/azapi"
       version = ">= 1.13, < 3"
     }
 
     modtm = {
       source  = "Azure/modtm"
       version = "~> 0.3"
-    }   
+    }
   }
 }
 
@@ -29,8 +29,7 @@ provider "azurerm" {
       prevent_deletion_if_contains_resources = false
     }
   }
-  resource_provider_registrations = "none"
-  storage_use_azuread = true
+  storage_use_azuread             = true
 }
 
 provider "random" {
