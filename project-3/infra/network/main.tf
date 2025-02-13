@@ -11,13 +11,13 @@ module "avm-res-network-virtualnetwork" {
   location            = azurerm_resource_group.rg.location
   name                = var.vnet.name
   resource_group_name = azurerm_resource_group.rg.name
- /* subnets = {
+  subnets = {
     "subnet1" = {
       name              = "AzureBastionSubnet"
       address_prefixes  = ["10.0.0.0/24"]
       service_endpoints = ["Microsoft.Storage"]
     }
-  }*/
+  }
   dns_servers = {
     dns_servers = ["8.8.8.8"]
   }
