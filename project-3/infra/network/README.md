@@ -28,11 +28,13 @@
 |------|------|
 | [azurerm_resource_group.rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
 | [azurerm_subnet_network_security_group_association.nsg-BastionSubnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_network_security_group_association) | resource |
+| [azurerm_subnet.BastionSubnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subnet) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_BastionSubnet"></a> [BastionSubnet](#input\_BastionSubnet) | n/a | `string` | n/a | yes |
 | <a name="input_nsg_name"></a> [nsg\_name](#input\_nsg\_name) | n/a | `string` | n/a | yes |
 | <a name="input_nsg_rule1"></a> [nsg\_rule1](#input\_nsg\_rule1) | n/a | `string` | n/a | yes |
 | <a name="input_nsg_rule2"></a> [nsg\_rule2](#input\_nsg\_rule2) | n/a | `string` | n/a | yes |

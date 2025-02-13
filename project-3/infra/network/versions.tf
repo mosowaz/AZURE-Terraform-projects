@@ -1,5 +1,5 @@
 terraform {
-  
+
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -29,7 +29,7 @@ provider "azurerm" {
       prevent_deletion_if_contains_resources = false
     }
   }
-  storage_use_azuread             = true
+  storage_use_azuread = true
 }
 
 provider "random" {

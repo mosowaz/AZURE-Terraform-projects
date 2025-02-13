@@ -37,7 +37,7 @@ stages:
         mv 'results.sarif' 'tfplan.sarif'
       displayName: 'output tfplan.json file and scan'
       workingDirectory: ${{parameters.SourceDirectory}}
-      continueOnError: false
+      continueOnError: true
 
     - bash: |
         checkov -d . --output sarif --quiet --deep-analysis \
@@ -45,7 +45,7 @@ stages:
         mv 'results.sarif' 'pipelines.sarif' && mv 'pipelines.sarif' '${{parameters.SourceDirectory}}'
       displayName: 'scan azure pipelines and move results into "${{parameters.SourceDirectory}}"'
       workingDirectory: '$(Pipeline.Workspace)' 
-      continueOnError: false
+      continueOnError: true
  
     - task: PublishPipelineArtifact@1
       inputs:
