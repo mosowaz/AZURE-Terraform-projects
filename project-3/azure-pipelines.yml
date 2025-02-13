@@ -41,33 +41,33 @@ stages:
       tfplan: 'network.tfplan'
       BlobName: 'network.tfstate'
      
-- ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:  
-  - template: templates/build_template.yml
-    parameters:
-      SourceDirectory: 'project-3/infra/storage'   # change directory to storage
-      infrastructure: 'Storage'
-      tfplan: 'storage.tfplan'
-      BlobName: 'storage.tfstate'
-- ${{ else }}:
-  - template: templates/ci_template.yml
-    parameters:
-      SourceDirectory: 'project-3/infra/storage'   # change directory to storage
-      infrastructure: 'Storage'
-      tfplan: 'storage.tfplan'
-      BlobName: 'storage.tfstate'
+# - ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:  
+#   - template: templates/build_template.yml
+#     parameters:
+#       SourceDirectory: 'project-3/infra/storage'   # change directory to storage
+#       infrastructure: 'Storage'
+#       tfplan: 'storage.tfplan'
+#       BlobName: 'storage.tfstate'
+# - ${{ else }}:
+#   - template: templates/ci_template.yml
+#     parameters:
+#       SourceDirectory: 'project-3/infra/storage'   # change directory to storage
+#       infrastructure: 'Storage'
+#       tfplan: 'storage.tfplan'
+#       BlobName: 'storage.tfstate'
     
-- ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:  
-  - template: templates/build_template.yml
-    parameters:
-      SourceDirectory: 'project-3/infra/compute'    # change directory to compute
-      infrastructure: 'Compute'
-      tfplan: 'compute.tfplan'
-      BlobName: 'compute.tfstate'
-- ${{ else }}:
-  - template: templates/ci_template.yml
-    parameters:
-      SourceDirectory: 'project-3/infra/compute'    # change directory to compute
-      infrastructure: 'Compute'
-      tfplan: 'compute.tfplan'
-      BlobName: 'compute.tfstate'
+# - ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:  
+#   - template: templates/build_template.yml
+#     parameters:
+#       SourceDirectory: 'project-3/infra/compute'    # change directory to compute
+#       infrastructure: 'Compute'
+#       tfplan: 'compute.tfplan'
+#       BlobName: 'compute.tfstate'
+# - ${{ else }}:
+#   - template: templates/ci_template.yml
+#     parameters:
+#       SourceDirectory: 'project-3/infra/compute'    # change directory to compute
+#       infrastructure: 'Compute'
+#       tfplan: 'compute.tfplan'
+#       BlobName: 'compute.tfstate'
  

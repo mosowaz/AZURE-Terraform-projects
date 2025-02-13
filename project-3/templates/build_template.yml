@@ -13,7 +13,7 @@ stages:
     - template: checkov-terraform_install.yml
 
     - bash: | 
-        terraform init -input=false \
+        terraform init -upgrade -reconfigure -input=false \
           -backend-config="resource_group_name=$(RGName)" \
           -backend-config="storage_account_name=$(StorageAccName)" \
           -backend-config="container_name=$(ContainerName)" \
@@ -34,21 +34,18 @@ stages:
         terraform show -json ${{parameters.tfplan}} | jq > '${{parameters.tfplan}}.json'
         checkov -f '${{parameters.tfplan}}.json' --output sarif --quiet \
           --enable-secret-scan-all-files --deep-analysis --framework terraform_plan
+        mv 'results.sarif' 'tfplan.sarif'
       displayName: 'output tfplan.json file and scan'
       workingDirectory: ${{parameters.SourceDirectory}}
-      continueOnError: true
-  
-    - bash: mv 'results.sarif' '$(Common.TestResultsDirectory)'
-      displayName: 'move results scan into TestResults directory'
-      workingDirectory: ${{parameters.SourceDirectory}}
+      continueOnError: false
 
     - bash: |
         checkov -d . --output sarif --quiet --deep-analysis \
           --enable-secret-scan-all-files --framework azure_pipelines
-        mv 'results.sarif' 'pipelines.sarif' && mv 'pipelines.sarif' '$(Common.TestResultsDirectory)'
-      displayName: 'scan azure pipelines and move results into TestResults directory'
+        mv 'results.sarif' 'pipelines.sarif' && mv 'pipelines.sarif' '${{parameters.SourceDirectory}}'
+      displayName: 'scan azure pipelines and move results into "${{parameters.SourceDirectory}}"'
       workingDirectory: '$(Pipeline.Workspace)' 
-      continueOnError: true
+      continueOnError: false
  
     - task: PublishPipelineArtifact@1
       inputs:

@@ -60,7 +60,7 @@ stages:
           -backend-config="resource_group_name=$(RGName)" \
           -backend-config="storage_account_name=$(StorageAccName)" \
           -backend-config="container_name=$(ContainerName)" \
-          -backend-config="key=${{storage-stateFile}}" \
+          -backend-config="key=$(storage-stateFile)" \
           -backend-config="use_azuread_auth=true"
       
         terraform destroy -auto-approve -input=false '-lock-timeout=2m'
@@ -77,7 +77,7 @@ stages:
           -backend-config="resource_group_name=$(RGName)" \
           -backend-config="storage_account_name=$(StorageAccName)" \
           -backend-config="container_name=$(ContainerName)" \
-          -backend-config="key=${{network-stateFile}}" \
+          -backend-config="key=$(network-stateFile)" \
           -backend-config="use_azuread_auth=true"
       
         terraform destroy -auto-approve -input=false '-lock-timeout=2m'
