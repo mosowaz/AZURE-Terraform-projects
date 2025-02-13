@@ -23,3 +23,7 @@ variable "nsg_rule1" {
 variable "nsg_rule2" {
   type = string
 }
+
+variable "BastionSubnet" {
+  type = string
+}
