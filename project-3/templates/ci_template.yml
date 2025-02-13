@@ -37,7 +37,7 @@ stages:
         mv 'results.sarif' '$(Common.TestResultsDirectory)'
       displayName: 'output tfplan.json file, scan and move to TestResults directory'
       workingDirectory: ${{parameters.SourceDirectory}}
-      continueOnError: true
+      continueOnError: false
 
    
       

@@ -55,7 +55,6 @@ resource "azurerm_network_interface" "hub-nic" {
   name                  = "${data.terraform_remote_state.network.outputs.subnets.subnet1.name}-nic"
   location              = azurerm_resource_group.rg1.location
   resource_group_name   = azurerm_resource_group.rg1.name
-  ip_forwarding_enabled = true
 
   ip_configuration {
     name                          = "internal"
