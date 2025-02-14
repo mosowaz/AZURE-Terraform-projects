@@ -12,9 +12,11 @@ Links to lab scenerio and the details can be found in each sub-directory of this
    
 ## Contents
 
-2 - [Connect virtual networks with virtual network peering](project-2/2-README.md)
+3 - [Create and associate service endpoint policies](project-3/README.md)
 
-1 - [Restrict network access to PaaS resources with virtual network service endpoints](project-1/1-README.md)
+2 - [Connect virtual networks with virtual network peering](project-2/README.md)
+
+1 - [Restrict network access to PaaS resources with virtual network service endpoints](project-1/README.md)
 
 ## Terraform Commands 
 ```
