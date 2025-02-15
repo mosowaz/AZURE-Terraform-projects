@@ -52,6 +52,7 @@ module "network-security-group" {
       protocol                   = "*"
       source_port_range          = "*"
       destination_port_range     = "*"
+      source_address_prefix      = "*"
       destination_address_prefix = "Storage"
       description                = "Allow-outbound-to-storage-EP"
     },
@@ -65,6 +66,7 @@ module "network-security-group" {
       protocol                   = "*"
       source_port_range          = "*"
       destination_port_range     = "*"
+      source_address_prefix      = "*"
       destination_address_prefix = "Internet"
       description                = "Deny-outbound-to-Internet"
     },
