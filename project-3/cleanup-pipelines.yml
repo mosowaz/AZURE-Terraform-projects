@@ -38,41 +38,41 @@ stages:
     - checkout: self
     - template: 'templates/checkov-terraform_install.yml'
 
-    - bash: | 
-        terraform init -input=false \
-          -backend-config="resource_group_name=$(RGName)" \
-          -backend-config="storage_account_name=$(StorageAccName)" \
-          -backend-config="container_name=$(ContainerName)" \
-          -backend-config="key=$(compute-stateFile)" \
-          -backend-config="use_azuread_auth=true"
+    # - bash: | 
+    #     terraform init -input=false \
+    #       -backend-config="resource_group_name=$(RGName)" \
+    #       -backend-config="storage_account_name=$(StorageAccName)" \
+    #       -backend-config="container_name=$(ContainerName)" \
+    #       -backend-config="key=$(compute-stateFile)" \
+    #       -backend-config="use_azuread_auth=true"
       
-        terraform destroy -auto-approve -input=false '-lock-timeout=2m'
-      env:
-        ARM_CLIENT_ID: $(SPN2-client-id)
-        ARM_TENANT_ID: $(SPN2-tenant-id)
-        ARM_CLIENT_SECRET: $(SPN2-client-secret)
-        ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
-      workingDirectory: 'project-3/infra/compute'
-      displayName: 'destroy compute resoures'
-      condition: succeededOrFailed()
+    #     terraform destroy -auto-approve -input=false '-lock-timeout=2m'
+    #   env:
+    #     ARM_CLIENT_ID: $(SPN2-client-id)
+    #     ARM_TENANT_ID: $(SPN2-tenant-id)
+    #     ARM_CLIENT_SECRET: $(SPN2-client-secret)
+    #     ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
+    #   workingDirectory: 'project-3/infra/compute'
+    #   displayName: 'destroy compute resoures'
+    #   condition: succeededOrFailed()
 
-    - bash: | 
-        terraform init -input=false \
-          -backend-config="resource_group_name=$(RGName)" \
-          -backend-config="storage_account_name=$(StorageAccName)" \
-          -backend-config="container_name=$(ContainerName)" \
-          -backend-config="key=$(storage-stateFile)" \
-          -backend-config="use_azuread_auth=true"
+    # - bash: | 
+    #     terraform init -input=false \
+    #       -backend-config="resource_group_name=$(RGName)" \
+    #       -backend-config="storage_account_name=$(StorageAccName)" \
+    #       -backend-config="container_name=$(ContainerName)" \
+    #       -backend-config="key=$(storage-stateFile)" \
+    #       -backend-config="use_azuread_auth=true"
       
-        terraform destroy -auto-approve -input=false '-lock-timeout=2m'
-      env:
-        ARM_CLIENT_ID: $(SPN2-client-id)
-        ARM_TENANT_ID: $(SPN2-tenant-id)
-        ARM_CLIENT_SECRET: $(SPN2-client-secret)
-        ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
-      workingDirectory: 'project-3/infra/storage'
-      displayName: 'destroy storage resoures'
-      condition: succeededOrFailed()
+    #     terraform destroy -auto-approve -input=false '-lock-timeout=2m'
+    #   env:
+    #     ARM_CLIENT_ID: $(SPN2-client-id)
+    #     ARM_TENANT_ID: $(SPN2-tenant-id)
+    #     ARM_CLIENT_SECRET: $(SPN2-client-secret)
+    #     ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
+    #   workingDirectory: 'project-3/infra/storage'
+    #   displayName: 'destroy storage resoures'
+    #   condition: succeededOrFailed()
 
     - bash: | 
         terraform init -input=false \

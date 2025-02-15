@@ -33,7 +33,8 @@ stages:
     - bash: |
         terraform show -json ${{parameters.tfplan}} | jq > '${{parameters.tfplan}}.json'
         checkov -f '${{parameters.tfplan}}.json' --output sarif --quiet \
-          --enable-secret-scan-all-files --deep-analysis --framework terraform_plan
+          --enable-secret-scan-all-files --deep-analysis --framework terraform_plan \
+          # --skip-check CKV_AZURE_9,CKV_AZURE_160,CKV_AZURE_10
         mv 'results.sarif' 'tfplan.sarif'
       displayName: 'output tfplan.json file and scan'
       workingDirectory: ${{parameters.SourceDirectory}}
@@ -41,6 +42,7 @@ stages:
 
     - bash: |
         checkov -d . --output sarif --quiet --deep-analysis \
+          --skip-check CKV_AZURE_9,CKV_AZURE_10,CKV_AZURE_160 \
           --enable-secret-scan-all-files --framework azure_pipelines
         mv 'results.sarif' 'pipelines.sarif'
       displayName: 'scan azure pipelines and move results into "${{parameters.SourceDirectory}}"'

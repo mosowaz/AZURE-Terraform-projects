@@ -1,10 +1,11 @@
 name: 'Build and Release Pipeline $(Date:yyyy-MM-dd)_v$(Rev:rr)'
 
+pr: none
 
 trigger:
   branches:
     include:
-    - main
+    - '*'
   paths:
     include:
     - 'project-3'
