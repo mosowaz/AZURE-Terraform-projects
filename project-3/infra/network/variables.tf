@@ -24,6 +24,10 @@ variable "nsg_rule2" {
   type = string
 }
 
+variable "nsg_rule3" {
+  type = string
+}
+
 variable "BastionSubnet" {
   type = string
 }
