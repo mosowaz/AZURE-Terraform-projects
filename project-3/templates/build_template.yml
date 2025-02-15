@@ -42,7 +42,7 @@ stages:
     - bash: |
         checkov -d . --output sarif --quiet --deep-analysis \
           --enable-secret-scan-all-files --framework azure_pipelines
-        mv 'results.sarif' 'pipelines.sarif' && mv 'pipelines.sarif' '${{parameters.SourceDirectory}}'
+        mv 'results.sarif' 'pipelines.sarif' && mv 'pipelines.sarif' '$(Build.SourcesDirectory}/${{parameters.SourceDirectory}}'
       displayName: 'scan azure pipelines and move results into "${{parameters.SourceDirectory}}"'
       workingDirectory: '$(Pipeline.Workspace)' 
       continueOnError: true
