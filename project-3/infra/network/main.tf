@@ -20,7 +20,6 @@ module "avm-res-network-virtualnetwork" {
   dns_servers = {
     dns_servers = ["8.8.8.8"]
   }
-  
   depends_on = [azurerm_resource_group.rg]
 }
 
@@ -34,7 +33,6 @@ resource "azurerm_public_ip" "pub_ip" {
   depends_on = [azurerm_resource_group.rg]
 }
 
-
 # Create network security group and rules to restrict access to only AzureBastionSubnet
 module "network-security-group" {
   source                = "Azure/network-security-group/azurerm"
@@ -43,12 +41,7 @@ module "network-security-group" {
   security_group_name   = var.nsg_name
   source_address_prefix = [var.BastionSubnet]
   use_for_each          = true
-  predefined_rules = [
-    {
-      name     = "SSH"
-      priority = "500"
-    }
-  ]
+  
   custom_rules = [
     # rule-1 ALLOWS outbound access from the AzureBastionSubnet to the public IP addresses assigned to the Azure Storage service
     {
