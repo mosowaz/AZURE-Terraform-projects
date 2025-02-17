@@ -20,7 +20,6 @@ module "avm-res-network-virtualnetwork" {
   dns_servers = {
     dns_servers = ["8.8.8.8"]
   }
-
   depends_on = [azurerm_resource_group.rg]
 }
 
@@ -33,7 +32,6 @@ resource "azurerm_public_ip" "pub_ip" {
   sku                 = "Standard"
   depends_on = [azurerm_resource_group.rg]
 }
-
 
 # Create network security group and rules to restrict access to only AzureBastionSubnet
 module "network-security-group" {
