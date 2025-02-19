@@ -108,7 +108,7 @@ module "network-security-group" {
     # rule-5 ALLOWS outbound SSH and RDP access from the AzureBastionSubnet to other target VMs 
     { 
       name                       = "Allow-SSH-RDP-Outbound"
-      priority                   = 100
+      priority                   = 120
       direction                  = "Outbound"
       access                     = "Allow"
       protocol                   = "*"
@@ -120,7 +120,7 @@ module "network-security-group" {
     # rule-6 ALLOWS outbound HTTPS access to AzureCloud
     { 
       name                       = "Allow-HTTPS-outbound-to-AzureCloud"
-      priority                   = 110
+      priority                   = 130
       direction                  = "Outbound"
       access                     = "Allow"
       protocol                   = "Tcp"
@@ -132,7 +132,7 @@ module "network-security-group" {
     # rule-7 ALLOWS outbound BastionHostCommunication access between VirtualNetwork
     { 
       name                       = "Allow-Azure-Bastion-Host-Outbound-Communication"
-      priority                   = 120
+      priority                   = 140
       direction                  = "Outbound"
       access                     = "Allow"
       protocol                   = "*"
@@ -144,7 +144,7 @@ module "network-security-group" {
     # rule-8 ALLOWS HTTP outbound from BastionSubnet 
     { 
       name                       = "Allow-Azure-Bastion-Host-Outbound-Communication"
-      priority                   = 130
+      priority                   = 150
       direction                  = "Outbound"
       access                     = "Allow"
       protocol                   = "*"
