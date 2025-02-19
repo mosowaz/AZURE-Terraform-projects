@@ -3,11 +3,13 @@ resource "azurerm_resource_group" "rg" {
   location = data.azurerm_resource_group.rg.location
 }
 
+# To be used in storage_account module
 module "naming" {
   source = "Azure/naming/azurerm"
   suffix = ["storageacct"]
 }
 
+# To be used in storage_account module
 resource "azurerm_user_assigned_identity" "vm" {
   location            = azurerm_resource_group.rg.location
   name                = module.naming.user_assigned_identity.name_unique
@@ -15,6 +17,7 @@ resource "azurerm_user_assigned_identity" "vm" {
   depends_on          = [azurerm_resource_group.rg, module.naming]
 }
 
+# allowed and denied storage accounts
 module "storage_account" {
   for_each = var.storage
 

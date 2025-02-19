@@ -40,7 +40,7 @@ module "network-security-group" {
   location              = azurerm_resource_group.rg.location
   security_group_name   = var.nsg_name
   source_address_prefix = [var.BastionSubnet]
-  use_for_each          = true
+ # use_for_each          = true
   
   ##############################################     Required AzureBastionSubnet Ingress NSG traffic rules      ###############################################
   # port=443, protocol=TCP, priority=120, source=Internet, destination=Any, access=Allow, description=AllowHttpsInbound                                       #  
@@ -57,48 +57,129 @@ module "network-security-group" {
   #############################################################################################################################################################
 
   custom_rules = [
-   # rule-1 ALLOWS restricted Inbound access to the AzureBastionSubnet
-   {
-      name                       = var.nsg_rule1
+    # rule-1 ALLOWS Https Inbound access to the AzureBastionSubnet
+    {
+      name                       = "Allow-Inbound-Https"
       priority                   = 120
       direction                  = "Inbound"
       access                     = "Allow"
       protocol                   = "Tcp"
-      source_port_ranges         = [443, 8080, 5701]
+      source_port_range          = 443
       destination_port_range     = "*"
-      source_address_prefixes    = ["Internet", "GatewayManager", "AzureLoadBalancer", "VirtualNetwork"]
+      source_address_prefix      = "Internet"
       destination_address_prefix = "*"
-      description                = "Allow-Inbound-Internet-GatewayManager-AzureLoadBalancer-Vnet"
     },
-    # rule-2 ALLOWS outbound access from/to AzureBastionSubnet and the public IP addresses assigned to the Azure Storage service
+    # rule-2 ALLOWS GatewayManager Inbound access to the AzureBastionSubnet
+    { 
+      name                       = "Allow-Inbound-GatawayManager"
+      priority                   = 130
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = 443
+      destination_port_range     = "*"
+      source_address_prefix      = "GatewayManager"
+      destination_address_prefix = "*"
+    },
+    # rule-3 ALLOWS AzureLoadBalancer Inbound access to the AzureBastionSubnet
+    { 
+      name                       = "Allow-Inbound-AzureLoadBalancer"
+      priority                   = 140
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = 443
+      destination_port_range     = "*"
+      source_address_prefix      = "AzureLoadBalancer"
+      destination_address_prefix = "*"
+    },
+    # rule-4 ALLOWS Inbound BastionHostCommunication access between VirtualNetwork
+    { 
+      name                       = "Allow-Azure-Bastion-Host-Inbound-Communication"
+      priority                   = 150
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_ranges         = [8080, 5701]
+      destination_port_range     = "*"
+      source_address_prefix      = "*"
+      destination_address_prefix = "VirtualNetwork"
+    },
+    # rule-5 ALLOWS outbound SSH and RDP access from the AzureBastionSubnet to other target VMs 
+    { 
+      name                       = "Allow-SSH-RDP-Outbound"
+      priority                   = 100
+      direction                  = "Outbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_ranges         = [22, 3389]
+      destination_port_range     = "*"
+      source_address_prefix      = "*"
+      destination_address_prefix = "VirtualNetwork"
+    },
+    # rule-6 ALLOWS outbound HTTPS access to AzureCloud
+    { 
+      name                       = "Allow-HTTPS-outbound-to-AzureCloud"
+      priority                   = 110
+      direction                  = "Outbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = 443
+      destination_port_range     = "*"
+      source_address_prefix      = "*"
+      destination_address_prefix = "AzureCloud"
+    },
+    # rule-7 ALLOWS outbound BastionHostCommunication access between VirtualNetwork
+    { 
+      name                       = "Allow-Azure-Bastion-Host-Outbound-Communication"
+      priority                   = 120
+      direction                  = "Outbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_ranges         = [8080, 5701]
+      destination_port_range     = "*"
+      source_address_prefix      = "VirtualNetwork"
+      destination_address_prefix = "*"
+    },
+    # rule-8 ALLOWS HTTP outbound from BastionSubnet 
+    { 
+      name                       = "Allow-Azure-Bastion-Host-Outbound-Communication"
+      priority                   = 130
+      direction                  = "Outbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_range          = 80
+      destination_port_range     = "*"
+      source_address_prefix      = "*"
+      destination_address_prefix = "Internet"
+    },
+    # rule-9 ALLOWS outbound access from AzureBastionSubnet and the public IP addresses assigned to the Azure Storage service
     {
-      name                         = var.nsg_rule2
+      name                         = "Allow-Outbound-Storage-All"
       priority                     = 100
       direction                    = "Outbound"
       access                       = "Allow"
       protocol                     = "*"
-      source_port_ranges           = [22, 3389, 80, 443, 8080, 5701]
+      source_port_range            = "*"
       destination_port_range       = "*"
-      source_address_prefix        = "*"
-      destination_address_prefixes = ["Storage", "VirtualNetwork", "AzureCloud"]
-      description                  = "Allow-outbound-Storage-Vnet-AzureCloud"
+      source_address_prefix        = var.BastionSubnet
+      destination_address_prefix = "Storage"
     },
-    # rule-3 DENIES outbound access from the AzureBastionSubnet to all (Internet) public IP addresses 
-    # NOTE: rule-1 must have higher priority, to access Azure Storage public IP
+    # rule-10 DENIES outbound access from the AzureBastionSubnet to all (Internet) public IP addresses 
+    # NOTE: rule-9 must have higher priority, to access Azure Storage public IP
     {
-      name                       = var.nsg_rule3
+      name                       = "Deny-Outbound-Internet-All"
       priority                   = 110
       direction                  = "Outbound"
       access                     = "Deny"
       protocol                   = "*"
       source_port_range          = "*"
       destination_port_range     = "*"
-      source_address_prefix      = "*"
+      source_address_prefix      = var.BastionSubnet
       destination_address_prefix = "Internet"
-      description                = "Deny-outbound-to-Internet"
     },
   ]
-  depends_on = [azurerm_resource_group.rg]
+  depends_on = [azurerm_resource_group.rg, module.avm-res-network-virtualnetwork]
 }
 
 # Associate the network security group to the AzureBastionSubnet
