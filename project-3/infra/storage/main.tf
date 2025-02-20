@@ -9,27 +9,22 @@ module "naming" {
   suffix = ["storageacct"]
 }
 
-# To be used in storage_account module
 resource "azurerm_user_assigned_identity" "vm" {
   location            = azurerm_resource_group.rg.location
   name                = module.naming.user_assigned_identity.name_unique
   resource_group_name = azurerm_resource_group.rg.name
-  depends_on          = [azurerm_resource_group.rg, module.naming]
 }
 
 # allowed and denied storage accounts
 module "storage_account" {
   for_each = var.storage
 
-  depends_on = [azurerm_resource_group.rg, module.naming,
-  azurerm_user_assigned_identity.vm, ]
-
   source                     = "github.com/Azure/terraform-azurerm-avm-res-storage-storageaccount"
   account_replication_type   = "LRS"
   account_tier               = "Standard"
   account_kind               = "StorageV2"
   location                   = azurerm_resource_group.rg[each.key].location
-  name                       = "${each.value.prefix}${module.naming.storage_account.name_unique}"
+  name                       = "${each.value.prefix}${module.naming.storage_account[each.key].name_unique}"
   https_traffic_only_enabled = true
   resource_group_name        = azurerm_resource_group.rg[each.key].name
   min_tls_version            = "TLS1_2"
@@ -58,7 +53,7 @@ module "storage_account" {
   network_rules = {
     bypass                     = ["AzureServices"]
     default_action             = "Deny"
-    ip_rules                   = [data.azurerm_subnet.BastionSubnet[each.key].address_prefixes]
+    ip_rules                   = [data.azurerm_subnet.BastionSubnet[each.key].address_prefix]
     virtual_network_subnet_ids = data.azurerm_subnet.BastionSubnet[each.key].id
   }
   containers = {
