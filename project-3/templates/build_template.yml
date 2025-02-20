@@ -34,17 +34,16 @@ stages:
         terraform show -json ${{parameters.tfplan}} | jq > '${{parameters.tfplan}}.json'
         checkov -f '${{parameters.tfplan}}.json' --output sarif --quiet \
           --enable-secret-scan-all-files --deep-analysis --framework terraform_plan \
-          --skip-check CKV_AZURE_9,CKV_AZURE_160,CKV_AZURE_10
-        mv 'results.sarif' 'tfplan.sarif'
-      displayName: 'output tfplan.json file and scan'
+        mv 'results.sarif' 'tfplan.sarif' && mv 'tfplan.sarif' '$(Common.TestResultsDirectory)'
+      displayName: 'output tfplan.json file and scan it, and move it to TestResults directory'
       workingDirectory: ${{parameters.SourceDirectory}}
       continueOnError: true
 
     - bash: |
         checkov -d . --output sarif --quiet --deep-analysis \
           --enable-secret-scan-all-files --framework azure_pipelines
-        mv 'results.sarif' 'pipelines.sarif'
-      displayName: 'scan azure pipelines and move results into "${{parameters.SourceDirectory}}"'
+        mv 'results.sarif' 'pipelines.sarif && mv 'pipelines.sarif' '$(Common.TestResultsDirectory)'
+      displayName: 'scan azure pipeline workspace, and move result to TestResults directory'
       workingDirectory: '$(Pipeline.Workspace)' 
       continueOnError: true
  
@@ -54,6 +53,13 @@ stages:
         artifact: '${{parameters.tfplan}}-artifact' # artifactName
         publishLocation: 'pipeline' # upload artifact to pipeline
       displayName: 'Publish artifact'
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Common.TestResultsDirectory)'
+        artifact: 'testResults' # artifactName
+        publishLocation: 'pipeline' # upload results to pipeline
+      displayName: 'Publish security-scanned testResults'
    
 - stage: Deploy_${{parameters.infrastructure}}
   displayName: '${{parameters.SourceDirectory}} Deploy Stage'

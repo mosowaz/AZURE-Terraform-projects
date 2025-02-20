@@ -1,8 +1,3 @@
-resource "azurerm_resource_group" "rg" {
-  name     = data.azurerm_resource_group.rg.name
-  location = data.azurerm_resource_group.rg.location
-}
-
 # To be used in storage_account module
 module "naming" {
   source = "Azure/naming/azurerm"
@@ -17,6 +12,7 @@ resource "azurerm_user_assigned_identity" "vm" {
 
 # allowed and denied storage accounts
 module "storage_account" {
+  depends_on = [module.avm-res-network-virtualnetwork]
   for_each = var.storage
 
   source                     = "github.com/Azure/terraform-azurerm-avm-res-storage-storageaccount"

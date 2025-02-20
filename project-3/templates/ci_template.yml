@@ -32,7 +32,7 @@ stages:
 
     - bash: |
         terraform show -json ${{parameters.tfplan}} | jq > '${{parameters.tfplan}}.json'
-        checkov -f '${{parameters.tfplan}}.json' --output sarif --quiet --skip-check CKV_AZURE_9,CKV_AZURE_10,CKV_AZURE_160 \
+        checkov -f '${{parameters.tfplan}}.json' --output sarif --quiet \
           --enable-secret-scan-all-files --deep-analysis --framework terraform_plan
         mv 'results.sarif' '$(Common.TestResultsDirectory)'
       displayName: 'output tfplan.json file, scan and move to TestResults directory'
