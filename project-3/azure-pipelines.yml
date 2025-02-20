@@ -8,9 +8,9 @@ trigger:
     - '*'
   paths:
     include:
-    - 'project-3'
+    - project-3
     exclude:
-    - 'project-3/cleanup-pipelines.yml'
+    - project-3/cleanup-pipelines.yml
 
 variables:
 - group: 'service-connection'

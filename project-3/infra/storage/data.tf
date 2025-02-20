@@ -19,5 +19,5 @@ data "azurerm_user_assigned_identity" "vm" {
 data "azurerm_subnet" "BastionSubnet" {
   name                 = "AzureBastionSubnet"
   virtual_network_name = "vnet-SEP"
-  resource_group_name  = "RG-ServiceEndpoint-Network"
+  resource_group_name  = "RG-ServiceEndpoint"
 }

@@ -40,7 +40,7 @@ module "network-security-group" {
   location              = azurerm_resource_group.rg.location
   security_group_name   = var.nsg_name
   source_address_prefix = [var.BastionSubnet]
- # use_for_each          = true
+  use_for_each          = false
   
   ##############################################     Required AzureBastionSubnet Ingress NSG traffic rules      ###############################################
   # port=443, protocol=TCP, priority=120, source=Internet, destination=Any, access=Allow, description=AllowHttpsInbound                                       #  
