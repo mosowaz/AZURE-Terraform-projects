@@ -22,8 +22,7 @@ variable "BastionSubnet" {
 
 variable "storage" {
   type = map(object({
-    prefix         = string
-    container_name = string
-    file_name      = string
+    prefix     = string
+    file_share = string
   }))
 }

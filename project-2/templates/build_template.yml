@@ -1,0 +1,79 @@
+stages:
+- stage: Build_${{parameters.infrastructure}}
+  displayName: '${{parameters.SourceDirectory}} Build Stage'
+  pool: $(Pipeline-Agent)
+  
+  jobs:
+  - job: tfplan_scan_publish
+    timeoutInMinutes: 10
+    workspace:
+      clean: all
+    steps:
+    - checkout: self
+      clean: true
+    - template: installs.yml
+
+    - bash: | 
+        terraform init -upgrade -reconfigure -input=false \
+          -backend-config="resource_group_name=$(RGName)" \
+          -backend-config="storage_account_name=$(StorageAccName)" \
+          -backend-config="container_name=$(ContainerName)" \
+          -backend-config="key=${{parameters.BlobName}}" \
+          -backend-config="use_azuread_auth=true"
+        terraform validate
+        terraform plan -out='${{parameters.tfplan}}' -lock=false -input=false 
+      env:
+        ARM_CLIENT_ID: $(SPN2-client-id)
+        ARM_TENANT_ID: $(SPN2-tenant-id)
+        ARM_CLIENT_SECRET: $(SPN2-client-secret)
+        ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
+      workingDirectory: ${{parameters.SourceDirectory}}
+      displayName: 'terraform init, validate and plan'
+      continueOnError: false
+
+      # skip checks due to reasons below
+    - bash: |
+        terraform show -json ${{parameters.tfplan}} | jq > '${{parameters.tfplan}}.json'
+        checkov -f '${{parameters.tfplan}}.json' --output sarif --quiet --soft-fail \
+          --enable-secret-scan-all-files --deep-analysis --framework terraform_plan --output-file-path $(common.TestResultsDirectory) 
+      displayName: 'create tfplan.json file and scan it, then put scanned result in TestResults directory'
+      workingDirectory: ${{parameters.SourceDirectory}}
+      
+    - bash: mv ./*.sarif tfplan.sarif
+      displayName: 'change terraform scanned result file to tfplan.sarif'
+      workingDirectory: $(common.TestResultsDirectory)
+
+    - bash: |
+        checkov -d . --output sarif --quiet --deep-analysis --soft-fail \
+          --enable-secret-scan-all-files --framework azure_pipelines --output-file-path $(common.TestResultsDirectory)
+      displayName: 'scan azure pipelines and put scanned result in TestResults directory'
+      workingDirectory: '$(Pipeline.Workspace)'
+
+    - bash: mv ./result* pipelines.sarif && touch tfsec.sarif
+      displayName: 'change pipeline scanned result file to pipelines.sarif'
+      workingDirectory: $(common.TestResultsDirectory)
+ 
+    - task: tfsec@1
+      inputs:
+        version: v1.28.13
+        debug: true
+        publishTestResults: true
+        args: --format sarif --debug --soft-fail --concise-output --out $(common.TestResultsDirectory)/tfsec.sarif
+        dir: '${{parameters.SourceDirectory}}'
+      displayName: 'scan terraform code and pipelines with tfsec'
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '${{parameters.SourceDirectory}}'
+        artifact: '${{parameters.tfplan}}-artifact' # artifactName
+        publishLocation: 'pipeline' # upload artifact to pipeline
+      displayName: 'Publish artifact'
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(common.TestResultsDirectory)'
+        artifact: 'TestResults' # vulnerability results published
+        publishLocation: 'pipeline' # upload artifact to pipeline
+      displayName: 'Publish TestResults'
+   
+      

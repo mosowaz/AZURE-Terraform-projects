@@ -8,13 +8,13 @@ trigger:
     - '*'
   paths:
     include:
-    - project-3
+    - project-2
     exclude:
-    - project-3/cleanup-pipelines.yml
+    - project-2/cleanup-pipelines.yml
 
 variables:
 - group: 'service-connection'
-- name: systm.debug
+- name: system.debug
   value: 'true'
 - name: RGName
   value: "rg-ADO-2"            
@@ -30,16 +30,16 @@ variables:
   # Using build_template or ci_template pipeline based on branch condition
 stages: 
 - ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:  
-  - template: templates/build_template.yml
+  - template: templates/release_template.yml
     parameters:
-      SourceDirectory: 'project-3/infra'   
+      SourceDirectory: 'project-2/infra'   
       infrastructure: 'ServiceEndpoint'
       tfplan: 'serviceEP.tfplan'
       BlobName: 'serviceEP.tfstate'
 - ${{ else }}:
-  - template: templates/ci_template.yml
+  - template: templates/build_template.yml
     parameters:
-      SourceDirectory: 'project-3/infra'   
+      SourceDirectory: 'project-2/infra'   
       infrastructure: 'ServiceEndpoint'
       tfplan: 'serviceEP.tfplan'
       BlobName: 'serviceEP.tfstate'

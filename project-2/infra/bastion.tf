@@ -9,8 +9,7 @@ resource "azurerm_public_ip" "pub_ip" {
 
 # Bastion Host
 module "azure_bastion" {
-  source = "Azure/avm-res-network-bastionhost/azurerm"
-
+  source              = "git::https://github.com/Azure/terraform-azurerm-avm-res-network-bastionhost.git?ref=fdef3e3b152ce7f5182a15689fa5caf7b665191a"
   enable_telemetry    = true
   name                = "BastionHost-SEP"
   resource_group_name = azurerm_resource_group.rg.name
