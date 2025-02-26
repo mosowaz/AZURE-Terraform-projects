@@ -1,6 +1,6 @@
 output "storage_account_name" {
   value = {
-    for i, j in module.storage_account : i => j.name
+    for i, j in azurerm_storage_account.storage : i => j.name
   }
   description = "output of both storage account names"
 }

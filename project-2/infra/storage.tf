@@ -12,11 +12,11 @@ resource "azurerm_user_assigned_identity" "vm" {
 
 # allowed and denied storage accounts with FileStorage type
 resource "azurerm_storage_account" "storage" {
-  for_each   = var.storage
+  for_each = var.storage
 
   name                            = "${each.value.prefix}${module.naming.storage_account.name_unique}"
-  resource_group_name             = azurerm_resource_group.rg[each.key].name
-  location                        = azurerm_resource_group.rg[each.key].location
+  resource_group_name             = azurerm_resource_group.rg.name
+  location                        = azurerm_resource_group.rg.location
   account_tier                    = "Premium"
   account_replication_type        = "GRS"
   account_kind                    = "FileStorage"
@@ -28,9 +28,9 @@ resource "azurerm_storage_account" "storage" {
   local_user_enabled              = false
 
   identity {
-    type         = ["SystemAssigned", "UserAssigned"]
-    identity_ids = [azurerm_user_assigned_identity.vm[each.key].id]
-    principal_id = data.azurerm_client_config.current[each.key].object_id
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.vm.id]
+    principal_id = data.azurerm_client_config.current.object_id
   }
 }
 
@@ -43,11 +43,3 @@ resource "azurerm_storage_share" "shares" {
   quota              = 10
 }
 
-# Deny all access to the storage accounts, and allow only access from selected subnet
-resource "azurerm_storage_account_network_rules" "net_rules" {
-  storage_account_id         = azurerm_storage_account.storage.id
-  default_action             = "Deny"
-  ip_rules                   = azurerm_virtual_network.vnet.subnet.address_prefixes
-  virtual_network_subnet_ids = azurerm_virtual_network.vnet.subnet.id
-  bypass                     = ["AzureServices"]
-}
