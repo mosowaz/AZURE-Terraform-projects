@@ -1,0 +1,44 @@
+stages:
+- stage: Deploy_${{parameters.infrastructure}}
+  displayName: '${{parameters.SourceDirectory}} Deploy Stage'
+  pool:
+    name: $(Pipeline-Agent)
+
+  jobs:
+  - deployment: apply
+    workspace:
+      clean: all
+    environment: $(ADO-Environment)        
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: none
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: '${{parameters.tfplan}}-artifact'
+              targetPath: '$(Build.ArtifactStagingDirectory)'
+            displayName: 'Download artifact'
+
+          - template: installs.yml
+          
+          - bash: |
+              chmod -R a+x .terraform/*
+              terraform init -input=false \
+                -backend-config="resource_group_name=$(RGName)" \
+                -backend-config="storage_account_name=$(StorageAccName)" \
+                -backend-config="container_name=$(ContainerName)" \
+                -backend-config="key=${{parameters.BlobName}}" \
+                -backend-config="use_azuread_auth=true"
+              terraform apply -auto-approve -input=false '-lock-timeout=2m' '${{parameters.tfplan}}' 
+              rm -rf *  # Remove artifacts after use
+            env:
+              ARM_CLIENT_ID: $(SPN2-client-id)
+              ARM_TENANT_ID: $(SPN2-tenant-id)
+              ARM_CLIENT_SECRET: $(SPN2-client-secret)
+              ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
+            displayName: 'terraform apply'
+            workingDirectory: '$(Build.ArtifactStagingDirectory)'
+            continueOnError: false
+            
