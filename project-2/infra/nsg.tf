@@ -172,11 +172,6 @@ resource "azurerm_network_security_rule" "rule-10" {
 
 # Associate the network security group to the AzureBastionSubnet
 resource "azurerm_subnet_network_security_group_association" "nsg-BastionSubnet" {
-  for_each = {
-    for bastion_subnet, j in azurerm_subnet.bastion_subnet : bastion_subnet => j
-  }
-  subnet_id                 = each.value.bastion_subnet.id
+  subnet_id                 = azurerm_subnet.bastion_subnet.id
   network_security_group_id = azurerm_network_security_group.nsg.id
-
-  depends_on = [azurerm_subnet.bastion_subnet]
 }

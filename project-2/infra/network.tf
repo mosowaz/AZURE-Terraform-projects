@@ -1,4 +1,4 @@
-# Create vnet and subnet. Enable service endpoint in the subnet (AzureBastionSubnet)
+# Create vnet 
 resource "azurerm_virtual_network" "vnet" {
   name                = var.vnet.name
   location            = azurerm_resource_group.rg.location
@@ -9,8 +9,6 @@ resource "azurerm_virtual_network" "vnet" {
 
 # The policy ensures users in the subnet can only access safe and allowed Azure Storage accounts.
 resource "azurerm_subnet_service_endpoint_storage_policy" "policy" {
-  for_each = var.storage 
-  
   name                = "serviceEP_policy"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
@@ -21,40 +19,35 @@ resource "azurerm_subnet_service_endpoint_storage_policy" "policy" {
     service     = "Microsoft.Storage"
     service_resources = [
       azurerm_resource_group.rg.id,
-      # allow access to only "storage_account1"
-      azurerm_storage_account.storage[storage_account1].id
+      # allow access to only "storage1"
+      azurerm_storage_account.storage1.id
     ]
   }
 }
-
-# Create the vnet subnet and associate it with the service endpoint policy for the allowed storage account
+# Create Vnet Subnet and enable service endpoint in the subnet (AzureBastionSubnet)
+# Then associate the subnet with service endpoint policy for the allowed storage account
 resource "azurerm_subnet" "bastion_subnet" {
-  for_each = {
-    for policy, j in azurerm_subnet_service_endpoint_storage_policy.policy : policy => j
-  }
-
   name                 = "AzureBastionSubnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = [var.BastionSubnet]
   service_endpoints    = ["Microsoft.Storage"]
   # service endpoint policy association 
-  service_endpoint_policy_ids = each.value.policy.id
-
-  depends_on = [azurerm_storage_account.storage]
+  service_endpoint_policy_ids = [azurerm_subnet_service_endpoint_storage_policy.policy.id]
 }
 
 # Deny all access to storage accounts, and allow only access from selected subnet
-resource "azurerm_storage_account_network_rules" "net_rules" {
-  for_each = var.storage
-
-  storage_account_id         = azurerm_storage_account.storage[each.key].id
+resource "azurerm_storage_account_network_rules" "net_rule1" {
+  storage_account_id         = azurerm_storage_account.storage1.id
   default_action             = "Deny"
-  ip_rules                   = azurerm_subnet.bastion_subnet[each.key].address_prefixes
-  virtual_network_subnet_ids = azurerm_subnet.bastion_subnet[each.key].id
+  virtual_network_subnet_ids = [azurerm_subnet.bastion_subnet.id]
   bypass                     = ["AzureServices"]
-
-  depends_on = [azurerm_subnet.bastion_subnet, azurerm_storage_account.storage]
+}
+resource "azurerm_storage_account_network_rules" "net_rule2" {
+  storage_account_id         = azurerm_storage_account.storage2.id
+  default_action             = "Deny"
+  virtual_network_subnet_ids = [azurerm_subnet.bastion_subnet.id]
+  bypass                     = ["AzureServices"]
 }
 
 resource "azurerm_role_assignment" "role1" {

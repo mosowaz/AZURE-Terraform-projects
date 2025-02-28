@@ -19,10 +19,3 @@ variable "nsg_name" {
 variable "BastionSubnet" {
   type = string
 }
-
-variable "storage" {
-  type = map(object({
-    prefix     = string
-    file_share = string
-  }))
-}

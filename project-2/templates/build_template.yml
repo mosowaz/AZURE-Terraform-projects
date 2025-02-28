@@ -21,7 +21,7 @@ stages:
           -backend-config="key=${{parameters.BlobName}}" \
           -backend-config="use_azuread_auth=true"
         terraform validate
-        terraform plan -out='${{parameters.tfplan}}' -lock=false -input=false 
+        terraform plan -out='${{parameters.tfplan}}' -lock=false -input=false        
       env:
         ARM_CLIENT_ID: $(SPN2-client-id)
         ARM_TENANT_ID: $(SPN2-tenant-id)
@@ -76,4 +76,4 @@ stages:
         publishLocation: 'pipeline' # upload artifact to pipeline
       displayName: 'Publish TestResults'
    
-      
+    

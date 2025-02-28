@@ -9,9 +9,6 @@ resource "azurerm_public_ip" "pub_ip" {
 
 # Bastion Host
 module "azure_bastion" {
-  for_each = {
-    for bastion_subnet, j in azurerm_subnet.bastion_subnet : bastion_subnet => j
-  }
   source              = "git::https://github.com/Azure/terraform-azurerm-avm-res-network-bastionhost.git?ref=fdef3e3b152ce7f5182a15689fa5caf7b665191a"
   enable_telemetry    = true
   name                = "BastionHost-SEP"
@@ -22,7 +19,7 @@ module "azure_bastion" {
   sku                 = "Standard"
   ip_configuration = {
     name                 = "my-ipconfig"
-    subnet_id            = each.value.bastion_subnet.id
+    subnet_id            = azurerm_subnet.bastion_subnet.id
     public_ip_address_id = azurerm_public_ip.pub_ip.id
   }
   ip_connect_enabled     = true
@@ -30,6 +27,4 @@ module "azure_bastion" {
   shareable_link_enabled = true
   tunneling_enabled      = true
   kerberos_enabled       = true
-
-  depends_on = [azurerm_subnet.bastion_subnet]
 }

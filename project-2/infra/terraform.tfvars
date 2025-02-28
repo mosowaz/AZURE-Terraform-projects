@@ -12,13 +12,3 @@ nsg_name = "nsg-SEP"
 
 BastionSubnet = "10.0.0.0/24"
 
-storage = {
-  "storage_account1" = {
-    prefix     = "allowed"
-    file_share = "allowed-fileshare"
-  }
-  "storage_account2" = {
-    prefix     = "denied"
-    file_share = "denied-fileshare"
-  }
-}
