@@ -22,7 +22,7 @@ resource "azurerm_subnet_service_endpoint_storage_policy" "policy" {
     service_resources = [
       azurerm_resource_group.rg.id,
       # allow access to only "storage_account1"
-      azurerm_storage_account.storage[strorage_account1].id
+      azurerm_storage_account.storage[storage_account1].id
     ]
   }
 }
