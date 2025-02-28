@@ -10,6 +10,7 @@ steps:
         sudo apt-get update
         sudo apt-get install -y pipx       
         pipx install checkov        # by default packages installed with pipx are located in "$USER/.local/bin"
+        pipx upgrade checkov
         pipx ensurepath             # add installed packages into "$PATH"
         source ~/.bashrc
 
@@ -37,9 +38,6 @@ steps:
 
         sudo apt-get update && sudo apt-get install -y terraform
     fi
-
-  displayName: 'Installing Terraform and checkov'
-  
-- bash: terraform version && checkov --version
-  name: tf_checkov_version_check
-  displayName: 'Verify terraform and checkov are installed'  
+    
+    terraform version && checkov --version
+  displayName: 'Ensure Dependencies are installed' 

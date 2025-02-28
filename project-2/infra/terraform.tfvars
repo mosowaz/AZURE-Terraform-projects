@@ -11,3 +11,4 @@ vnet = {
 nsg_name = "nsg-SEP"
 
 BastionSubnet = "10.0.0.0/24"
+
