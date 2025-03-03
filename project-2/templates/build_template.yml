@@ -27,30 +27,20 @@ stages:
         ARM_TENANT_ID: $(SPN2-tenant-id)
         ARM_CLIENT_SECRET: $(SPN2-client-secret)
         ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
-      workingDirectory: ${{parameters.SourceDirectory}}
+      workingDirectory: ${{parameters.TerraformDirectory}}
       displayName: 'terraform init, validate and plan'
       continueOnError: false
-
-      # skip checks due to reasons below
-    - bash: |
-        terraform show -json ${{parameters.tfplan}} | jq > '${{parameters.tfplan}}.json'
-        checkov -f '${{parameters.tfplan}}.json' --output sarif --quiet --soft-fail \
-          --enable-secret-scan-all-files --deep-analysis --framework terraform_plan --output-file-path $(common.TestResultsDirectory) 
-      displayName: 'create tfplan.json file and scan it, then put scanned result in TestResults directory'
-      workingDirectory: ${{parameters.SourceDirectory}}
       
-    - bash: mv ./*.sarif tfplan.sarif
-      displayName: 'change terraform scanned result file to tfplan.sarif'
-      workingDirectory: $(common.TestResultsDirectory)
-
+      # scan for vulberability and put the result in TestResultsDirectory
     - bash: |
         checkov -d . --output sarif --quiet --deep-analysis --soft-fail \
-          --enable-secret-scan-all-files --framework azure_pipelines --output-file-path $(common.TestResultsDirectory)
-      displayName: 'scan azure pipelines and put scanned result in TestResults directory'
-      workingDirectory: '$(Pipeline.Workspace)'
+          --enable-secret-scan-all-files --framework terraform,azure_pipelines,secrets \
+          --deep-analysis --output-file-path $(common.TestResultsDirectory)
+      displayName: 'code and secret scanning with checkov'
+      workingDirectory: '${{parameters.SourceDirectory}}'
 
-    - bash: mv ./result* pipelines.sarif && touch tfsec.sarif
-      displayName: 'change pipeline scanned result file to pipelines.sarif'
+    - bash: touch tfsec.sarif
+      displayName: 'create tfsec.sarif file for upcoming step'
       workingDirectory: $(common.TestResultsDirectory)
  
     - task: tfsec@1
@@ -60,14 +50,14 @@ stages:
         publishTestResults: true
         args: --format sarif --debug --soft-fail --concise-output --out $(common.TestResultsDirectory)/tfsec.sarif
         dir: '${{parameters.SourceDirectory}}'
-      displayName: 'scan terraform code and pipelines with tfsec'
+      displayName: 'code scanning with tfsec'
 
     - task: PublishPipelineArtifact@1
       inputs:
-        targetPath: '${{parameters.SourceDirectory}}'
+        targetPath: '${{parameters.TerraformDirectory}}'
         artifact: '${{parameters.tfplan}}-artifact' # artifactName
         publishLocation: 'pipeline' # upload artifact to pipeline
-      displayName: 'Publish artifact'
+      displayName: 'Publish tfplan artifact'
 
     - task: PublishPipelineArtifact@1
       inputs:
