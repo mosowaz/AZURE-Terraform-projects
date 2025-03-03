@@ -24,6 +24,7 @@ resource "azurerm_storage_account" "storage1" {
   public_network_access_enabled   = false
   default_to_oauth_authentication = true
   local_user_enabled              = false
+  allow_nested_items_to_be_public = false
 
   identity {
     type         = "UserAssigned"
@@ -46,6 +47,7 @@ resource "azurerm_storage_account" "storage2" {
   public_network_access_enabled   = false
   default_to_oauth_authentication = true
   local_user_enabled              = false
+  allow_nested_items_to_be_public = false
 
   identity {
     type         = "UserAssigned"
