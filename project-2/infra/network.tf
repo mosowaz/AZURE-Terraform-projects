@@ -4,7 +4,7 @@ resource "azurerm_virtual_network" "vnet" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   address_space       = [var.vnet.address_space]
-  dns_servers         = ["8.8.8.8"]
+  dns_servers         = ["8.8.8.8", "9.9.9.9"]
 }
 
 # The policy ensures users in the subnet can only access safe and allowed Azure Storage accounts.
