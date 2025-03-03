@@ -25,12 +25,6 @@ resource "azurerm_storage_account" "storage1" {
   default_to_oauth_authentication = true
   local_user_enabled              = false
   allow_nested_items_to_be_public = false
-
-  identity {
-    type         = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.vm.id]
-    principal_id = data.azurerm_client_config.current.object_id
-  }
 }
 
 # denied storage account with FileStorage type
@@ -48,11 +42,6 @@ resource "azurerm_storage_account" "storage2" {
   default_to_oauth_authentication = true
   local_user_enabled              = false
   allow_nested_items_to_be_public = false
-
-  identity {
-    type         = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.vm.id]
-  }
 }
 
 # create file share in the allowed storage account

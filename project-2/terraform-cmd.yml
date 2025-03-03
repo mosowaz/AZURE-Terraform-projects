@@ -8,26 +8,20 @@ variables:
 - group: 'service-connection'
 - name: system.debug
   value: 'true'
-- name: RGName
-  value: "rg-ADO-2"            
-- name: StorageAccName
-  value: "mystorageacct16425"  
-- name: ContainerName
-  value: "storage-container"         
-- name: ADO-Environment
-  value: "Staging"
 - name: Pipeline-Agent
   value: 'My Agents'
-- name: stateFile
-  value: 'serviceEP.tfstate'
 
-steps:
-- template: 'templates/installs.yml'
+jobs:
+- job:
+  pool: $(Pipeline-Agent)    
 
-- bash: terraform state list
-  env:
-    ARM_CLIENT_ID: $(SPN2-client-id)
-    ARM_TENANT_ID: $(SPN2-tenant-id)
-    ARM_CLIENT_SECRET: $(SPN2-client-secret)
-    ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
-  displayName: 'terraform state list'
+  steps:
+  - template: 'templates/installs.yml'
+
+  - bash: terraform state list
+    env:
+      ARM_CLIENT_ID: $(SPN2-client-id)
+      ARM_TENANT_ID: $(SPN2-tenant-id)
+      ARM_CLIENT_SECRET: $(SPN2-client-secret)
+      ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
+    displayName: 'terraform state list'
