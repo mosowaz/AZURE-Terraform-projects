@@ -16,7 +16,7 @@ resource "azurerm_storage_account" "storage1" {
   resource_group_name             = azurerm_resource_group.rg.name
   location                        = azurerm_resource_group.rg.location
   account_tier                    = "Premium"
-  account_replication_type        = "GRS"
+  account_replication_type        = "ZRS"
   account_kind                    = "FileStorage"
   min_tls_version                 = "TLS1_2"
   https_traffic_only_enabled      = true
@@ -33,7 +33,7 @@ resource "azurerm_storage_account" "storage2" {
   resource_group_name             = azurerm_resource_group.rg.name
   location                        = azurerm_resource_group.rg.location
   account_tier                    = "Premium"
-  account_replication_type        = "GRS"
+  account_replication_type        = "ZRS"
   account_kind                    = "FileStorage"
   min_tls_version                 = "TLS1_2"
   https_traffic_only_enabled      = true
