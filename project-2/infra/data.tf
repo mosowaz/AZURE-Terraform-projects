@@ -6,5 +6,9 @@ data "azurerm_role_definition" "role" {
   name = "Contributor"
 }
 
+data "azuread_service_principal" "spn" {
+  display_name = "SPN-ADO-2"
+}
+
 data "azurerm_subscription" "primary" {
 }

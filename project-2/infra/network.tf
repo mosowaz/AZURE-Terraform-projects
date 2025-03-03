@@ -51,15 +51,21 @@ resource "azurerm_storage_account_network_rules" "net_rule2" {
 }
 
 resource "azurerm_role_assignment" "role1" {
+  for_each = toset([ data.azurerm_client_config.current.object_id, 
+                    data.azuread_service_principal.spn.object_id ])
+
   scope                            = azurerm_resource_group.rg.id
   role_definition_name             = "Owner"
-  principal_id                     = data.azurerm_client_config.current.object_id
+  principal_id                     = each.value
   skip_service_principal_aad_check = false
 }
 
 resource "azurerm_role_assignment" "role2" {
+  for_each = toset([ data.azurerm_client_config.current.object_id, 
+                    data.azuread_service_principal.spn.object_id ])
+                    
   scope                            = azurerm_resource_group.rg.id
   role_definition_name             = data.azurerm_role_definition.role.name
-  principal_id                     = data.azurerm_client_config.current.object_id
+  principal_id                     = each.value
   skip_service_principal_aad_check = false
 }

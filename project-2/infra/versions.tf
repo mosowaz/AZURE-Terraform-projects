@@ -20,6 +20,11 @@ terraform {
       source  = "Azure/modtm"
       version = "~> 0.3"
     }
+
+    azuread = {
+      source = "hashicorp/azuread"
+      version = "3.1.0"  
+    }
   }
 }
 
@@ -39,4 +44,7 @@ provider "modtm" {
 }
 
 provider "azapi" {
+}
+
+provider "azuread" {
 }

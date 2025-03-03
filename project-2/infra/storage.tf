@@ -52,7 +52,6 @@ resource "azurerm_storage_account" "storage2" {
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.vm.id]
-    principal_id = data.azurerm_client_config.current.object_id
   }
 }
 
