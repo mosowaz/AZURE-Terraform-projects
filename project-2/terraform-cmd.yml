@@ -1,0 +1,27 @@
+name: 'Terraform CMD'
+
+trigger: none
+
+pr: none
+
+variables:
+- group: 'service-connection'
+- name: system.debug
+  value: 'true'
+- name: Pipeline-Agent
+  value: 'My Agents'
+
+jobs:
+- job:
+  pool: $(Pipeline-Agent)    
+
+  steps:
+  - template: 'templates/installs.yml'
+
+  - bash: terraform state list
+    env:
+      ARM_CLIENT_ID: $(SPN2-client-id)
+      ARM_TENANT_ID: $(SPN2-tenant-id)
+      ARM_CLIENT_SECRET: $(SPN2-client-secret)
+      ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
+    displayName: 'terraform state list'
