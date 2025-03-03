@@ -13,8 +13,6 @@ steps:
         pipx upgrade checkov
         pipx ensurepath             # add installed packages into "$PATH"
         source ~/.bashrc
-
-        sudo apt install -y jq
     fi
 
     ######## Terraform installation ########

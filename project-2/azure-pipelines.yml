@@ -5,7 +5,8 @@ pr: none
 trigger:
   branches:
     include:
-    - '*'
+    - main
+    - dev
   paths:
     include:
     - project-2
@@ -32,14 +33,16 @@ stages:
 - ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:  
   - template: templates/release_template.yml
     parameters:
-      SourceDirectory: 'project-2/infra'   
+      SourceDirectory: 'project-2'   
+      TerraformDirectory: 'project-2/infra'
       infrastructure: 'ServiceEndpoint'
       tfplan: 'serviceEP.tfplan'
       BlobName: 'serviceEP.tfstate'
 - ${{ else }}:
   - template: templates/build_template.yml
     parameters:
-      SourceDirectory: 'project-2/infra'   
+      SourceDirectory: 'project-2'   
+      TerraformDirectory: 'project-2/infra'
       infrastructure: 'ServiceEndpoint'
       tfplan: 'serviceEP.tfplan'
       BlobName: 'serviceEP.tfstate'
