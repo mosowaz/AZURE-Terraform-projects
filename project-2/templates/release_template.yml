@@ -14,9 +14,15 @@ stages:
         deploy:
           steps:
           - download: none
+            # Download pipeline artifact from other branch from specific build
           - task: DownloadPipelineArtifact@2
             inputs:
-              buildType: 'current'
+              buildType: 'specific'
+              project: '$(System.TeamProject)'
+              definition: '$(System.DefinitionId)'
+              buildVersionToDownload: 'latestFromBranch'
+              branchName: 'refs/heads/dev'
+              pipelineId: '$(Build.BuildId)'
               artifactName: '${{parameters.tfplan}}-artifact'
               targetPath: '$(Build.ArtifactStagingDirectory)'
             displayName: 'Download artifact'
@@ -31,7 +37,8 @@ stages:
                 -backend-config="container_name=$(ContainerName)" \
                 -backend-config="key=${{parameters.BlobName}}" \
                 -backend-config="use_azuread_auth=true"
-              terraform apply -auto-approve -input=false '-lock-timeout=2m' '${{parameters.tfplan}}' 
+              terraform apply -auto-approve -input=false '-lock-timeout=2m' '${{parameters.tfplan}}'
+              terraform state list -state=${{parameters.tfplan}}
               rm -rf *  # Remove artifacts after use
             env:
               ARM_CLIENT_ID: $(SPN2-client-id)
@@ -40,5 +47,4 @@ stages:
               ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
             displayName: 'terraform apply'
             workingDirectory: '$(Build.ArtifactStagingDirectory)'
-            continueOnError: false
             
