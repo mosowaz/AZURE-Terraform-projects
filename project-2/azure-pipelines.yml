@@ -12,6 +12,7 @@ trigger:
     - project-2
     exclude:
     - project-2/cleanup-pipelines.yml
+    - terraform-cmd.yml
 
 variables:
 - group: 'service-connection'
