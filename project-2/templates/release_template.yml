@@ -38,7 +38,7 @@ stages:
                 -backend-config="key=${{parameters.BlobName}}" \
                 -backend-config="use_azuread_auth=true"
               terraform apply -auto-approve -input=false '-lock-timeout=2m' '${{parameters.tfplan}}'
-              terraform state list
+              terraform state list -state=${{parameters.BlobName}}
               rm -rf *  # Remove artifacts after use
             env:
               ARM_CLIENT_ID: $(SPN2-client-id)
