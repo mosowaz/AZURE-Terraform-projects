@@ -14,14 +14,14 @@ stages:
     - template: installs.yml
 
     - bash: | 
-        terraform init -upgrade -reconfigure -input=false \
+        terraform init -upgrade -reconfigure -input=false -lock=false \
           -backend-config="resource_group_name=$(RGName)" \
           -backend-config="storage_account_name=$(StorageAccName)" \
           -backend-config="container_name=$(ContainerName)" \
           -backend-config="key=${{parameters.BlobName}}" \
           -backend-config="use_azuread_auth=true"
         terraform validate
-        terraform plan -out='${{parameters.tfplan}}' -lock=false -input=false        
+        terraform plan -out='${{parameters.tfplan}}' '-lock-timeout=1m' -input=false        
       env:
         ARM_CLIENT_ID: $(SPN2-client-id)
         ARM_TENANT_ID: $(SPN2-tenant-id)

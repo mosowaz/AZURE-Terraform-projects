@@ -19,6 +19,8 @@ jobs:
 
   steps:
   - template: 'templates/installs.yml'
+  - checkout: self
+    clean: true
 
   - bash: terraform state list -state=$(BlobName)
     env:
@@ -26,4 +28,5 @@ jobs:
       ARM_TENANT_ID: $(SPN2-tenant-id)
       ARM_CLIENT_SECRET: $(SPN2-client-secret)
       ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
+    workingDirectory: ${{parameters.TerraformDirectory}}
     displayName: 'terraform state list'
