@@ -23,7 +23,7 @@ module "azure_bastion" {
     public_ip_address_id = azurerm_public_ip.pub_ip.id
   }
   ip_connect_enabled     = true
-  scale_units            = 4
+  scale_units            = 2
   shareable_link_enabled = true
   tunneling_enabled      = true
   kerberos_enabled       = true
