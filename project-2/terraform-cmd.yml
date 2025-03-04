@@ -1,4 +1,4 @@
-name: 'Terraform CMD'
+name: 'Terraform state command'
 
 trigger: none
 
@@ -12,6 +12,16 @@ variables:
   value: 'My Agents'
 - name: BlobName
   value: 'serviceEP.tfstate'
+- name: system.debug
+  value: 'true'
+- name: RGName
+  value: "rg-ADO-2"            
+- name: StorageAccName
+  value: "mystorageacct16425"  
+- name: ContainerName
+  value: "storage-container"    
+- name: TerraformDirectory
+  value: 'project-2/infra'
 
 jobs:
 - job:
@@ -22,11 +32,18 @@ jobs:
   - checkout: self
     clean: true
 
-  - bash: terraform state list -state=$(BlobName)
+  - bash: |
+      terraform init -input=false -lock=false \
+        -backend-config="resource_group_name=$(RGName)" \
+        -backend-config="storage_account_name=$(StorageAccName)" \
+        -backend-config="container_name=$(ContainerName)" \
+        -backend-config="key=$(BlobName)" \
+        -backend-config="use_azuread_auth=true"
+      terraform state list -state=$(BlobName)
     env:
       ARM_CLIENT_ID: $(SPN2-client-id)
       ARM_TENANT_ID: $(SPN2-tenant-id)
       ARM_CLIENT_SECRET: $(SPN2-client-secret)
       ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
-    workingDirectory: ${{parameters.TerraformDirectory}}
+    workingDirectory: $(TerraformDirectory)
     displayName: 'terraform state list'

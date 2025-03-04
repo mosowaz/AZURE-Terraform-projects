@@ -31,13 +31,13 @@ stages:
           
           - bash: |
               chmod -R a+x .terraform/*
-              terraform init -input=false -lock=false \
+              terraform init -upgrade -reconfigure -input=false -lock=false \
                 -backend-config="resource_group_name=$(RGName)" \
                 -backend-config="storage_account_name=$(StorageAccName)" \
                 -backend-config="container_name=$(ContainerName)" \
                 -backend-config="key=${{parameters.BlobName}}" \
                 -backend-config="use_azuread_auth=true"
-              terraform apply -auto-approve -input=false '-lock-timeout=1m' '${{parameters.tfplan}}'
+              terraform apply -auto-approve -input=false '-lock=false' '${{parameters.tfplan}}'
               terraform state list -state=${{parameters.BlobName}}
               rm -rf *  # Remove artifacts after use
             env:
@@ -47,4 +47,4 @@ stages:
               ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
             displayName: 'terraform apply'
             workingDirectory: '$(Build.ArtifactStagingDirectory)'
-            
+            continueOnError: false
