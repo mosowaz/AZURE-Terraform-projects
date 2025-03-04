@@ -46,14 +46,17 @@ resource "azurerm_storage_account" "storage2" {
 
 # create file share in the allowed storage account
 resource "azurerm_storage_share" "share1" {
-  name               = "allowed-file-share"
+  name               = "allowed-fileshare"
   storage_account_id = azurerm_storage_account.storage1.id
-  quota              = 10
+  quota              = 200
+  access_tier        = "Premium"
+
 }
 
 # create file share in the denied storage account
 resource "azurerm_storage_share" "share2" {
-  name               = "denied-file-share"
+  name               = "denied-fileshare"
   storage_account_id = azurerm_storage_account.storage2.id
-  quota              = 10
-}
+  quota              = 200
+  access_tier        = "Premium"
+}  

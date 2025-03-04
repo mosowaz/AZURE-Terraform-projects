@@ -1,4 +1,4 @@
-name: 'Build and Release Pipeline $(Date:yyyy-MM-dd)_v$(Rev:rr)'
+name: 'Build and Release Pipelines $(Date:yyyy-MM-dd)_v$(Rev:rr)'
 
 pr: none
 

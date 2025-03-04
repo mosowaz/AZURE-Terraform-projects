@@ -24,13 +24,22 @@ resource "azurerm_subnet_service_endpoint_storage_policy" "policy" {
     ]
   }
 }
-# Create Vnet Subnet and enable service endpoint in the subnet (AzureBastionSubnet)
-# Then associate the subnet with service endpoint policy for the allowed storage account
+
+# Bastion subnet
 resource "azurerm_subnet" "bastion_subnet" {
   name                 = "AzureBastionSubnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = [var.BastionSubnet]
+}
+
+# Create workload subnet and enable service endpoint in the subnet.
+# Then associate the subnet with service endpoint policy for the allowed storage account
+resource "azurerm_subnet" "workload_subnet" {
+  name                 = "Workload-Subnet"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = [var.workload_subnet]
   service_endpoints    = ["Microsoft.Storage"]
   # service endpoint policy association 
   service_endpoint_policy_ids = [azurerm_subnet_service_endpoint_storage_policy.policy.id]
@@ -40,19 +49,24 @@ resource "azurerm_subnet" "bastion_subnet" {
 resource "azurerm_storage_account_network_rules" "net_rule1" {
   storage_account_id         = azurerm_storage_account.storage1.id
   default_action             = "Deny"
-  virtual_network_subnet_ids = [azurerm_subnet.bastion_subnet.id]
+  virtual_network_subnet_ids = [azurerm_subnet.workload_subnet.id]
   bypass                     = ["AzureServices"]
+
+  depends_on                 = [azurerm_subnet.workload_subnet, azurerm_virtual_network.vnet]
 }
+
 resource "azurerm_storage_account_network_rules" "net_rule2" {
-  storage_account_id         = azurerm_storage_account.storage2.id
-  default_action             = "Deny"
-  virtual_network_subnet_ids = [azurerm_subnet.bastion_subnet.id]
-  bypass                     = ["AzureServices"]
+  storage_account_id = azurerm_storage_account.storage2.id
+  default_action     = "Deny"
+  virtual_network_subnet_ids = [azurerm_subnet.workload_subnet.id]
+  bypass     = ["AzureServices"]
+
+  depends_on = [azurerm_subnet.workload_subnet, azurerm_virtual_network.vnet]
 }
 
 resource "azurerm_role_assignment" "role" {
-  for_each = toset([ data.azurerm_client_config.current.object_id, 
-                    data.azuread_service_principal.spn.object_id ])
+  for_each = toset([data.azurerm_client_config.current.object_id,
+  data.azuread_service_principal.spn.object_id])
 
   scope                            = azurerm_resource_group.rg.id
   role_definition_name             = data.azurerm_role_definition.role.name

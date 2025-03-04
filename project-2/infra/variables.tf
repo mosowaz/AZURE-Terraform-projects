@@ -12,10 +12,18 @@ variable "vnet" {
   })
 }
 
-variable "nsg_name" {
+variable "nsg1_name" {
+  type = string
+}
+
+variable "nsg2_name" {
   type = string
 }
 
 variable "BastionSubnet" {
+  type = string
+}
+
+variable "workload_subnet" {
   type = string
 }
