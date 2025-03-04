@@ -1,6 +1,13 @@
-# Create network security group and rules to restrict access to only AzureBastionSubnet
-resource "azurerm_network_security_group" "nsg" {
-  name                = var.nsg_name
+# Create network security group and rules for AzureBastionSubnet
+resource "azurerm_network_security_group" "nsg1" {
+  name                = var.nsg1_name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+}
+
+# Create network security group and rules for workload-subnet
+resource "azurerm_network_security_group" "nsg2" {
+  name                = var.nsg2_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 }
@@ -29,9 +36,9 @@ resource "azurerm_network_security_rule" "rule-1" {
   source_port_range           = "*"
   destination_port_range      = 443
   source_address_prefix       = "Internet"
-  destination_address_prefix  = var.BastionSubnet
+  destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.rg.name
-  network_security_group_name = azurerm_network_security_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.nsg1.name
 }
 
 # rule-2 ALLOWS GatewayManager Inbound access to the AzureBastionSubnet
@@ -46,7 +53,7 @@ resource "azurerm_network_security_rule" "rule-2" {
   source_address_prefix       = "GatewayManager"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.rg.name
-  network_security_group_name = azurerm_network_security_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.nsg1.name
 }
 
 # rule-3 ALLOWS AzureLoadBalancer Inbound access to the AzureBastionSubnet
@@ -61,7 +68,7 @@ resource "azurerm_network_security_rule" "rule-3" {
   source_address_prefix       = "AzureLoadBalancer"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.rg.name
-  network_security_group_name = azurerm_network_security_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.nsg1.name
 }
 
 # rule-4 ALLOWS Inbound BastionHostCommunication access between VirtualNetwork
@@ -76,7 +83,7 @@ resource "azurerm_network_security_rule" "rule-4" {
   source_address_prefix       = "VirtualNetwork"
   destination_address_prefix  = "VirtualNetwork"
   resource_group_name         = azurerm_resource_group.rg.name
-  network_security_group_name = azurerm_network_security_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.nsg1.name
 }
 
 # rule-5 ALLOWS outbound SSH and RDP access from the AzureBastionSubnet to other target VMs 
@@ -86,12 +93,12 @@ resource "azurerm_network_security_rule" "rule-5" {
   direction                   = "Outbound"
   access                      = "Allow"
   protocol                    = "*"
-  source_port_ranges          = [22, 3389]
-  destination_port_range      = "*"
-  source_address_prefix       = var.BastionSubnet
+  source_port_range           = "*"
+  destination_port_ranges     = [22, 3389]
+  source_address_prefix       = "*"
   destination_address_prefix  = "VirtualNetwork"
   resource_group_name         = azurerm_resource_group.rg.name
-  network_security_group_name = azurerm_network_security_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.nsg1.name
 }
 
 # rule-6 ALLOWS outbound HTTPS access to AzureCloud
@@ -106,23 +113,23 @@ resource "azurerm_network_security_rule" "rule-6" {
   source_address_prefix       = "*"
   destination_address_prefix  = "AzureCloud"
   resource_group_name         = azurerm_resource_group.rg.name
-  network_security_group_name = azurerm_network_security_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.nsg1.name
 }
 
-# rule-7 ALLOWS outbound BastionHostCommunication access between VirtualNetwork
-resource "azurerm_network_security_rule" "rule-7" {
-  name                        = "Allow-Azure-Bastion-Host-Outbound-Communication"
-  priority                    = 140
-  direction                   = "Outbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  source_port_ranges          = [8080, 5701]
-  destination_port_range      = "*"
-  source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "VirtualNetwork"
-  resource_group_name         = azurerm_resource_group.rg.name
-  network_security_group_name = azurerm_network_security_group.nsg.name
-}
+# # rule-7 ALLOWS outbound to port [8080, 5701] for BastionHostCommunication access between VirtualNetwork
+# resource "azurerm_network_security_rule" "rule-7" {
+#   name                        = "Allow-Azure-Bastion-Host-Outbound-Communication"
+#   priority                    = 140
+#   direction                   = "Outbound"
+#   access                      = "Allow"
+#   protocol                    = "*"
+#   source_port_ranges          = [8080, 5701]
+#   destination_port_range      = "*"
+#   source_address_prefix       = "VirtualNetwork"
+#   destination_address_prefix  = "VirtualNetwork"
+#   resource_group_name         = azurerm_resource_group.rg.name
+#   network_security_group_name = azurerm_network_security_group.nsg1.name
+# }
 
 # rule-8 ALLOWS HTTP outbound from BastionSubnet 
 resource "azurerm_network_security_rule" "rule-8" {
@@ -136,11 +143,11 @@ resource "azurerm_network_security_rule" "rule-8" {
   source_address_prefix       = "*"
   destination_address_prefix  = "Internet"
   resource_group_name         = azurerm_resource_group.rg.name
-  network_security_group_name = azurerm_network_security_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.nsg1.name
 }
 
-# rule-9 ALLOWS outbound access from AzureBastionSubnet and the public IP addresses assigned to the Azure Storage service
-resource "azurerm_network_security_rule" "rule-9" {
+# rule-9 ALLOWS outbound access from workload-subnet to the public IP addresses assigned to the Azure Storage service
+resource "azurerm_network_security_rule" "nsg2-rule-1" {
   name                        = "Allow-Outbound-Storage-All"
   priority                    = 100
   direction                   = "Outbound"
@@ -148,15 +155,15 @@ resource "azurerm_network_security_rule" "rule-9" {
   protocol                    = "*"
   source_port_range           = "*"
   destination_port_range      = "*"
-  source_address_prefix       = var.BastionSubnet
+  source_address_prefix       = var.workload_subnet
   destination_address_prefix  = "Storage"
   resource_group_name         = azurerm_resource_group.rg.name
-  network_security_group_name = azurerm_network_security_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.nsg2.name
 }
 
-# rule-10 DENIES outbound access from the AzureBastionSubnet to all (Internet) public IP addresses 
+# rule-10 DENIES outbound access from the Workload-Subnet to all (Internet) public IP addresses 
 # NOTE: rule-9 must have higher priority, to access Azure Storage public IP
-resource "azurerm_network_security_rule" "rule-10" {
+resource "azurerm_network_security_rule" "nsg2-rule-2" {
   name                        = "Deny-Outbound-Internet-All"
   priority                    = 110
   direction                   = "Outbound"
@@ -164,14 +171,20 @@ resource "azurerm_network_security_rule" "rule-10" {
   protocol                    = "*"
   source_port_range           = "*"
   destination_port_range      = "*"
-  source_address_prefix       = var.BastionSubnet
+  source_address_prefix       = var.workload_subnet
   destination_address_prefix  = "Internet"
   resource_group_name         = azurerm_resource_group.rg.name
-  network_security_group_name = azurerm_network_security_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.nsg2.name
 }
 
 # Associate the network security group to the AzureBastionSubnet
 resource "azurerm_subnet_network_security_group_association" "nsg-BastionSubnet" {
   subnet_id                 = azurerm_subnet.bastion_subnet.id
-  network_security_group_id = azurerm_network_security_group.nsg.id
+  network_security_group_id = azurerm_network_security_group.nsg1.id
+}
+
+# Associate the network security group to the Workload-Subnet
+resource "azurerm_subnet_network_security_group_association" "nsg-workload-Subnet" {
+  subnet_id                 = azurerm_subnet.workload_subnet.id
+  network_security_group_id = azurerm_network_security_group.nsg2.id
 }
