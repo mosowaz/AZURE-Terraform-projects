@@ -29,4 +29,4 @@ jobs:
       ARM_CLIENT_SECRET: $(SPN2-client-secret)
       ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
     workingDirectory: ${{parameters.TerraformDirectory}}
-    displayName: 'terraform state list'
+
