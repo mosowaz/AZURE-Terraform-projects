@@ -19,11 +19,14 @@ jobs:
 
   steps:
   - template: 'templates/installs.yml'
+  - checkout: self
+    clean: true
 
-  - bash: terraform state list -state=$(BlobName)
+  - bash: terraform state list -state=$(BlobName) -lock=false -input=false
     env:
       ARM_CLIENT_ID: $(SPN2-client-id)
       ARM_TENANT_ID: $(SPN2-tenant-id)
       ARM_CLIENT_SECRET: $(SPN2-client-secret)
       ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
-    displayName: 'terraform state list'
+    workingDirectory: ${{parameters.TerraformDirectory}}
+
