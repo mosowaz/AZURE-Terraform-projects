@@ -38,14 +38,13 @@ stages:
     - template: 'templates/installs.yml'
 
     - bash: | 
-        terraform init -upgrade -reconfigure -input=false \
+        terraform init -upgrade -reconfigure -input=false -lock=false \
           -backend-config="resource_group_name=$(RGName)" \
           -backend-config="storage_account_name=$(StorageAccName)" \
           -backend-config="container_name=$(ContainerName)" \
           -backend-config="key=$(stateFile)" \
           -backend-config="use_azuread_auth=true"
-      
-        terraform destroy -auto-approve -input=false '-lock-timeout=2m'
+        terraform destroy -auto-approve -input=false '-lock-timeout=1m'
       env:
         ARM_CLIENT_ID: $(SPN2-client-id)
         ARM_TENANT_ID: $(SPN2-tenant-id)
