@@ -45,6 +45,13 @@ resource "azurerm_subnet" "workload_subnet" {
   service_endpoint_policy_ids = [azurerm_subnet_service_endpoint_storage_policy.policy.id]
 }
 
+# wait 60s after the creation of workload_subnet
+resource "time_sleep" "wait_60_seconds" {
+  depends_on = [azurerm_subnet.workload_subnet]
+
+  create_duration = "60s"
+}
+
 # Deny all access to storage accounts, and allow only access from selected subnet
 resource "azurerm_storage_account_network_rules" "net_rule1" {
   storage_account_id         = azurerm_storage_account.storage1.id
@@ -52,16 +59,17 @@ resource "azurerm_storage_account_network_rules" "net_rule1" {
   virtual_network_subnet_ids = [azurerm_subnet.workload_subnet.id]
   bypass                     = ["AzureServices"]
 
-  depends_on                 = [azurerm_subnet.workload_subnet, azurerm_virtual_network.vnet]
+  depends_on = [time_sleep.wait_60_seconds]
 }
 
+# Deny all access to storage accounts, and allow only access from selected subnet
 resource "azurerm_storage_account_network_rules" "net_rule2" {
-  storage_account_id = azurerm_storage_account.storage2.id
-  default_action     = "Deny"
+  storage_account_id         = azurerm_storage_account.storage2.id
+  default_action             = "Deny"
   virtual_network_subnet_ids = [azurerm_subnet.workload_subnet.id]
-  bypass     = ["AzureServices"]
+  bypass                     = ["AzureServices"]
 
-  depends_on = [azurerm_subnet.workload_subnet, azurerm_virtual_network.vnet]
+  depends_on = [time_sleep.wait_60_seconds]
 }
 
 resource "azurerm_role_assignment" "role" {

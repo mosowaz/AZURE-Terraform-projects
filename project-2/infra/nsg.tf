@@ -116,23 +116,8 @@ resource "azurerm_network_security_rule" "rule-6" {
   network_security_group_name = azurerm_network_security_group.nsg1.name
 }
 
-# # rule-7 ALLOWS outbound to port [8080, 5701] for BastionHostCommunication access between VirtualNetwork
-# resource "azurerm_network_security_rule" "rule-7" {
-#   name                        = "Allow-Azure-Bastion-Host-Outbound-Communication"
-#   priority                    = 140
-#   direction                   = "Outbound"
-#   access                      = "Allow"
-#   protocol                    = "*"
-#   source_port_ranges          = [8080, 5701]
-#   destination_port_range      = "*"
-#   source_address_prefix       = "VirtualNetwork"
-#   destination_address_prefix  = "VirtualNetwork"
-#   resource_group_name         = azurerm_resource_group.rg.name
-#   network_security_group_name = azurerm_network_security_group.nsg1.name
-# }
-
-# rule-8 ALLOWS HTTP outbound from BastionSubnet 
-resource "azurerm_network_security_rule" "rule-8" {
+# rule-7 ALLOWS HTTP outbound from BastionSubnet 
+resource "azurerm_network_security_rule" "rule-7" {
   name                        = "Allow-Azure-Bastion-Host-Outbound-Communication"
   priority                    = 150
   direction                   = "Outbound"
@@ -146,7 +131,7 @@ resource "azurerm_network_security_rule" "rule-8" {
   network_security_group_name = azurerm_network_security_group.nsg1.name
 }
 
-# rule-9 ALLOWS outbound access from workload-subnet to the public IP addresses assigned to the Azure Storage service
+# ALLOW outbound access from workload-subnet to the public IP addresses assigned to the Azure Storage service
 resource "azurerm_network_security_rule" "nsg2-rule-1" {
   name                        = "Allow-Outbound-Storage-All"
   priority                    = 100
@@ -161,8 +146,8 @@ resource "azurerm_network_security_rule" "nsg2-rule-1" {
   network_security_group_name = azurerm_network_security_group.nsg2.name
 }
 
-# rule-10 DENIES outbound access from the Workload-Subnet to all (Internet) public IP addresses 
-# NOTE: rule-9 must have higher priority, to access Azure Storage public IP
+# DENY outbound access from the Workload-Subnet to all (Internet) public IP addresses 
+# NOTE: nsg2-rule-1 must have higher priority, to access Azure Storage public IP
 resource "azurerm_network_security_rule" "nsg2-rule-2" {
   name                        = "Deny-Outbound-Internet-All"
   priority                    = 110
@@ -173,6 +158,21 @@ resource "azurerm_network_security_rule" "nsg2-rule-2" {
   destination_port_range      = "*"
   source_address_prefix       = var.workload_subnet
   destination_address_prefix  = "Internet"
+  resource_group_name         = azurerm_resource_group.rg.name
+  network_security_group_name = azurerm_network_security_group.nsg2.name
+}
+
+# ALLOW inbound access from Azure Bastion to workload VMs for SSH/RDP
+resource "azurerm_network_security_rule" "nsg2-rule-3" {
+  name                        = "Allow-SSH-RDP-Inbound"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_ranges     = [22, 3389]
+  source_address_prefix       = var.BastionSubnet
+  destination_address_prefix  = var.workload_subnet
   resource_group_name         = azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.nsg2.name
 }

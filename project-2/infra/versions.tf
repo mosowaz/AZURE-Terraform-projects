@@ -25,6 +25,11 @@ terraform {
       source  = "hashicorp/azuread"
       version = "3.1.0"
     }
+
+    time = {
+      source  = "hashicorp/time"
+      version = "0.12.1"
+    }
   }
 }
 
@@ -47,4 +52,7 @@ provider "azapi" {
 }
 
 provider "azuread" {
+}
+
+provider "time" {
 }
