@@ -70,6 +70,7 @@ resource "azurerm_storage_account_network_rules" "net_rule2" {
   bypass                     = ["AzureServices"]
 
   depends_on = [time_sleep.wait_60_seconds]
+
 }
 
 resource "azurerm_role_assignment" "role" {
