@@ -40,6 +40,8 @@ jobs:
         -backend-config="key=$(BlobName)" \
         -backend-config="use_azuread_auth=true"
       terraform state list -state=$(BlobName)
+      echo -e "Number of resources:\t"
+      terraform state list -state=$(BlobName) | wc -l
     env:
       ARM_CLIENT_ID: $(SPN2-client-id)
       ARM_TENANT_ID: $(SPN2-tenant-id)
