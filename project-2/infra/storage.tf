@@ -59,4 +59,4 @@ resource "azurerm_storage_share" "share2" {
   storage_account_id = azurerm_storage_account.storage2.id
   quota              = 200
   access_tier        = "Premium"
-}  
+} 

@@ -27,3 +27,13 @@ variable "BastionSubnet" {
 variable "workload_subnet" {
   type = string
 }
+
+variable "vm_password" {
+  type      = string
+  sensitive = true
+}
+
+variable "hub-sshkey-pub" {
+  type      = string
+  sensitive = true
+}
