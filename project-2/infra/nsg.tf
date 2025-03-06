@@ -99,6 +99,8 @@ resource "azurerm_network_security_rule" "rule-5" {
   destination_address_prefix  = "VirtualNetwork"
   resource_group_name         = azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.nsg1.name
+
+  depends_on = [azurerm_network_security_rule.nsg2-rule-3]
 }
 
 # rule-6 ALLOWS outbound HTTPS access to AzureCloud
@@ -181,6 +183,8 @@ resource "azurerm_network_security_rule" "nsg2-rule-3" {
 resource "azurerm_subnet_network_security_group_association" "nsg-BastionSubnet" {
   subnet_id                 = azurerm_subnet.bastion_subnet.id
   network_security_group_id = azurerm_network_security_group.nsg1.id
+
+  depends_on = [azurerm_network_security_rule.nsg2-rule-3]
 }
 
 # Associate the network security group to the Workload-Subnet

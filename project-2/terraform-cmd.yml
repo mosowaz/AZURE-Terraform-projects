@@ -5,7 +5,9 @@ trigger: none
 pr: none
 
 variables:
+- group: 'password'  
 - group: 'service-connection'
+- group: 'sshkeys'
 - name: system.debug
   value: 'true'
 - name: Pipeline-Agent
@@ -47,5 +49,7 @@ jobs:
       ARM_TENANT_ID: $(SPN2-tenant-id)
       ARM_CLIENT_SECRET: $(SPN2-client-secret)
       ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
+      TF_VAR_vm_password: $(vm_password)
+      TF_VAR_hub-sshkey-pub: $(hub-sshkey-pub)
     workingDirectory: $(TerraformDirectory)
     displayName: 'terraform state list'

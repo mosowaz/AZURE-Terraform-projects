@@ -1,4 +1,4 @@
-[![Build Status](https://dev.azure.com/MosesOwaseye/azure-104-terraform-projects/_apis/build/status%2Fmosowaz.AZURE-Terraform-projects?branchName=main)](https://dev.azure.com/MosesOwaseye/azure-104-terraform-projects/_build/latest?definitionId=19&branchName=main)
+[![Build Status](https://dev.azure.com/MosesOwaseye/azure-104-terraform-projects/_apis/build/status%2FDeploy%20Pipelines?branchName=main&jobName=apply)](https://dev.azure.com/MosesOwaseye/azure-104-terraform-projects/_build/latest?definitionId=24&branchName=main)
 
 terraform-docs command usage
 ``` 
@@ -26,6 +26,7 @@ https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-
 | <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | >= 3.116, < 5 |
 | <a name="requirement_modtm"></a> [modtm](#requirement\_modtm) | ~> 0.3 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.5 |
+| <a name="requirement_time"></a> [time](#requirement\_time) | 0.12.1 |
 
 ## Providers
 
@@ -33,6 +34,7 @@ https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-
 |------|---------|
 | <a name="provider_azuread"></a> [azuread](#provider\_azuread) | 3.1.0 |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | >= 3.116, < 5 |
+| <a name="provider_time"></a> [time](#provider\_time) | 0.12.1 |
 
 ## Modules
 
@@ -45,10 +47,12 @@ https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-
 | Name | Type |
 |------|------|
 | [azurerm_bastion_host.Bastion](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/bastion_host) | resource |
+| [azurerm_network_interface.windows_nic](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface) | resource |
 | [azurerm_network_security_group.nsg1](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group) | resource |
 | [azurerm_network_security_group.nsg2](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group) | resource |
 | [azurerm_network_security_rule.nsg2-rule-1](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
 | [azurerm_network_security_rule.nsg2-rule-2](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
+| [azurerm_network_security_rule.nsg2-rule-3](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
 | [azurerm_network_security_rule.rule-1](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
 | [azurerm_network_security_rule.rule-2](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
 | [azurerm_network_security_rule.rule-3](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
@@ -56,7 +60,6 @@ https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-
 | [azurerm_network_security_rule.rule-5](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
 | [azurerm_network_security_rule.rule-6](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
 | [azurerm_network_security_rule.rule-7](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
-| [azurerm_network_security_rule.rule-8](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
 | [azurerm_public_ip.pub_ip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) | resource |
 | [azurerm_resource_group.rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
 | [azurerm_role_assignment.role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) | resource |
@@ -73,6 +76,8 @@ https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-
 | [azurerm_subnet_service_endpoint_storage_policy.policy](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_service_endpoint_storage_policy) | resource |
 | [azurerm_user_assigned_identity.vm](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) | resource |
 | [azurerm_virtual_network.vnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
+| [azurerm_windows_virtual_machine.windows](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_virtual_machine) | resource |
+| [time_sleep.wait_60_seconds](https://registry.terraform.io/providers/hashicorp/time/0.12.1/docs/resources/sleep) | resource |
 | [azuread_service_principal.spn](https://registry.terraform.io/providers/hashicorp/azuread/3.1.0/docs/data-sources/service_principal) | data source |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_role_definition.role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/role_definition) | data source |
@@ -86,6 +91,7 @@ https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-
 | <a name="input_nsg1_name"></a> [nsg1\_name](#input\_nsg1\_name) | n/a | `string` | n/a | yes |
 | <a name="input_nsg2_name"></a> [nsg2\_name](#input\_nsg2\_name) | n/a | `string` | n/a | yes |
 | <a name="input_resource_group"></a> [resource\_group](#input\_resource\_group) | n/a | <pre>object({<br/>    name     = string<br/>    location = string<br/>  })</pre> | n/a | yes |
+| <a name="input_vm_password"></a> [vm\_password](#input\_vm\_password) | n/a | `string` | n/a | yes |
 | <a name="input_vnet"></a> [vnet](#input\_vnet) | n/a | <pre>object({<br/>    name          = string<br/>    address_space = string<br/>  })</pre> | n/a | yes |
 | <a name="input_workload_subnet"></a> [workload\_subnet](#input\_workload\_subnet) | n/a | `string` | n/a | yes |
 
