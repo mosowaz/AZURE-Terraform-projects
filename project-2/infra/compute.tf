@@ -54,49 +54,54 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
   }
 }
 
-# resource "azurerm_network_interface" "linux_nic" {
-#   name                  = "linux-nic"
-#   location              = azurerm_resource_group.rg1.location
-#   resource_group_name   = azurerm_resource_group.rg1.name
-#   ip_forwarding_enabled = true
+resource "azurerm_network_interface" "linux_nic" {
+  name                  = "linux-nic"
+  location              = azurerm_resource_group.rg1.location
+  resource_group_name   = azurerm_resource_group.rg1.name
+  ip_forwarding_enabled = true
 
-#   ip_configuration {
-#     name                          = "internal"
-#     subnet_id                     = azurerm_subnet.workload_subnet.id
-#     private_ip_address_allocation = "Dynamic"
-#   }
-# }
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.workload_subnet.id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
 
-# resource "azurerm_linux_virtual_machine" "linux_vm" {
-#   name                = "linux-server"
-#   resource_group_name = azurerm_resource_group.rg.name
-#   location            = azurerm_resource_group.rg.location
-#   size                = "Standard_F2"
-#   admin_username      = "adminuser"
-#   disable_password_authentication = true
-#   network_interface_ids = [
-#     azurerm_network_interface.linux_nic.id
-#   ]
+resource "azurerm_linux_virtual_machine" "linux_vm" {
+  name                = "linux-server"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  size                = "Standard_F2"
+  admin_username      = "adminuser"
+  disable_password_authentication = true
+  network_interface_ids = [
+    azurerm_network_interface.linux_nic.id
+  ]
     
-  # user_data = base64encode(<<-EOF
-  #             sudo mount -t cifs //mystorageaccount.file.core.windows.net/myshare /mnt/azure-share -o username=mystorageaccount,password=your_access_key
-  #             EOF
-  # )
+  user_data = base64encode(<<-EOF
+              #!/bin/bash
+              sudo mount -t cifs //${azurerm_storage_account.storage1.name}.file.core.windows.net/${azurerm_storage_share.share1.name} /mnt/azure-share1 \
+              -o username=${azurerm_storage_account.storage1.name},password=${azurerm_storage_account.storage1.primary_access_key}
 
-#   admin_ssh_key {
-#     username   = "adminuser"
-#     public_key = var.hub-sshkey-pub
-#   }
+              sudo mount -t cifs //${azurerm_storage_account.storage2.name}.file.core.windows.net/${azurerm_storage_share.share2.name} /mnt/azure-share2 \
+              -o username=${azurerm_storage_account.storage2.name},password=${azurerm_storage_account.storage2.primary_access_key}
+              EOF
+  )
 
-#   os_disk {
-#     caching              = "ReadWrite"
-#     storage_account_type = "Standard_LRS"
-#   }
+  admin_ssh_key {
+    username   = "adminuser"
+    public_key = var.hub-sshkey-pub
+  }
 
-#   source_image_reference {
-#     publisher = "Canonical"
-#     offer     = "0001-com-ubuntu-server-jammy"
-#     sku       = "22_04-lts"
-#     version   = "latest"
-#   }
-# }
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts"
+    version   = "latest"
+  }
+}
