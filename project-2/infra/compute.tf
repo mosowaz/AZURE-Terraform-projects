@@ -35,7 +35,7 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
   )
 
   boot_diagnostics {
-    storage_account_uri = azurerm_storage_share.share1.url
+    storage_account_uri = "https://${azurerm_storage_account.storage1.name}.file.core.windows.net"
   }
 
   encryption_at_host_enabled = true
