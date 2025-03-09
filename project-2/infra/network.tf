@@ -46,10 +46,10 @@ resource "azurerm_subnet" "workload_subnet" {
 }
 
 # wait 60s after the creation of workload_subnet
-resource "time_sleep" "wait_60_seconds" {
+resource "time_sleep" "delay_net_rule1_creation" {
   depends_on = [azurerm_subnet.workload_subnet]
 
-  create_duration = "60s"
+  create_duration = "30s"
 }
 
 # Deny all access to storage accounts, and allow only access from selected subnet
@@ -59,7 +59,7 @@ resource "azurerm_storage_account_network_rules" "net_rule1" {
   virtual_network_subnet_ids = [azurerm_subnet.workload_subnet.id]
   bypass                     = ["AzureServices"]
 
-  depends_on = [time_sleep.wait_60_seconds]
+  depends_on = [time_sleep.delay_net_rule1_creation]
 }
 
 # Deny all access to storage accounts, and allow only access from selected subnet

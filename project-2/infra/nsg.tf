@@ -86,7 +86,15 @@ resource "azurerm_network_security_rule" "rule-4" {
   network_security_group_name = azurerm_network_security_group.nsg1.name
 }
 
-# rule-5 ALLOWS outbound SSH and RDP access from the AzureBastionSubnet to other target VMs 
+# wait 30s after the creation of workload_subnet
+resource "time_sleep" "delay_nsg_rule-5_creation" {
+  depends_on = [azurerm_network_security_rule.nsg2-rule-3]
+
+  create_duration = "30s"
+}
+
+# Rule-5 ALLOWS outbound SSH and RDP access from the AzureBastionSubnet to other target VMs 
+# This rule needs nsg2-rule-3 fully created
 resource "azurerm_network_security_rule" "rule-5" {
   name                        = "Allow-SSH-RDP-Outbound"
   priority                    = 120
@@ -99,8 +107,8 @@ resource "azurerm_network_security_rule" "rule-5" {
   destination_address_prefix  = "VirtualNetwork"
   resource_group_name         = azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.nsg1.name
-
-  depends_on = [azurerm_network_security_rule.nsg2-rule-3]
+  # adding dependency due to the error "NetworkSecurityGroupNotCompliantForAzureBastionSubnet"
+  depends_on = [time_sleep.wait_30_seconds]
 }
 
 # rule-6 ALLOWS outbound HTTPS access to AzureCloud
@@ -183,8 +191,8 @@ resource "azurerm_network_security_rule" "nsg2-rule-3" {
 resource "azurerm_subnet_network_security_group_association" "nsg-BastionSubnet" {
   subnet_id                 = azurerm_subnet.bastion_subnet.id
   network_security_group_id = azurerm_network_security_group.nsg1.id
-
-  depends_on = [azurerm_network_security_rule.nsg2-rule-3]
+  # adding dependency due to the error "NetworkSecurityGroupNotCompliantForAzureBastionSubnet"
+  depends_on = [time_sleep.delay_nsg_rule-5_creation]
 }
 
 # Associate the network security group to the Workload-Subnet
