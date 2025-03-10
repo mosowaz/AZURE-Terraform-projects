@@ -45,7 +45,7 @@ resource "azurerm_subnet" "workload_subnet" {
 resource "time_sleep" "delay_net_rule1_creation" {
   depends_on = [azurerm_subnet.bastion_subnet, azurerm_subnet.workload_subnet]
 
-  create_duration = "30s"
+  create_duration = "60s"
 }
 
 # Deny all access to storage accounts, and allow only access from selected subnet
