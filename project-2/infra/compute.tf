@@ -39,7 +39,7 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
     storage_account_uri = "https://${azurerm_storage_account.storage1.name}.file.core.windows.net"
   }
 
-  encryption_at_host_enabled = true
+  encryption_at_host_enabled = false
 
   os_disk {
     caching              = "ReadWrite"
