@@ -42,7 +42,7 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
               EOF
   )
 
-  encryption_at_host_enabled = true
+  encryption_at_host_enabled = false
 
   os_disk {
     caching              = "ReadWrite"
