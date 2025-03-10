@@ -5,7 +5,7 @@ stages:
   
   jobs:
   - job: tfplan_scan_publish
-    timeoutInMinutes: 10
+    timeoutInMinutes: 5
     workspace:
       clean: all
     steps:
@@ -46,7 +46,7 @@ stages:
           --output-file-path $(common.TestResultsDirectory)
       displayName: 'code and secret scanning with checkov'
       workingDirectory: '${{parameters.SourceDirectory}}'
-      continueOnError: true
+      continueOnError: false
 
     - bash: touch tfsec.sarif
       displayName: 'create tfsec.sarif file for upcoming step'
