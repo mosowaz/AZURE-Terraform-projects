@@ -56,8 +56,8 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
 
 resource "azurerm_network_interface" "linux_nic" {
   name                  = "linux-nic"
-  location              = azurerm_resource_group.rg1.location
-  resource_group_name   = azurerm_resource_group.rg1.name
+  location              = azurerm_resource_group.rg.location
+  resource_group_name   = azurerm_resource_group.rg.name
   ip_forwarding_enabled = true
 
   ip_configuration {
@@ -68,16 +68,16 @@ resource "azurerm_network_interface" "linux_nic" {
 }
 
 resource "azurerm_linux_virtual_machine" "linux_vm" {
-  name                = "linux-server"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  size                = "Standard_F2"
-  admin_username      = "adminuser"
+  name                            = "linux-server"
+  resource_group_name             = azurerm_resource_group.rg.name
+  location                        = azurerm_resource_group.rg.location
+  size                            = "Standard_F2"
+  admin_username                  = "adminuser"
   disable_password_authentication = true
   network_interface_ids = [
     azurerm_network_interface.linux_nic.id
   ]
-    
+
   user_data = base64encode(<<-EOF
               #!/bin/bash
               sudo mount -t cifs //${azurerm_storage_account.storage1.name}.file.core.windows.net/${azurerm_storage_share.share1.name} /mnt/azure-share1 \
