@@ -31,6 +31,9 @@ resource "azurerm_subnet" "bastion_subnet" {
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = [var.BastionSubnet]
+  service_endpoints    = ["Microsoft.Storage"]
+  # service endpoint policy association 
+  service_endpoint_policy_ids = [azurerm_subnet_service_endpoint_storage_policy.policy.id]
 }
 
 # Create workload subnet and enable service endpoint in the subnet.
@@ -47,7 +50,7 @@ resource "azurerm_subnet" "workload_subnet" {
 
 # wait 60s after the creation of workload_subnet
 resource "time_sleep" "delay_net_rule1_creation" {
-  depends_on = [azurerm_subnet.workload_subnet]
+  depends_on = [azurerm_subnet.bastion_subnet, azurerm_subnet.workload_subnet]
 
   create_duration = "30s"
 }
@@ -56,7 +59,8 @@ resource "time_sleep" "delay_net_rule1_creation" {
 resource "azurerm_storage_account_network_rules" "net_rule1" {
   storage_account_id         = azurerm_storage_account.storage1.id
   default_action             = "Deny"
-  virtual_network_subnet_ids = [azurerm_subnet.workload_subnet.id]
+  ip_rules                   = [azurerm_public_ip.pub_ip.ip_address]
+  virtual_network_subnet_ids = [azurerm_subnet.workload_subnet.id, azurerm_subnet.bastion_subnet.id]
   bypass                     = ["AzureServices"]
 
   depends_on = [time_sleep.delay_net_rule1_creation]
@@ -66,11 +70,11 @@ resource "azurerm_storage_account_network_rules" "net_rule1" {
 resource "azurerm_storage_account_network_rules" "net_rule2" {
   storage_account_id         = azurerm_storage_account.storage2.id
   default_action             = "Deny"
-  virtual_network_subnet_ids = [azurerm_subnet.workload_subnet.id]
+  ip_rules                   = [azurerm_public_ip.pub_ip.ip_address]
+  virtual_network_subnet_ids = [azurerm_subnet.workload_subnet.id, azurerm_subnet.bastion_subnet.id]
   bypass                     = ["AzureServices"]
 
   depends_on = [time_sleep.delay_net_rule1_creation]
-
 }
 
 resource "azurerm_role_assignment" "role" {

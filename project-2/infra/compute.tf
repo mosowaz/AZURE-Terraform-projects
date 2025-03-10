@@ -21,6 +21,10 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
     azurerm_network_interface.windows_nic.id
   ]
 
+  allow_extension_operations = true
+
+  encryption_at_host_enabled = false
+
   ## Enter the storage account key for the allowed storage account that you recorded earlier.
   ## Replace the login account ($credential) with the name of the storage account you created.
   ## Replace the storage account name and fileshare name with the ones you created.
@@ -28,21 +32,19 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
   user_data = base64encode(<<-EOF
               $storageAcct1Key = ${azurerm_storage_account.storage1.primary_access_key}
               $acct1Key = ConvertTo-SecureString -String $storageAcct1Key -AsPlainText -Force
-              
+
               $acct1credential = New-Object System.Management.Automation.PSCredential -ArgumentList ("Azure\${azurerm_storage_account.storage1.name}"), $acct1Key
-              
+
               New-PSDrive -Name Z -PSProvider FileSystem -Root "\\${azurerm_storage_account.storage1.name}.file.core.windows.net\${azurerm_storage_share.share1.name}" -Credential $acct1credential
 
               $storageAcct2Key = ${azurerm_storage_account.storage2.primary_access_key}
               $acct2Key = ConvertTo-SecureString -String $storageAcct2Key -AsPlainText -Force
-              
-              $acct2credential = New-Object System.Management.Automation.PSCredential -ArgumentList ("Azure\${azurerm_storage_account.storage1.name}"), $acct2Key
-              
+
+              $acct2credential = New-Object System.Management.Automation.PSCredential -ArgumentList ("Azure\${azurerm_storage_account.storage2.name}"), $acct2Key
+
               New-PSDrive -Name Y -PSProvider FileSystem -Root "\\${azurerm_storage_account.storage2.name}.file.core.windows.net\${azurerm_storage_share.share2.name}" -Credential $acct2credential
               EOF
   )
-
-  encryption_at_host_enabled = false
 
   os_disk {
     caching              = "ReadWrite"
@@ -80,6 +82,10 @@ resource "azurerm_linux_virtual_machine" "linux_vm" {
   network_interface_ids = [
     azurerm_network_interface.linux_nic.id
   ]
+
+  allow_extension_operations = true
+
+  encryption_at_host_enabled = false
 
   user_data = base64encode(<<-EOF
               #!/bin/bash

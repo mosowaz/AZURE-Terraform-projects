@@ -31,7 +31,7 @@ variables:
 - name: Pipeline-Agent
   value: 'My Agents'
 - name: SKIPPED_CHECKS
-  value: 'CKV_AZURE_183,CKV2_AZURE_40,CKV2_AZURE_41,CKV2_AZURE_33,CKV2_AZURE_1,CKV2_AZURE_38,CKV_AZURE_206,CKV_AZURE_50,CKV_AZURE_151'
+  value: 'CKV_AZURE_183,CKV2_AZURE_40,CKV2_AZURE_41,CKV2_AZURE_33,CKV2_AZURE_1,CKV2_AZURE_38,CKV_AZURE_206,CKV_AZURE_151,CKV_AZURE_50'
 
   # Using build_template or ci_template pipeline based on branch condition
 stages: 
