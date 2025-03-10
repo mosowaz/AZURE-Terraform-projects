@@ -43,13 +43,17 @@ resource "azurerm_subnet" "workload_subnet" {
   service_endpoints    = ["Microsoft.Storage"]
   # service endpoint policy association 
   service_endpoint_policy_ids = [azurerm_subnet_service_endpoint_storage_policy.policy.id]
+
+  lifecycle {
+    ignore_changes = [address_prefixes, service_endpoint_policy_ids, service_endpoints]
+  }
 }
 
 # wait 60s after the creation of workload_subnet
 resource "time_sleep" "delay_net_rule1_creation" {
   depends_on = [azurerm_subnet.workload_subnet]
 
-  create_duration = "30s"
+  create_duration = "60s"
 }
 
 # Deny all access to storage accounts, and allow only access from selected subnet
@@ -70,7 +74,6 @@ resource "azurerm_storage_account_network_rules" "net_rule2" {
   bypass                     = ["AzureServices"]
 
   depends_on = [time_sleep.delay_net_rule1_creation]
-
 }
 
 resource "azurerm_role_assignment" "role" {
