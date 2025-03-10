@@ -86,15 +86,7 @@ resource "azurerm_network_security_rule" "rule-4" {
   network_security_group_name = azurerm_network_security_group.nsg1.name
 }
 
-# wait 30s after the creation of workload_subnet
-# resource "time_sleep" "delay_nsg_rule-5_creation" {
-#   depends_on = [azurerm_network_security_rule.nsg2-rule-3]
-
-#   create_duration = "30s"
-# }
-
-# Rule-5 ALLOWS outbound SSH and RDP access from the AzureBastionSubnet to other target VMs 
-# This rule needs nsg2-rule-3 fully created
+# Rule-5 ALLOWS outbound SSH and RDP access from the AzureBastionSubnet to other target VMs
 resource "azurerm_network_security_rule" "rule-5" {
   name                        = "Allow-SSH-RDP-Outbound"
   priority                    = 120
@@ -107,8 +99,6 @@ resource "azurerm_network_security_rule" "rule-5" {
   destination_address_prefix  = "VirtualNetwork"
   resource_group_name         = azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.nsg1.name
-  # adding dependency due to the error "NetworkSecurityGroupNotCompliantForAzureBastionSubnet"
-  # depends_on = [time_sleep.delay_nsg_rule-5_creation]
 }
 
 # Allow necessary inbound rule for SSH/RDP for Bastion access
@@ -120,8 +110,8 @@ resource "azurerm_network_security_rule" "nsg1-inbound-SSH-RDP" {
   protocol                    = "*"
   source_port_range           = "*"
   destination_port_ranges     = [22, 3389]
-  source_address_prefix       = var.BastionSubnet
-  destination_address_prefix  = var.workload_subnet
+  source_address_prefix       = "*"
+  destination_address_prefix  = var.BastionSubnet
   resource_group_name         = azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.nsg1.name
 }
@@ -207,8 +197,13 @@ resource "azurerm_network_security_rule" "nsg2-rule-3" {
 resource "azurerm_subnet_network_security_group_association" "nsg-BastionSubnet" {
   subnet_id                 = azurerm_subnet.bastion_subnet.id
   network_security_group_id = azurerm_network_security_group.nsg1.id
-  # adding dependency due to the error "NetworkSecurityGroupNotCompliantForAzureBastionSubnet"
-  # depends_on = [time_sleep.delay_nsg_rule-5_creation]
+
+  depends_on = [azurerm_network_security_rule.nsg1-inbound-SSH-RDP,
+    azurerm_network_security_rule.rule-1, azurerm_network_security_rule.rule-2,
+    azurerm_network_security_rule.rule-3, azurerm_network_security_rule.rule-4,
+    azurerm_network_security_rule.rule-5, azurerm_network_security_rule.rule-6,
+    azurerm_network_security_rule.rule-7, azurerm_network_security_rule.nsg2-rule-3
+  ]
 }
 
 # Associate the network security group to the Workload-Subnet
