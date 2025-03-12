@@ -18,14 +18,12 @@ resource "azurerm_subnet_service_endpoint_storage_policy" "policy" {
     description = "policy to allow access to valid storage account"
     service     = "Microsoft.Storage"
     service_resources = [
-      azurerm_resource_group.rg.id,
       # allow access to only "storage1"
       azurerm_storage_account.storage1.id
     ]
   }
 }
 
-# Bastion subnet
 resource "azurerm_subnet" "bastion_subnet" {
   name                 = "AzureBastionSubnet"
   resource_group_name  = azurerm_resource_group.rg.name
@@ -36,19 +34,14 @@ resource "azurerm_subnet" "bastion_subnet" {
   service_endpoint_policy_ids = [azurerm_subnet_service_endpoint_storage_policy.policy.id]
 }
 
-# Create workload subnet and enable service endpoint in the subnet.
-# Then associate the subnet with service endpoint policy for the allowed storage account
 resource "azurerm_subnet" "workload_subnet" {
   name                 = "Workload-Subnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = [var.workload_subnet]
-  service_endpoints    = ["Microsoft.Storage"]
-  # service endpoint policy association 
-  service_endpoint_policy_ids = [azurerm_subnet_service_endpoint_storage_policy.policy.id]
 }
 
-# wait 60s after the creation of workload_subnet
+# wait 30s after the creation of workload subnet
 resource "time_sleep" "delay_net_rule1_creation" {
   depends_on = [azurerm_subnet.bastion_subnet, azurerm_subnet.workload_subnet]
 

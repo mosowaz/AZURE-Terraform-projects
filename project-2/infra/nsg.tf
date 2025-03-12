@@ -142,10 +142,10 @@ resource "azurerm_network_security_rule" "nsg2-rule-1" {
   protocol                    = "*"
   source_port_range           = "*"
   destination_port_range      = "*"
-  source_address_prefix       = var.workload_subnet
+  source_address_prefixes     = [var.workload_subnet, var.BastionSubnet]
   destination_address_prefix  = "Storage"
   resource_group_name         = azurerm_resource_group.rg.name
-  network_security_group_name = azurerm_network_security_group.nsg2.name
+  network_security_group_name = azurerm_network_security_group.nsg1.name
 }
 
 # DENY outbound access from the Workload-Subnet to all (Internet) public IP addresses 
@@ -188,10 +188,10 @@ resource "azurerm_network_security_rule" "nsg2-rule-4" {
   protocol                    = "*"
   source_port_range           = "*"
   destination_port_range      = "*"
-  source_address_prefix       = var.workload_subnet
+  source_address_prefixes     = [var.workload_subnet, var.BastionSubnet]
   destination_address_prefix  = "Storage"
   resource_group_name         = azurerm_resource_group.rg.name
-  network_security_group_name = azurerm_network_security_group.nsg2.name
+  network_security_group_name = azurerm_network_security_group.nsg1.name
 }
 
 # Associate the network security group to the AzureBastionSubnet
@@ -203,7 +203,9 @@ resource "azurerm_subnet_network_security_group_association" "nsg-BastionSubnet"
     azurerm_network_security_rule.rule-1, azurerm_network_security_rule.rule-2,
     azurerm_network_security_rule.rule-3, azurerm_network_security_rule.rule-4,
     azurerm_network_security_rule.rule-5, azurerm_network_security_rule.rule-6,
-    azurerm_network_security_rule.rule-7, azurerm_network_security_rule.nsg2-rule-3
+    azurerm_network_security_rule.rule-7, azurerm_network_security_rule.nsg2-rule-3,
+    azurerm_network_security_rule.nsg2-rule-1, azurerm_network_security_rule.nsg2-rule-2,
+    azurerm_network_security_rule.nsg2-rule-3, azurerm_network_security_rule.nsg2-rule-4
   ]
 }
 
