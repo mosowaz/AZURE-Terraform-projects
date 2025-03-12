@@ -34,14 +34,17 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
               $acct1Key = ConvertTo-SecureString -String $storageAcct1Key -AsPlainText -Force
 
               $acct1credential = New-Object System.Management.Automation.PSCredential -ArgumentList ("Azure\${azurerm_storage_account.storage1.name}"), $acct1Key
-              
-              New-PSDrive -Name Z -PSProvider FileSystem -Root "\\${azurerm_storage_account.storage1.name}.file.core.windows.net\${azurerm_storage_share.share1.name}" -Credential $credential
+
+              New-PSDrive -Name Z -PSProvider FileSystem -Root "\\${azurerm_storage_account.storage1.name}.file.core.windows.net\${azurerm_storage_share.share1.name}" -Credential $acct1credential
+
+              $storageAcct2Key = ${azurerm_storage_account.storage2.primary_access_key}
+              $acct2Key = ConvertTo-SecureString -String $storageAcct2Key -AsPlainText -Force
+
+              $acct2credential = New-Object System.Management.Automation.PSCredential -ArgumentList ("Azure\${azurerm_storage_account.storage2.name}"), $acct2Key
+
+              New-PSDrive -Name Y -PSProvider FileSystem -Root "\\${azurerm_storage_account.storage2.name}.file.core.windows.net\${azurerm_storage_share.share2.name}" -Credential $acct2credential
               EOF
   )
-
-  boot_diagnostics {
-    storage_account_uri = "https://${azurerm_storage_account.storage1.name}.file.core.windows.net"
-  }
 
   os_disk {
     caching              = "ReadWrite"
@@ -54,13 +57,13 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
     sku       = "2022-datacenter"
     version   = "latest"
   }
+  depends_on = [azurerm_network_interface.windows_nic]
 }
 
 resource "azurerm_network_interface" "linux_nic" {
   name                  = "linux-nic"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
-  ip_forwarding_enabled = true
 
   ip_configuration {
     name                          = "internal"
@@ -110,4 +113,5 @@ resource "azurerm_linux_virtual_machine" "linux_vm" {
     sku       = "22_04-lts"
     version   = "latest"
   }
+  depends_on = [azurerm_network_interface.linux_nic]
 }

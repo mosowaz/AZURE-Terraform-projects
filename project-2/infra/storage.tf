@@ -21,16 +21,10 @@ resource "azurerm_storage_account" "storage1" {
   min_tls_version                 = "TLS1_2"
   https_traffic_only_enabled      = true
   shared_access_key_enabled       = true
-  public_network_access_enabled   = false
+  public_network_access_enabled   = true
   default_to_oauth_authentication = true
   local_user_enabled              = false
   allow_nested_items_to_be_public = false
-
-  network_rules {
-    default_action             = "Deny"
-    virtual_network_subnet_ids = [azurerm_subnet.workload_subnet.id]
-    bypass                     = ["AzureServices"]
-  }
 }
 
 # denied storage account with FileStorage type
@@ -48,12 +42,6 @@ resource "azurerm_storage_account" "storage2" {
   default_to_oauth_authentication = true
   local_user_enabled              = false
   allow_nested_items_to_be_public = false
-  
-  network_rules {
-    default_action             = "Deny"
-    virtual_network_subnet_ids = [azurerm_subnet.workload_subnet.id]
-    bypass                     = ["AzureServices"]
-  }
 }
 
 # create file share in the allowed storage account

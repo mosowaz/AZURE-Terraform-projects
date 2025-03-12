@@ -99,8 +99,6 @@ resource "azurerm_network_security_rule" "rule-5" {
   destination_address_prefix  = "VirtualNetwork"
   resource_group_name         = azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.nsg1.name
-  # adding dependency due to the error "NetworkSecurityGroupNotCompliantForAzureBastionSubnet"
-  depends_on = [time_sleep.wait_30_seconds]
 }
 
 # rule-6 ALLOWS outbound HTTPS access to AzureCloud
