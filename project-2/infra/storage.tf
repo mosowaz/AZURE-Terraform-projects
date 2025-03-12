@@ -21,7 +21,7 @@ resource "azurerm_storage_account" "storage1" {
   min_tls_version                 = "TLS1_2"
   https_traffic_only_enabled      = true
   shared_access_key_enabled       = true
-  public_network_access_enabled   = false
+  public_network_access_enabled   = true
   default_to_oauth_authentication = true
   local_user_enabled              = false
   allow_nested_items_to_be_public = false
@@ -38,7 +38,7 @@ resource "azurerm_storage_account" "storage2" {
   min_tls_version                 = "TLS1_2"
   https_traffic_only_enabled      = true
   shared_access_key_enabled       = true
-  public_network_access_enabled   = false
+  public_network_access_enabled   = true
   default_to_oauth_authentication = true
   local_user_enabled              = false
   allow_nested_items_to_be_public = false
@@ -50,7 +50,6 @@ resource "azurerm_storage_share" "share1" {
   storage_account_id = azurerm_storage_account.storage1.id
   quota              = 200
   access_tier        = "Premium"
-
 }
 
 # create file share in the denied storage account
