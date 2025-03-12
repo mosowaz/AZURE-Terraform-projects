@@ -201,7 +201,9 @@ resource "azurerm_subnet_network_security_group_association" "nsg-BastionSubnet"
     azurerm_network_security_rule.rule-1, azurerm_network_security_rule.rule-2,
     azurerm_network_security_rule.rule-3, azurerm_network_security_rule.rule-4,
     azurerm_network_security_rule.rule-5, azurerm_network_security_rule.rule-6,
-    azurerm_network_security_rule.rule-7, azurerm_network_security_rule.nsg2-rule-3
+    azurerm_network_security_rule.rule-7, azurerm_network_security_rule.nsg2-rule-3,
+    azurerm_network_security_rule.nsg2-rule-1, azurerm_network_security_rule.nsg2-rule-2,
+    azurerm_network_security_rule.nsg2-rule-3, azurerm_network_security_rule.nsg2-rule-4
   ]
 }
 

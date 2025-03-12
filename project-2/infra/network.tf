@@ -18,14 +18,12 @@ resource "azurerm_subnet_service_endpoint_storage_policy" "policy" {
     description = "policy to allow access to valid storage account"
     service     = "Microsoft.Storage"
     service_resources = [
-      azurerm_resource_group.rg.id,
       # allow access to only "storage1"
       azurerm_storage_account.storage1.id
     ]
   }
 }
 
-# Bastion subnet
 resource "azurerm_subnet" "bastion_subnet" {
   name                 = "AzureBastionSubnet"
   resource_group_name  = azurerm_resource_group.rg.name
@@ -45,7 +43,7 @@ resource "azurerm_subnet" "workload_subnet" {
   service_endpoint_policy_ids = [azurerm_subnet_service_endpoint_storage_policy.policy.id]
 }
 
-# wait 60s after the creation of workload_subnet
+# wait 30s after the creation of workload subnet
 resource "time_sleep" "delay_net_rule1_creation" {
   depends_on = [azurerm_subnet.workload_subnet]
 
@@ -56,7 +54,6 @@ resource "time_sleep" "delay_net_rule1_creation" {
 resource "azurerm_storage_account_network_rules" "net_rule1" {
   storage_account_id         = azurerm_storage_account.storage1.id
   default_action             = "Deny"
-  ip_rules                   = [azurerm_public_ip.pub_ip.ip_address]
   virtual_network_subnet_ids = [azurerm_subnet.workload_subnet.id]
   bypass                     = ["AzureServices"]
 
@@ -67,7 +64,6 @@ resource "azurerm_storage_account_network_rules" "net_rule1" {
 resource "azurerm_storage_account_network_rules" "net_rule2" {
   storage_account_id         = azurerm_storage_account.storage2.id
   default_action             = "Deny"
-  ip_rules                   = [azurerm_public_ip.pub_ip.ip_address]
   virtual_network_subnet_ids = [azurerm_subnet.workload_subnet.id]
   bypass                     = ["AzureServices"]
 
