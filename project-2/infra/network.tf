@@ -56,6 +56,7 @@ resource "time_sleep" "delay_net_rule1_creation" {
 resource "azurerm_storage_account_network_rules" "net_rule1" {
   storage_account_id         = azurerm_storage_account.storage1.id
   default_action             = "Deny"
+  ip_rules                   = [azurerm_public_ip.pub_ip.ip_address]
   virtual_network_subnet_ids = [azurerm_subnet.workload_subnet.id]
   bypass                     = ["AzureServices"]
 
@@ -66,11 +67,11 @@ resource "azurerm_storage_account_network_rules" "net_rule1" {
 resource "azurerm_storage_account_network_rules" "net_rule2" {
   storage_account_id         = azurerm_storage_account.storage2.id
   default_action             = "Deny"
+  ip_rules                   = [azurerm_public_ip.pub_ip.ip_address]
   virtual_network_subnet_ids = [azurerm_subnet.workload_subnet.id]
   bypass                     = ["AzureServices"]
 
   depends_on = [time_sleep.delay_net_rule1_creation]
-
 }
 
 resource "azurerm_role_assignment" "role" {
