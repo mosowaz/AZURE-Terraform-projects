@@ -52,7 +52,7 @@ stages:
         ARM_CLIENT_SECRET: $(SPN2-client-secret)
         ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
         TF_VAR_vm_password: $(vm_password)
-        TF_VAR_hub-sshkey-pub: $(hub-sshkey-pub)
+        TF_VAR_hub-sshkey-public: $(hub-sshkey-pub)
       workingDirectory: 'project-2/infra'
       displayName: 'terraform destroy'
     
