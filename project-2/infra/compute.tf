@@ -21,8 +21,8 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
     azurerm_network_interface.windows_nic.id
   ]
 
-  allow_extension_operations = false
-
+  allow_extension_operations = true
+  provision_vm_agent         = true
   encryption_at_host_enabled = false
  
   os_disk {
@@ -62,8 +62,8 @@ resource "azurerm_linux_virtual_machine" "linux_vm" {
     azurerm_network_interface.linux_nic.id
   ]
 
-  allow_extension_operations = false
-
+  allow_extension_operations = true
+  provision_vm_agent         = true
   encryption_at_host_enabled = false
 
   admin_ssh_key {

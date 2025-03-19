@@ -5,7 +5,7 @@
 resource "azurerm_virtual_machine_extension" "windows_custom_script" {
   name                 = "windows-volume-mount-script"
   virtual_machine_id   = azurerm_windows_virtual_machine.windows_vm.id
-  publisher            = "Microsoft.Azure.Extensions"
+  publisher            = "Microsoft.Compute"
   type                 = "CustomScript"
   type_handler_version = "2.0"
 
