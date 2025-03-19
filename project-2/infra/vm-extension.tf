@@ -9,11 +9,11 @@ resource "azurerm_virtual_machine_extension" "windows_custom_script" {
   virtual_machine_id   = azurerm_windows_virtual_machine.windows_vm.id
   publisher            = "Microsoft.Compute"
   type                 = "CustomScriptExtension"
-  type_handler_version = "2.0"
+  type_handler_version = "1.9"
 
   settings = <<SETTINGS
   {
-   "script": "${base64encode(file("${path.root}/script.ps1"))}"
+   "script": "${base64encode(file("${path.root}/scripts/script.ps1"))}"
   }
 SETTINGS  
 }
@@ -29,7 +29,7 @@ resource "azurerm_virtual_machine_extension" "linux_custom_script" {
 
   settings = <<SETTINGS
   {
-   "script": "${base64encode(file("${path.root}/script.sh"))}"
+   "script": "${base64encode(file("${path.root}/scripts/script.sh"))}"
   }
 SETTINGS  
 } 

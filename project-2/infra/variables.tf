@@ -39,7 +39,7 @@ variable "vm_password" {
   description = "Password to login to windows VM"
 }
 
-variable "hub-sshkey-pub" {
+variable "hub-sshkey-public" {
   type      = string
   sensitive = true
   description = "ssh public key for linux vm. Retrieved from Keyvault"
