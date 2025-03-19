@@ -24,7 +24,7 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
   allow_extension_operations = true
   provision_vm_agent         = true
   encryption_at_host_enabled = false
- 
+
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -40,9 +40,9 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
 }
 
 resource "azurerm_network_interface" "linux_nic" {
-  name                  = "linux-nic"
-  location              = azurerm_resource_group.rg.location
-  resource_group_name   = azurerm_resource_group.rg.name
+  name                = "linux-nic"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
 
   ip_configuration {
     name                          = "internal"
