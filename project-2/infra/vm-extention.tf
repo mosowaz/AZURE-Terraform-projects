@@ -2,11 +2,12 @@
 ## Replace the login account ($credential) with the name of the storage account you created.
 ## Replace the storage account name and fileshare name with the ones you created.
 ## 2nd script test for access deny to the "denied" storage acct
+# Windows virtual machine extension 
 resource "azurerm_virtual_machine_extension" "windows_custom_script" {
   name                 = "windows-volume-mount-script"
   virtual_machine_id   = azurerm_windows_virtual_machine.windows_vm.id
   publisher            = "Microsoft.Compute"
-  type                 = "CustomScript"
+  type                 = "CustomScriptExtension"
   type_handler_version = "2.0"
 
   settings = jsonencode(<<SETTINGS
@@ -22,17 +23,9 @@ resource "azurerm_virtual_machine_extension" "windows_custom_script" {
     New-PSDrive -Name Y -PSProvider FileSystem -Root '\\${azurerm_storage_account.storage2.name}.file.core.windows.net\${azurerm_storage_share.share2.name}' -Credential $acct2credential
     SETTINGS
   )
-  protected_settings = <<PROTECTED_SETTINGS
-    {
-      "storageAccountName1": "${azurerm_storage_account.storage1.name}",
-      "storageAccountKey1": "${azurerm_storage_account.storage1.primary_access_key}",
-      "storageAccountName2": "${azurerm_storage_account.storage2.name}",
-      "storageAccountKey2": "${azurerm_storage_account.storage2.primary_access_key}"
-    }
-    PROTECTED_SETTINGS
 }
    
-
+# Linux virtual machine extension 
 resource "azurerm_virtual_machine_extension" "linux_custom_script" {
   name                 = "linux-volume-mount-script"
   virtual_machine_id   = azurerm_linux_virtual_machine.linux_vm.id
@@ -48,14 +41,6 @@ resource "azurerm_virtual_machine_extension" "linux_custom_script" {
     -o username=${azurerm_storage_account.storage2.name},password=${azurerm_storage_account.storage2.primary_access_key},dir_mode=0750,file_mode=0750,serverino 
     SETTINGS
   )
-  protected_settings = <<PROTECTED_SETTINGS
-    {
-      "storageAccountName1": "${azurerm_storage_account.storage1.name}",
-      "storageAccountKey1": "${azurerm_storage_account.storage1.primary_access_key}",
-      "storageAccountName2": "${azurerm_storage_account.storage2.name}",
-      "storageAccountKey2": "${azurerm_storage_account.storage2.primary_access_key}"
-    }
-    PROTECTED_SETTINGS
 } 
 
 
