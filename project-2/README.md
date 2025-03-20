@@ -77,8 +77,6 @@ https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-
 | [azurerm_subnet_network_security_group_association.nsg-workload-Subnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_network_security_group_association) | resource |
 | [azurerm_subnet_service_endpoint_storage_policy.policy](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_service_endpoint_storage_policy) | resource |
 | [azurerm_user_assigned_identity.vm](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) | resource |
-| [azurerm_virtual_machine_extension.linux_custom_script](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine_extension) | resource |
-| [azurerm_virtual_machine_extension.windows_custom_script](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine_extension) | resource |
 | [azurerm_virtual_network.vnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
 | [azurerm_windows_virtual_machine.windows_vm](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_virtual_machine) | resource |
 | [time_sleep.delay_net_rule1_creation](https://registry.terraform.io/providers/hashicorp/time/0.12.1/docs/resources/sleep) | resource |
@@ -92,10 +90,10 @@ https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-service-
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_BastionSubnet"></a> [BastionSubnet](#input\_BastionSubnet) | Bastion Subnet | `string` | n/a | yes |
-| <a name="input_hub-sshkey-public"></a> [hub-sshkey-public](#input\_hub-sshkey-public) | ssh public key for linux vm. Retrieved from Keyvault | `string` | n/a | yes |
 | <a name="input_nsg1_name"></a> [nsg1\_name](#input\_nsg1\_name) | Network security group for Bastion Subnet | `string` | n/a | yes |
 | <a name="input_nsg2_name"></a> [nsg2\_name](#input\_nsg2\_name) | Network security group for VM Subnet | `string` | n/a | yes |
 | <a name="input_resource_group"></a> [resource\_group](#input\_resource\_group) | n/a | <pre>object({<br/>    name     = string<br/>    location = string<br/>  })</pre> | n/a | yes |
+| <a name="input_sshkey-public"></a> [sshkey-public](#input\_sshkey-public) | ssh public key for linux vm. Local file in the pipeline agent | `string` | n/a | yes |
 | <a name="input_vm_password"></a> [vm\_password](#input\_vm\_password) | Password to login to windows VM | `string` | n/a | yes |
 | <a name="input_vnet"></a> [vnet](#input\_vnet) | Virtual Network for all resources | <pre>object({<br/>    name          = string<br/>    address_space = string<br/>  })</pre> | n/a | yes |
 | <a name="input_workload_subnet"></a> [workload\_subnet](#input\_workload\_subnet) | Virtual Machine Subnet | `string` | n/a | yes |

@@ -21,7 +21,7 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
     azurerm_network_interface.windows_nic.id
   ]
 
-  allow_extension_operations = true
+  allow_extension_operations = false
   provision_vm_agent         = true
   encryption_at_host_enabled = false
 
@@ -62,13 +62,13 @@ resource "azurerm_linux_virtual_machine" "linux_vm" {
     azurerm_network_interface.linux_nic.id
   ]
 
-  allow_extension_operations = true
+  allow_extension_operations = false
   provision_vm_agent         = true
   encryption_at_host_enabled = false
 
   admin_ssh_key {
     username   = "adminuser"
-    public_key = file("~/.ssh/VMs/vm1.pub")
+    public_key = file(var.sshkey-public)
   }
 
   os_disk {
