@@ -39,8 +39,8 @@ variable "vm_password" {
   description = "Password to login to windows VM"
 }
 
-variable "hub-sshkey-public" {
+variable "sshkey-public" {
   type        = string
   sensitive   = true
-  description = "ssh public key for linux vm. Retrieved from Keyvault"
+  description = "ssh public key for linux vm. Local file in the pipeline agent"
 }
