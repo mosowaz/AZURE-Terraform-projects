@@ -11,6 +11,7 @@ Links to lab scenerio and the details can be found in each sub-directory of this
 ## Contents
 
 1 - [Connect virtual networks with virtual network peering](project-1/)
+    [![Build Status](https://dev.azure.com/MosesOwaseye/hub%20and%20spokes%20vnet%20peering/_apis/build/status%2Fhub%20and%20spokes%20vnet%20peering?branchName=main)](https://dev.azure.com/MosesOwaseye/hub%20and%20spokes%20vnet%20peering/_build/latest?definitionId=10&branchName=main)
   
 2 - [Create and associate service endpoint policies](project-2/)
     [![Build Status](https://dev.azure.com/MosesOwaseye/azure-104-terraform-projects/_apis/build/status%2Fmosowaz.AZURE-Terraform-projects?branchName=main)](https://dev.azure.com/MosesOwaseye/azure-104-terraform-projects/_build/latest?definitionId=19&branchName=main)

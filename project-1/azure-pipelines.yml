@@ -1,0 +1,66 @@
+name: $(Build.DefinitionName)_$(Date:yyyy-MM-dd)_v$(Rev:rr)
+
+trigger: none
+ # batch: true
+ # branches:
+  #  include:
+   # - '*'
+   # exclude: 
+   # - main 
+ # paths:
+  #  include:
+   #   - '*'
+   # exclude:
+    #  - SPN-Terraform-Deployment
+     # - destroy-pipelines.yml
+
+#pr:
+ # branches:
+  #  include: 
+   # - main
+ # paths:
+  #  include:
+   #   - '*'
+   # exclude:
+    #  - SPN-Terraform-Deployment
+     # - destroy-pipelines.yml
+
+      
+variables:
+- name: systm.debug
+  value: 'true'
+- group: 'service-connection'
+- group: 'ssh-keys'
+- group: 'mypublic-ip'
+- name: RGName
+  value: "rg-ADO-2"            # Can be passed via `-backend-config=`"resource_group_name=<resource group name>"` in the `init` command.
+- name: StorageAccName
+  value: "mystorageacct16425"  # Can be passed via `-backend-config=`"storage_account_name=<storage account name>"` in the `init` command.
+- name: ContainerName
+  value: "storage-container"         # Can be passed via `-backend-config=`"container_name=<container name>"` in the `init` command.
+- name: ADO-Environment
+  value: "PROD"
+  
+  # Reusing pipeline in multiple directories
+stages:
+- template: templates/azure_pipeline_template.yml
+  parameters:
+    SourceDirectory: 'infrastructure/network'   # change directory to network
+    infrastructure: 'Network'
+    tfplan: 'network.tflan'
+    BlobName: 'network.tfstate'
+
+- template: templates/azure_pipeline_template.yml
+  parameters:
+    SourceDirectory: 'infrastructure/compute'   # change directory to compute
+    infrastructure: 'Compute'
+    tfplan: 'compute.tflan'
+    BlobName: 'compute.tfstate'
+
+- template: templates/azure_pipeline_template.yml
+  parameters:
+    SourceDirectory: 'infrastructure/routes'    # change directory to routes 
+    infrastructure: 'Routes'
+    tfplan: 'routes.tflan'
+    BlobName: 'routes.tfstate'
+ 

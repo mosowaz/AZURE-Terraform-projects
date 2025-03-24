@@ -9,7 +9,7 @@ variable "location2" {
 }
 
 variable "lab_tag" {
-  default = "Network"
+  default = "hub-spoke"
 }
 
 variable "vnet1" { 

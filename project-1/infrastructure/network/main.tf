@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "rg1" {
-  name     = "rg-${var.location1}"
+  name     = "rg-${var.location1}-network"
   location = var.location1
   tags = {
     resource = "${var.lab_tag}-Central-rg"
@@ -7,7 +7,7 @@ resource "azurerm_resource_group" "rg1" {
 }
 
 resource "azurerm_resource_group" "rg2" {
-  name     = "rg-${var.location2}"
+  name     = "rg-${var.location2}-network"
   location = var.location2
   tags = {
     resource = "${var.lab_tag}-east-rg"

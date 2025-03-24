@@ -1,11 +1,13 @@
-## Connect Hub and Spoke virtual networks with virtual network peering using Terraform code
+[![Build Status](https://dev.azure.com/MosesOwaseye/hub%20and%20spokes%20vnet%20peering/_apis/build/status%2Fhub%20and%20spokes%20vnet%20peering?branchName=main)](https://dev.azure.com/MosesOwaseye/hub%20and%20spokes%20vnet%20peering/_build/latest?definitionId=10&branchName=main)
+
+# Azure_CI_CD_Pipeline_for_Terraform_with_SPN
+Using Azure ci cd Pipeline for Terraform code to create, modify or destroy resources in Azure Portal
+
+### Connect Hub and Spoke virtual networks with virtual network peering using Terraform code
 
 ![diagram to lab2](https://learn.microsoft.com/en-us/azure/virtual-network/media/tutorial-connect-virtual-networks-portal/resources-diagram.png#lightbox)
 ## Order of code
 ./network/main.tf --> ./compute/main.tf --> ./rt_table-nsg/main.tf
-
-Or run the bash script below\
-``` $ bash tf-apply.sh ```
 
 ## Description
 
@@ -35,8 +37,9 @@ azurerm version = 4.0.1
 
 ### ./rt_table-nsg
 1. Create network security group, security rules, and rule associtaion
-   - "hub-inbound-public" to allow local machine to connect to public ip of "hub-vm"
-   - "hub-outbound-private" to allow access from "hub-vm" to "spoke1-vm" and "spoke2-vm"
+   - "inbound-public" to allow local machine to connect to public ip of hub and spoke VMs
+   - "outbound-private" to allow access from other subnets within Azure
+
   
 2. Create route tables and associations
    - route table "spoke1-2", next hop is NVA, and destination is "vnet3-subnet".\

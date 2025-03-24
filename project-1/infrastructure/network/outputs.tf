@@ -1,3 +1,4 @@
+/*
 output "subnets" {
     value = {
       subnet1 = {
@@ -17,3 +18,4 @@ output "subnets" {
       }
     }
 }
+*/

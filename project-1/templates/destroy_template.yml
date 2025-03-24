@@ -1,0 +1,107 @@
+# Pipeline template to be used for cleanup 
+
+stages:
+- stage: Plan_${{parameters.infrastructure}}_cleanup
+  displayName: '${{parameters.SourceDirectory}} Plan Stage'
+  pool:
+    vmImage: ubuntu-latest
+
+  jobs:
+  - job: validate
+    steps:
+    - checkout: self
+    - template: checkov-terraform_install.yml
+
+    - script: terraform version
+      displayName: 'terraform version'
+
+    - bash: |
+        terraform init -input=false \
+          -backend-config="resource_group_name=$(RGName)" \
+          -backend-config="storage_account_name=$(StorageAccName)" \
+          -backend-config="container_name=$(ContainerName)" \
+          -backend-config="key=${{parameters.BlobName}}" \
+          -backend-config="use_azuread_auth=true"
+        terraform fmt && terraform validate
+      env:
+        ARM_CLIENT_ID: $(SPN2-client-id)
+        ARM_TENANT_ID: $(SPN2-tenant-id)
+        ARM_CLIENT_SECRET: $(SPN2-client-secret)
+        ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
+      displayName: 'terraform fmt and validate'
+      workingDirectory: ${{parameters.SourceDirectory}}
+
+  - job: pland_and_publish
+    dependsOn: validate
+    condition: succeeded()
+    steps:
+    - checkout: self
+    - bash: |
+        terraform init -input=false \
+          -backend-config="resource_group_name=$(RGName)" \
+          -backend-config="storage_account_name=$(StorageAccName)" \
+          -backend-config="container_name=$(ContainerName)" \
+          -backend-config="key=${{parameters.BlobName}}" \
+          -backend-config="use_azuread_auth=true"
+        terraform plan -destroy -out='${{parameters.tfplan}}' -lock=false -input=false
+      env:
+        ARM_CLIENT_ID: $(SPN2-client-id)
+        ARM_TENANT_ID: $(SPN2-tenant-id)
+        ARM_CLIENT_SECRET: $(SPN2-client-secret)
+        ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
+        TF_VAR_hub-sshkey: $(hub-sshkey)
+        TF_VAR_hub-sshkey-pub: $(hub-sshkey-pub)
+        TF_VAR_sp1-sshkey: $(sp1-sshkey)
+        TF_VAR_sp1-sshkey-pub: $(sp1-sshkey-pub)
+        TF_VAR_sp2-sshkey: $(sp2-sshkey)
+        TF_VAR_sp2-sshkey-pub: $(sp2-sshkey-pub)
+        TF_VAR_mypublic-ip: $(mypublic-ip)
+      workingDirectory: ${{parameters.SourceDirectory}}
+      displayName: 'terraform plan -destroy'
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: ${{parameters.SourceDirectory}} 
+        artifact: ${{parameters.tfplan}} # artifactName
+        publishLocation: 'pipeline' # upload artifact to pipeline
+      displayName: 'Publish artifact'  
+    continueOnError: false  
+
+- stage: Destroy_${{parameters.infrastructure}}
+  displayName: '${{parameters.SourceDirectory}} Cleanup Stage'
+  pool:
+    vmImage: ubuntu-latest
+
+  jobs:
+  - deployment: apply_destroy
+    environment: $(ADO-Environment)        
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: none
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: '${{parameters.tfplan}}'
+              targetPath: '$(Build.SourcesDirectory)'
+            displayName: 'Downloading artifact'
+
+          - template: checkov-terraform_install.yml 
+          
+          - bash: |
+              chmod -R a+x .terraform/*
+              terraform init -input=false \
+                -backend-config="resource_group_name=$(RGName)" \
+                -backend-config="storage_account_name=$(StorageAccName)" \
+                -backend-config="container_name=$(ContainerName)" \
+                -backend-config="key=${{parameters.BlobName}}" \
+                -backend-config="use_azuread_auth=true"
+              terraform apply -auto-approve -input=false '-lock-timeout=2m' '${{parameters.tfplan}}'
+            workingDirectory: '$(Build.SourcesDirectory)'
+            env:
+              ARM_CLIENT_ID: $(SPN2-client-id)
+              ARM_TENANT_ID: $(SPN2-tenant-id)
+              ARM_CLIENT_SECRET: $(SPN2-client-secret)
+              ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
+            displayName: 'terraform destroy'
