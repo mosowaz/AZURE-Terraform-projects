@@ -1,0 +1,34 @@
+name: Generate terraform docs
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'project-4'
+  
+  pull_request:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'project-4'
+
+jobs:
+  terraform-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0        # fethch all history for all branches
+          ref: ${{github.ref}}  # checkout branch that triggered the event
+
+      - name: Render terraform docs inside the README.md and push changes back to PR branch
+        uses: terraform-docs/gh-actions@v1.3.0
+        with:
+          working-dir: .           # directory where terraform files are located
+          output-file: README.md
+          output-method: inject
+          git-push: "true"
