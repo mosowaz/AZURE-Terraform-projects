@@ -4,31 +4,50 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
       - dev
     paths:
       - 'project-4'
+      - '.github/workflows/project-4-tf-docs.yml'
   
   pull_request:
     branches:
-      - main
       - dev
     paths:
       - 'project-4'
+      - '.github/workflows/project-4-tf-docs.yml'
 
 jobs:
   terraform-docs:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0        # fethch all history for all branches
           ref: ${{github.ref}}  # checkout branch that triggered the event
 
+      - name: Copy terraform files to root directory
+        run: mkdir terraform && cp --recursive project-4/*.tf ./terraform
+
+      - name: Create & commit Inframap diagram
+        uses: erzz/inframap-action@v1
+        with:
+          output-filename: project-4/docs/infra-diagram.png
+
+      - name: Remove terraform folder from root directory
+        run: rm -rf terraform
+
       - name: Render terraform docs inside the README.md and push changes back to PR branch
         uses: terraform-docs/gh-actions@v1.3.0
         with:
-          working-dir: .           # directory where terraform files are located
-          output-file: README.md
+          working-dir: project-4          # directory where terraform files are located
+          output-file: README.md          # relative file-path/to/working-dir
           output-method: inject
           git-push: "true"
+          config-file: project-4/docs/.terraform-docs.yml  # absolute path/to/file
+          
+
+      
