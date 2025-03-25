@@ -1,0 +1,27 @@
+formatter: "markdown table"
+
+header-from: "docs/doc.md"    # relative file-path/to/working-dir
+
+sections:
+  show: all
+
+sort:
+  enabled: true
+  by: name
+
+content: |-
+  {{ .Header }}
+
+  {{ .Requirements }}
+
+  {{ .Providers }}
+
+  {{ .Inputs }}
+
+  {{ .Modules }}
+
+  {{ .Resources }}
+
+  {{ .Inputs }}
+
+  {{ .Outputs }}

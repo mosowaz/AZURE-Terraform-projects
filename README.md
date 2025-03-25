@@ -18,6 +18,8 @@ Links to scenerios and details can be found in each sub-directory of this reposi
 
 3 - [Restrict network access to PaaS resources with virtual network service endpoints](project-3/)
 
+4 - [Create public and private load balancers with Virtual Machine Scale Set as the backend pool](project-4/)
+
 ## Terraform Commands 
 ```
 terraform init -upgrade
