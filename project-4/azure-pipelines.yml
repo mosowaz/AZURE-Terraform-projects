@@ -2,16 +2,19 @@ name: 'Build and Release Pipelines $(Date:yyyy-MM-dd)_v$(Rev:rr)'
 
 pr: none
 
-trigger: 
-  branches:
-    include:
-    - main
-    - dev
-  paths:
-    include:
-    - project-4
-    exclude:
-    - project-4/cleanup-pipelines.yml
+trigger: none
+  # branches:
+  #   include:
+  #   - main
+  #   - dev
+  # paths:
+  #   include:
+  #   - project-4/*
+  #   exclude:
+  #   - project-4/cleanup-pipelines.yml
+  # tags:
+  #   include:
+  #     - "*"
     
 variables:
 - group: 'password' 

@@ -1,13 +1,11 @@
 variable "lb-rg-name" {
   default     = "int-ext-loadBalancer"
   description = "resource group name"
-  nullable = false
 }
 
 variable "lb-rg-location" {
-  default     = "int-ext-loadBalancer"
+  default     = "canadacentral"
   description = "resource group location"
-  nullable = false
 }
 
 variable "vnet-int" {
@@ -20,7 +18,6 @@ variable "vnet-int" {
     address_space = "10.1.0.0/16"
   }
   description = "virtual network for internal loadbalancer backend pools"
-  nullable = false
 }
 
 variable "vnet-ext" {
@@ -33,5 +30,4 @@ variable "vnet-ext" {
     address_space = "10.2.0.0/16"
   }
   description = "virtual network for external loadbalancer backend pools"
-  nullable = false
 }

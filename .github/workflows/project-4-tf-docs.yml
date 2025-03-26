@@ -32,5 +32,10 @@ jobs:
           git-push: "true"
           config-file: project-4/docs/.terraform-docs.yml  # absolute path/to/file
           
-
+      - name: Trigger a run in Azure pipelines    
+        uses: Azure/pipelines@v1
+        with:
+          azure-devops-project-url: 'https://dev.azure.com/MosesOwaseye/Load%20Balancers'
+          azure-pipeline-name: 'Deploy Resources' # name of the Azure pipeline to be triggered
+          azure-devops-token: '${{ secrets.AZURE_DEVOPS_TOKEN }}'
       
