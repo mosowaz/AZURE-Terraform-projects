@@ -5,13 +5,7 @@ on:
   push:
     branches:
       - dev
-    paths:
-      - project-4/*
-      - '.github/workflows/project-4-tf-docs.yml'
-
-  pull_request:
-    branches:
-      - dev
+      - main
     paths:
       - project-4/*
       - '.github/workflows/project-4-tf-docs.yml'
