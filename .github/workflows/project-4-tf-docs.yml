@@ -6,7 +6,14 @@ on:
     branches:
       - dev
     paths:
-      - 'project-4'
+      - project-4/*
+      - '.github/workflows/project-4-tf-docs.yml'
+
+  pull_request:
+    branches:
+      - dev
+    paths:
+      - project-4/*
       - '.github/workflows/project-4-tf-docs.yml'
 
 jobs:
@@ -19,7 +26,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0        # fetch all history for all branches
+          fetch-depth: 0        # fetch all commits for all branches
           ref: ${{github.ref}}  # checkout branch that triggered the event
 
       - name: Render terraform docs inside the README.md and push changes back to PR branch

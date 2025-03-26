@@ -14,10 +14,6 @@ content: |-
 
   {{ .Requirements }}
 
-  {{ .Providers }}
-
-  {{ .Inputs }}
-
   {{ .Modules }}
 
   {{ .Resources }}
