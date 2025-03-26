@@ -17,17 +17,12 @@
 
 ## Requirements
 
-No requirements.
-
-## Providers
-
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | n/a |
-
-## Inputs
-
-No inputs.
+| <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) | 3.1.0 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 4.10 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.5 |
+| <a name="requirement_time"></a> [time](#requirement\_time) | 0.12.1 |
 
 ## Modules
 
@@ -37,11 +32,22 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [azurerm_resource_group.loadBalancer](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
+| [azurerm_resource_group.rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
+| [azurerm_virtual_network.vnet-ext](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
+| [azurerm_virtual_network.vnet-int](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
+| [azuread_service_principal.spn](https://registry.terraform.io/providers/hashicorp/azuread/3.1.0/docs/data-sources/service_principal) | data source |
+| [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
+| [azurerm_role_definition.role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/role_definition) | data source |
+| [azurerm_subscription.primary](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
 
 ## Inputs
 
-No inputs.
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_lb-rg-location"></a> [lb-rg-location](#input\_lb-rg-location) | resource group location | `string` | `"int-ext-loadBalancer"` | no |
+| <a name="input_lb-rg-name"></a> [lb-rg-name](#input\_lb-rg-name) | resource group name | `string` | `"int-ext-loadBalancer"` | no |
+| <a name="input_vnet-ext"></a> [vnet-ext](#input\_vnet-ext) | virtual network for external loadbalancer backend pools | <pre>object({<br/>    name = string<br/>    address_space = string<br/>  })</pre> | <pre>{<br/>  "address_space": "10.2.0.0/16",<br/>  "name": "ext-lb-vnet"<br/>}</pre> | no |
+| <a name="input_vnet-int"></a> [vnet-int](#input\_vnet-int) | virtual network for internal loadbalancer backend pools | <pre>object({<br/>    name = string<br/>    address_space = string<br/>  })</pre> | <pre>{<br/>  "address_space": "10.1.0.0/16",<br/>  "name": "int-lb-vnet"<br/>}</pre> | no |
 
 ## Outputs
 
