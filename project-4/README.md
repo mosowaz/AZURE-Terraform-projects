@@ -1,4 +1,6 @@
 <!-- BEGIN_TF_DOCS -->
+[![Generate terraform docs](https://github.com/mosowaz/AZURE-Terraform-projects/actions/workflows/project-4-tf-docs.yml/badge.svg?branch=main)](https://github.com/mosowaz/AZURE-Terraform-projects/actions/workflows/project-4-tf-docs.yml) [![Build Status](https://dev.azure.com/MosesOwaseye/Load%20Balancers/_apis/build/status%2FDeploy%20Resources?branchName=main)](https://dev.azure.com/MosesOwaseye/Load%20Balancers/_build/latest?definitionId=28&branchName=main)
+
 ## Create private/Internal and public/external load balancer with VMSS as backend pool
 
 ![diagram](https://learn.microsoft.com/en-us/azure/load-balancer/media/quickstart-load-balancer-standard-public-portal/public-load-balancer-resources.png#lightbox)
@@ -44,7 +46,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_lb-rg-location"></a> [lb-rg-location](#input\_lb-rg-location) | resource group location | `string` | `"int-ext-loadBalancer"` | no |
+| <a name="input_lb-rg-location"></a> [lb-rg-location](#input\_lb-rg-location) | resource group location | `string` | `"canadacentral"` | no |
 | <a name="input_lb-rg-name"></a> [lb-rg-name](#input\_lb-rg-name) | resource group name | `string` | `"int-ext-loadBalancer"` | no |
 | <a name="input_vnet-ext"></a> [vnet-ext](#input\_vnet-ext) | virtual network for external loadbalancer backend pools | <pre>object({<br/>    name = string<br/>    address_space = string<br/>  })</pre> | <pre>{<br/>  "address_space": "10.2.0.0/16",<br/>  "name": "ext-lb-vnet"<br/>}</pre> | no |
 | <a name="input_vnet-int"></a> [vnet-int](#input\_vnet-int) | virtual network for internal loadbalancer backend pools | <pre>object({<br/>    name = string<br/>    address_space = string<br/>  })</pre> | <pre>{<br/>  "address_space": "10.1.0.0/16",<br/>  "name": "int-lb-vnet"<br/>}</pre> | no |

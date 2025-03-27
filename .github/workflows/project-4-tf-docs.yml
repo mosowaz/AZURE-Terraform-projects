@@ -1,4 +1,4 @@
-name: Generate terraform docs and trigger azure pipelines
+name: Generate terraform docs
 
 on:
   workflow_dispatch:
@@ -33,7 +33,7 @@ jobs:
           config-file: project-4/docs/.terraform-docs.yml  # absolute path/to/file
           
       - name: Trigger a run in Azure pipelines    
-        uses: Azure/pipelines@v1
+        uses: Azure/pipelines@v1.2
         with:
           azure-devops-project-url: 'https://dev.azure.com/MosesOwaseye/Load%20Balancers'
           azure-pipeline-name: 'Deploy Resources' # name of the Azure pipeline to be triggered
