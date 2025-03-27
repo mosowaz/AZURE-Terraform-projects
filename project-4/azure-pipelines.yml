@@ -14,8 +14,7 @@ trigger:
     - project-4/cleanup-pipelines.yml
     
 variables:
-- group: 'password'
-- group: 'sshkeys'  
+- group: 'password' 
 - group: 'service-connection'
 - name: system.debug
   value: 'true'
