@@ -19,7 +19,7 @@ Links to scenerios and details can be found in each sub-directory of this reposi
 3 - [Restrict network access to PaaS resources with virtual network service endpoints](project-3/)
 
 4 - [Create public and private load balancers with Virtual Machine Scale Set as the backend pool](project-4/)
-    [![Generate terraform docs](https://github.com/mosowaz/AZURE-Terraform-projects/actions/workflows/project-4-tf-docs.yml/badge.svg?branch=main)](https://github.com/mosowaz/AZURE-Terraform-projects/actions/workflows/project-4-tf-docs.yml) [![Build Status](https://dev.azure.com/MosesOwaseye/Load%20Balancers/_apis/build/status%2FDeploy%20Resources?branchName=main)](https://dev.azure.com/MosesOwaseye/Load%20Balancers/_build/latest?definitionId=28&branchName=main)
+    [![Build Status](https://dev.azure.com/MosesOwaseye/Load%20Balancers/_apis/build/status%2FDeploy%20Resources?branchName=main)](https://dev.azure.com/MosesOwaseye/Load%20Balancers/_build/latest?definitionId=28&branchName=main)
 
 ## Terraform Commands 
 ```

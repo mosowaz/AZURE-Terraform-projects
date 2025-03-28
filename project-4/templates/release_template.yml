@@ -2,14 +2,14 @@ stages:
 - stage: Deploy_${{parameters.infrastructure}}
   displayName: '${{parameters.TerraformDirectory}} Deploy Stage'
   pool:
-    name: $(Pipeline-Agent)
+    name: $(Pipeline_Agent)
 
   jobs:
   - deployment: apply
     timeoutInMinutes: 15
     workspace:
       clean: all
-    environment: $(ADO-Environment)        
+    environment: $(ADO_Environment)        
     strategy:
       runOnce:
         deploy:

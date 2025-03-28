@@ -1,7 +1,7 @@
 stages:
 - stage: Build_${{parameters.infrastructure}}
   displayName: '${{parameters.TerraformDirectory}} Build Stage'
-  pool: $(Pipeline-Agent)
+  pool: $(Pipeline_Agent)
   
   jobs:
   - job: tfplan_scan_publish

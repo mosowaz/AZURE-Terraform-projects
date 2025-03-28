@@ -15,9 +15,9 @@ variables:
   value: "mystorageacct16425"  
 - name: ContainerName
   value: "storage-container"         
-- name: ADO-Environment
+- name: ADO_Environment
   value: "Staging"
-- name: Pipeline-Agent
+- name: Pipeline_Agent
   value: 'My Agents'
 - name: stateFile
   value: 'lb.tfstate'
@@ -25,7 +25,7 @@ variables:
 stages:
 - stage: 'Destroy_Resources' 
   displayName: 'Destroy resoures'
-  pool: $(Pipeline-Agent)
+  pool: $(Pipeline_Agent)
   
   jobs:
   - job:
