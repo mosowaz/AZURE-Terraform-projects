@@ -34,6 +34,7 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [azurerm_public_ip.ext_lb_pip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) | resource |
 | [azurerm_resource_group.rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
 | [azurerm_virtual_network.vnet-ext](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
 | [azurerm_virtual_network.vnet-int](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
@@ -48,6 +49,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_lb-rg-location"></a> [lb-rg-location](#input\_lb-rg-location) | resource group location | `string` | `"canadacentral"` | no |
 | <a name="input_lb-rg-name"></a> [lb-rg-name](#input\_lb-rg-name) | resource group name | `string` | `"int-ext-loadBalancer"` | no |
+| <a name="input_pub-ip"></a> [pub-ip](#input\_pub-ip) | n/a | <pre>map(object({<br/>    allocation_method = string<br/>    name              = string<br/>    sku               = string<br/>  }))</pre> | <pre>{<br/>  "bastion_pip": {<br/>    "allocation_method": "Static",<br/>    "name": "Bastion-Public-IP",<br/>    "sku": "Standard"<br/>  },<br/>  "ext_lb_pip": {<br/>    "allocation_method": "Static",<br/>    "name": "ext-lb-public-IP",<br/>    "sku": "Standard"<br/>  },<br/>  "int_lb_pip": {<br/>    "allocation_method": "Static",<br/>    "name": "int-lb-public-IP",<br/>    "sku": "Standard"<br/>  },<br/>  "nat_gw_pip": {<br/>    "allocation_method": "Static",<br/>    "name": "Nat-GW-public-IP",<br/>    "sku": "Standard"<br/>  }<br/>}</pre> | no |
 | <a name="input_vnet-ext"></a> [vnet-ext](#input\_vnet-ext) | virtual network and subnet for external loadbalancer backend pools | <pre>object({<br/>    name                    = string<br/>    address_space           = string<br/>    subnet_name             = string<br/>    subnet_address_prefixes = string<br/>  })</pre> | <pre>{<br/>  "address_space": "10.2.0.0/16",<br/>  "name": "ext-lb-vnet",<br/>  "subnet_address_prefixes": "10.2.0.0/24",<br/>  "subnet_name": "ext-lb-subnet"<br/>}</pre> | no |
 | <a name="input_vnet-int"></a> [vnet-int](#input\_vnet-int) | virtual network and subnet for internal loadbalancer backend pools | <pre>object({<br/>    name                    = string<br/>    address_space           = string<br/>    subnet_name             = string<br/>    subnet_address_prefixes = string<br/>  })</pre> | <pre>{<br/>  "address_space": "10.1.0.0/16",<br/>  "name": "int-lb-vnet",<br/>  "subnet_address_prefixes": "10.1.0.0/24",<br/>  "subnet_name": "int-lb-subnet"<br/>}</pre> | no |
 
