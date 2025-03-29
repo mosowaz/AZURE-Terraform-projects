@@ -2,7 +2,18 @@ name: 'Build and Release Pipelines $(Date:yyyy-MM-dd)_v$(Rev:rr)'
 
 pr: none
 
-trigger: none
+trigger: 
+  branches:
+    include:
+    - dev
+    - main
+  paths:
+    include:
+    - project-4/*
+    - '.github/workflows/project-4-tf-docs.yml'
+  tags: 
+    include:
+    - '*'
     
 variables:
 - group: 'password' 

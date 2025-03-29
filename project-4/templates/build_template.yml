@@ -33,13 +33,12 @@ stages:
       displayName: 'terraform init, validate and plan'
       continueOnError: false
       
-      scan for vulberability and put the result in TestResultsDirectory
+      # scan for vulberability and put the result in TestResultsDirectory
     - bash: |
         checkov --dir . \
           --output sarif \
           --quiet \
           --deep-analysis \
-          # --skip-check $(SKIPPED_CHECKS) \
           --enable-secret-scan-all-files \
           --download-external-modules true \
           --framework terraform,azure_pipelines,secrets \
