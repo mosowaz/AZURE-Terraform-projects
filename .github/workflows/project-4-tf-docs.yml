@@ -25,6 +25,10 @@ jobs:
           fetch-depth: 0        # fetch all commits for all branches
           ref: ${{github.ref}}  # checkout branch that triggered the event
 
+      - name: Get most recent commit message
+        id: last_commit
+        run: echo "::set-output name=message::$(git log -1 --pretty=%B)"    
+
       - name: Render terraform docs inside the README.md and push changes back to PR branch
         uses: terraform-docs/gh-actions@v1.3.0
         with:
@@ -33,6 +37,7 @@ jobs:
           output-method: inject
           git-push: "true"
           config-file: project-4/docs/.terraform-docs.yml  # absolute path/to/file
+          git-commit-message: "${{ steps.last_commit.outputs.message }}"  # use last commit message
           
       - name: Trigger a run in Azure pipelines    
         uses: Azure/pipelines@v1
