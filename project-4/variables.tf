@@ -40,32 +40,35 @@ variable "vnet-ext" {
   description = "virtual network and subnet for external loadbalancer backend pools"
 }
 
-variable "pub-ip" {
-  type = map(object({
-    allocation_method = string
-    name              = string
-    sku               = string
-  }))
+variable "ext_lb_pip" {
   default = {
-    "ext_lb_pip" = {
-      allocation_method = "Static"
-      name              = "ext-lb-public-IP"
-      sku               = "Standard"
-    }
-    "int_lb_pip" = {
-      allocation_method = "Static"
-      name              = "int-lb-public-IP"
-      sku               = "Standard"
-    }
-    "bastion_pip" = {
-      allocation_method = "Static"
-      name              = "Bastion-Public-IP"
-      sku               = "Standard"
-    }
-    "nat_gw_pip" = {
-      allocation_method = "Static"
-      name              = "Nat-GW-public-IP"
-      sku               = "Standard"
-    }
+    allocation_method = "Static"
+    name              = "ext-lb-public-IP"
+    sku               = "Standard"
   }
 }
+
+variable "int_lb_pip" {
+  default = {
+    allocation_method = "Static"
+    name              = "int-lb-public-IP"
+    sku               = "Standard"
+  }
+}
+
+variable "bastion_pip" {
+  default = {
+    allocation_method = "Static"
+    name              = "Bastion-Public-IP"
+    sku               = "Standard"
+  }
+}
+
+variable "nat_gw_pip" {
+  default = {
+    allocation_method = "Static"
+    name              = "Nat-GW-public-IP"
+    sku               = "Standard"
+  }
+}
+
