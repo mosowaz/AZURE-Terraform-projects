@@ -1,5 +1,5 @@
 variable "lb-rg-name" {
-  default     = "int-ext-loadBalancer"
+  default     = "rg-loadBalancers"
   description = "resource group name"
 }
 
@@ -9,14 +9,8 @@ variable "lb-rg-location" {
 }
 
 variable "vnet-int" {
-  type = object({
-    name                    = string
-    address_space           = string
-    subnet_name             = string
-    subnet_address_prefixes = string
-  })
   default = {
-    name                    = "int-lb-vnet"
+    name                    = "vnet-int-lb"
     address_space           = "10.1.0.0/16"
     subnet_name             = "int-lb-subnet"
     subnet_address_prefixes = "10.1.0.0/24"
@@ -25,19 +19,32 @@ variable "vnet-int" {
 }
 
 variable "vnet-ext" {
-  type = object({
-    name                    = string
-    address_space           = string
-    subnet_name             = string
-    subnet_address_prefixes = string
-  })
   default = {
-    name                    = "ext-lb-vnet"
+    name                    = "vnet-ext-lb"
     address_space           = "10.2.0.0/16"
     subnet_name             = "ext-lb-subnet"
     subnet_address_prefixes = "10.2.0.0/24"
   }
   description = "virtual network and subnet for external loadbalancer backend pools"
+}
+
+variable "ext_lb" {
+  default = {
+    name                          = "loadbalancer-ext"
+    sku                           = "Standard"
+    sku_tier                      = "Regional"
+  }
+  description = "Properties of the external load balancer. If Global balancer is required, use sku_tier = Global"
+}
+
+variable "int_lb" {
+  default = {
+    name                          = "loadBalancer-int"
+    sku                           = "Standard"
+    sku_tier                      = "Regional"
+    private_ip_address_allocation = "Dynamic"
+  }
+  description = "Properties of the internal load balancer. If Global balancer is required, use sku_tier = Global"
 }
 
 variable "ext_lb_pip" {
@@ -46,6 +53,7 @@ variable "ext_lb_pip" {
     name              = "ext-lb-public-IP"
     sku               = "Standard"
   }
+  description = "External load balancer's public IP"
 }
 
 variable "int_lb_pip" {
@@ -54,6 +62,7 @@ variable "int_lb_pip" {
     name              = "int-lb-public-IP"
     sku               = "Standard"
   }
+  description = "Internal load balancer's public IP"
 }
 
 variable "bastion_pip" {
@@ -62,6 +71,7 @@ variable "bastion_pip" {
     name              = "Bastion-Public-IP"
     sku               = "Standard"
   }
+  description = "Bastion host's public IP"
 }
 
 variable "nat_gw_pip" {
@@ -70,5 +80,6 @@ variable "nat_gw_pip" {
     name              = "Nat-GW-public-IP"
     sku               = "Standard"
   }
+  description = "Nat gateway's public IP"
 }
 
