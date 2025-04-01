@@ -19,7 +19,6 @@ resource "azurerm_lb" "ext_lb" {
   frontend_ip_configuration {
     name                 = "${var.ext_lb.name}-pip_Address"
     public_ip_address_id = azurerm_public_ip.ext_lb_pip.id
-    zones                = var.availability_zones
   }
 }
 
