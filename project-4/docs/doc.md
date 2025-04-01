@@ -6,9 +6,9 @@
 
 ### Steps
 - Create a resource group
-- Create two virtual networks and subnets
+- Create a virtual network with two subnets (for each load balancers)
 - Create private and public load balancers
-- Create a network security groups (NSGs)
+- Create network security groups (NSGs)
 - Create NAT gateways
 - Create a bastion host
 - Create 2 sets of virtual machines scale sets ( windows and Linux)

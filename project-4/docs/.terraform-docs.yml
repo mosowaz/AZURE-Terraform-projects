@@ -9,6 +9,9 @@ sort:
   enabled: true
   by: name
 
+settings:
+  required: false  
+
 content: |-
   {{ .Header }}
 

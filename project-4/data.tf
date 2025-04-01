@@ -14,7 +14,7 @@ data "azurerm_subscription" "primary" {
 }
 
 data "azurerm_subnet" "ext_lb_subnet" {
-  name                 = var.vnet-ext.subnet_name
-  virtual_network_name = azurerm_virtual_network.vnet_ext.name
+  name                 = var.vnet.subnet_name_ext
+  virtual_network_name = azurerm_virtual_network.vnet.name
   resource_group_name  = azurerm_resource_group.rg.name
 }
