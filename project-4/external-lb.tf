@@ -15,9 +15,10 @@ resource "azurerm_lb" "ext_lb" {
   resource_group_name = azurerm_resource_group.rg.name
   sku                 = var.ext_lb.sku
   sku_tier            = var.ext_lb.sku_tier
-
+  # Note:
+  # LoadBalancer Frontend IPConfig Cannot Have Zone When Referencing PublicIPAddress
   frontend_ip_configuration {
-    name                 = "${var.ext_lb.name}-pip_Address"
+    name                 = "${var.ext_lb.name}-pip"
     public_ip_address_id = azurerm_public_ip.ext_lb_pip.id
   }
 }
@@ -33,8 +34,10 @@ resource "azurerm_lb_probe" "ext_lb_probe" {
 
 # external LB backend address pool
 resource "azurerm_lb_backend_address_pool" "ext_lb_backEnd_pool" {
-  loadbalancer_id = azurerm_lb.ext_lb.id
-  name            = "BackEndAddressPool-ext"
+  loadbalancer_id  = azurerm_lb.ext_lb.id
+  name             = "BackEndAddressPool-ext"
+  synchronous_mode = "Automatic"
+  virtual_network_id = azurerm_virtual_network.vnet.id
 }
 
 # external LB rule
@@ -44,20 +47,10 @@ resource "azurerm_lb_rule" "ext_lb_rule" {
   protocol                       = "Tcp"
   frontend_port                  = 80
   backend_port                   = 80
-  frontend_ip_configuration_name = "${var.ext_lb.name}-pip_Address"
+  frontend_ip_configuration_name = "${var.ext_lb.name}-pip"
   disable_outbound_snat          = var.disable_outbound_snat
   probe_id                       = azurerm_lb_probe.ext_lb_probe.id
   backend_address_pool_ids       = [azurerm_lb_backend_address_pool.ext_lb_backEnd_pool.id]
   idle_timeout_in_minutes        = 15
   enable_tcp_reset               = true
-}
-
-# external lb outbound rule
-resource "azurerm_lb_outbound_rule" "ext_lb_outbound_rule" {
-  name                    = "OutboundRule-ext"
-  loadbalancer_id         = azurerm_lb.ext_lb.id
-  protocol                = "Tcp"
-  backend_address_pool_id = azurerm_lb_backend_address_pool.ext_lb_backEnd_pool.id
-  idle_timeout_in_minutes = 15
-  enable_tcp_reset        = true
 }

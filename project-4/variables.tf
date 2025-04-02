@@ -46,7 +46,7 @@ variable "int_lb" {
 
 variable "availability_zones" {
   type        = set(string)
-  default     = ["1", "2"]
+  default     = ["1", "2", "3"]
   description = "Availability zones to be allocated for zonal resources"
 }
 
@@ -57,15 +57,6 @@ variable "ext_lb_pip" {
     sku               = "Standard"
   }
   description = "External load balancer's public IP"
-}
-
-variable "int_lb_pip" {
-  default = {
-    allocation_method = "Static"
-    name              = "int-lb-public-IP"
-    sku               = "Standard"
-  }
-  description = "Internal load balancer's public IP"
 }
 
 variable "bastion_pip" {
