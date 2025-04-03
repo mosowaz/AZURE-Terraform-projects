@@ -81,3 +81,63 @@ variable "disable_outbound_snat" {
   default     = "true"
   description = "(Optional) Is snat enabled for this Load Balancer Rule?"
 }
+
+variable "nsg-1-rule-1" {
+  default = {
+    name = "allowInbound-HTTP"
+    priority = 200
+    direction = "Inbound"
+    access = "Allow"
+    protocol = "*"
+    source_port_range = "*"
+    destination_port_range = 80
+    source_address_prefix = "VirtualNetwork"
+    destination_address_prefix = "10.0.1.0/24"
+  }
+  description = "NSG rule (Allow Inbound HTTP) for internal load balancer subnet"
+}
+
+variable "nsg-1-rule-2" {
+  default = {
+    name = "allowOutbound-ALL"
+    priority = 300
+    direction = "Outbound"
+    access = "Allow"
+    protocol = "*"
+    source_port_range = "*"
+    destination_port_range = "*"
+    source_address_prefix = "10.0.1.0/24"
+    destination_address_prefix = "*"
+  }
+  description = "NSG rule (Allow Outbound ALL) for internal load balancer subnet"
+}
+
+variable "nsg-2-rule-1" {
+  default = {
+    name = "allowInbound-HTTP"
+    priority = 220
+    direction = "Inbound"
+    access = "Allow"
+    protocol = "*"
+    source_port_range = "*"
+    destination_port_range = 80
+    source_address_prefix = "VirtualNetwork"
+    destination_address_prefix = "10.0.2.0/24"
+  }
+  description = "NSG rule (Allow Inbound HTTP) for external load balancer subnet"
+}
+
+variable "nsg-2-rule-2" {
+  default = {
+    name = "allowOutbound-ALL"
+    priority = 330
+    direction = "Outbound"
+    access = "Allow"
+    protocol = "*"
+    source_port_range = "*"
+    destination_port_range = "*"
+    source_address_prefix = "10.0.2.0/24"
+    destination_address_prefix = "*"
+  }
+  description = "NSG rule (Allow Outbound ALL) for external load balancer subnet"
+}
