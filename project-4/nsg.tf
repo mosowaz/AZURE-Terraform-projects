@@ -1,6 +1,6 @@
 # Create NSGs
 resource "azurerm_network_security_group" "nsg" {
-  count               = 2
+  count               = 3
   name                = "nsg-${count.index + 1}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -47,3 +47,5 @@ resource "azurerm_subnet_network_security_group_association" "nsg-2-association"
   subnet_id                 = data.azurerm_subnet.ext_lb_subnet.id
   network_security_group_id = azurerm_network_security_group.nsg[1].id
 }
+
+
