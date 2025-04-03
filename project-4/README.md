@@ -50,11 +50,16 @@
 | [azurerm_lb_rule.int_lb_rule](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_rule) | resource |
 | [azurerm_nat_gateway.nat_gw](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway) | resource |
 | [azurerm_nat_gateway_public_ip_association.IP-nat_gw_association](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/nat_gateway_public_ip_association) | resource |
+| [azurerm_network_security_group.nsg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group) | resource |
+| [azurerm_network_security_rule.nsg_1_rules](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
+| [azurerm_network_security_rule.nsg_2_rules](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_rule) | resource |
 | [azurerm_public_ip.ext_lb_pip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) | resource |
 | [azurerm_public_ip.nat_gw_pip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) | resource |
 | [azurerm_resource_group.rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) | resource |
 | [azurerm_subnet_nat_gateway_association.subnet_ext-nat_gw_association](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_nat_gateway_association) | resource |
 | [azurerm_subnet_nat_gateway_association.subnet_int-nat_gw_association](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_nat_gateway_association) | resource |
+| [azurerm_subnet_network_security_group_association.nsg-1-association](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_network_security_group_association) | resource |
+| [azurerm_subnet_network_security_group_association.nsg-2-association](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_network_security_group_association) | resource |
 | [azurerm_virtual_network.vnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | resource |
 | [azuread_service_principal.spn](https://registry.terraform.io/providers/hashicorp/azuread/3.1.0/docs/data-sources/service_principal) | data source |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
@@ -77,6 +82,10 @@
 | <a name="input_lb-rg-name"></a> [lb-rg-name](#input\_lb-rg-name) | resource group name | `string` | `"rg-loadBalancers"` |
 | <a name="input_lb_probe_interval_in_seconds"></a> [lb\_probe\_interval\_in\_seconds](#input\_lb\_probe\_interval\_in\_seconds) | (Optional) The interval, in seconds between probes to the backend endpoint for health status. | `string` | `"5"` |
 | <a name="input_nat_gw_pip"></a> [nat\_gw\_pip](#input\_nat\_gw\_pip) | Nat gateway's public IP | `map` | <pre>{<br/>  "allocation_method": "Static",<br/>  "name": "Nat-GW-public-IP",<br/>  "sku": "Standard"<br/>}</pre> |
+| <a name="input_nsg-1-rule-1"></a> [nsg-1-rule-1](#input\_nsg-1-rule-1) | NSG rule (Allow Inbound HTTP) for internal load balancer subnet | `map` | <pre>{<br/>  "access": "Allow",<br/>  "destination_address_prefix": "10.0.1.0/24",<br/>  "destination_port_range": 80,<br/>  "direction": "Inbound",<br/>  "name": "allowInbound-HTTP",<br/>  "priority": 200,<br/>  "protocol": "*",<br/>  "source_address_prefix": "VirtualNetwork",<br/>  "source_port_range": "*"<br/>}</pre> |
+| <a name="input_nsg-1-rule-2"></a> [nsg-1-rule-2](#input\_nsg-1-rule-2) | NSG rule (Allow Outbound ALL) for internal load balancer subnet | `map` | <pre>{<br/>  "access": "Allow",<br/>  "destination_address_prefix": "*",<br/>  "destination_port_range": "*",<br/>  "direction": "Outbound",<br/>  "name": "allowOutbound-ALL",<br/>  "priority": 300,<br/>  "protocol": "*",<br/>  "source_address_prefix": "10.0.1.0/24",<br/>  "source_port_range": "*"<br/>}</pre> |
+| <a name="input_nsg-2-rule-1"></a> [nsg-2-rule-1](#input\_nsg-2-rule-1) | NSG rule (Allow Inbound HTTP) for external load balancer subnet | `map` | <pre>{<br/>  "access": "Allow",<br/>  "destination_address_prefix": "10.0.2.0/24",<br/>  "destination_port_range": 80,<br/>  "direction": "Inbound",<br/>  "name": "allowInbound-HTTP",<br/>  "priority": 220,<br/>  "protocol": "*",<br/>  "source_address_prefix": "VirtualNetwork",<br/>  "source_port_range": "*"<br/>}</pre> |
+| <a name="input_nsg-2-rule-2"></a> [nsg-2-rule-2](#input\_nsg-2-rule-2) | NSG rule (Allow Outbound ALL) for external load balancer subnet | `map` | <pre>{<br/>  "access": "Allow",<br/>  "destination_address_prefix": "*",<br/>  "destination_port_range": "*",<br/>  "direction": "Outbound",<br/>  "name": "allowOutbound-ALL",<br/>  "priority": 330,<br/>  "protocol": "*",<br/>  "source_address_prefix": "10.0.2.0/24",<br/>  "source_port_range": "*"<br/>}</pre> |
 | <a name="input_vnet"></a> [vnet](#input\_vnet) | virtual network and subnet for loadbalancer backend pools | `map` | <pre>{<br/>  "address_space": "10.0.0.0/16",<br/>  "name": "vnet-lb",<br/>  "subnet_address_prefixes_ext": "10.0.2.0/24",<br/>  "subnet_address_prefixes_int": "10.0.1.0/24",<br/>  "subnet_name_ext": "ext-lb-subnet",<br/>  "subnet_name_int": "int-lb-subnet"<br/>}</pre> |
 
 ## Outputs

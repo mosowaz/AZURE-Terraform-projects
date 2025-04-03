@@ -25,9 +25,9 @@ resource "azurerm_lb_probe" "int_lb_probe" {
 
 # internal LB backend address pool
 resource "azurerm_lb_backend_address_pool" "int_lb_backEnd_pool" {
-  loadbalancer_id  = azurerm_lb.int_lb.id
-  name             = "BackEndAddressPool-int"
-  synchronous_mode = "Automatic"
+  loadbalancer_id    = azurerm_lb.int_lb.id
+  name               = "BackEndAddressPool-int"
+  synchronous_mode   = "Automatic"
   virtual_network_id = azurerm_virtual_network.vnet.id
 }
 

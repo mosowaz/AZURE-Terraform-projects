@@ -34,9 +34,9 @@ resource "azurerm_lb_probe" "ext_lb_probe" {
 
 # external LB backend address pool
 resource "azurerm_lb_backend_address_pool" "ext_lb_backEnd_pool" {
-  loadbalancer_id  = azurerm_lb.ext_lb.id
-  name             = "BackEndAddressPool-ext"
-  synchronous_mode = "Automatic"
+  loadbalancer_id    = azurerm_lb.ext_lb.id
+  name               = "BackEndAddressPool-ext"
+  synchronous_mode   = "Automatic"
   virtual_network_id = azurerm_virtual_network.vnet.id
 }
 

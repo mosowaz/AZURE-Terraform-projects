@@ -44,6 +44,19 @@ variable "int_lb" {
   description = "Properties of the internal load balancer. If Global balancer is required, use sku_tier = Global"
 }
 
+variable "bastion_host" {
+  default = {
+    subnet             = "10.0.3.0/24"
+    name               = "Bastion"
+    sku                = "Standard"
+    ip_connect_enabled = true
+    copy_paste_enabled = true
+    file_copy_enabled  = true
+    scale_units        = 2
+  }
+  description = "Bastion host properties"
+}
+
 variable "availability_zones" {
   type        = set(string)
   default     = ["1", "2", "3"]
@@ -84,14 +97,14 @@ variable "disable_outbound_snat" {
 
 variable "nsg-1-rule-1" {
   default = {
-    name = "allowInbound-HTTP"
-    priority = 200
-    direction = "Inbound"
-    access = "Allow"
-    protocol = "*"
-    source_port_range = "*"
-    destination_port_range = 80
-    source_address_prefix = "VirtualNetwork"
+    name                       = "allowInbound-HTTP"
+    priority                   = 200
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = 80
+    source_address_prefix      = "VirtualNetwork"
     destination_address_prefix = "10.0.1.0/24"
   }
   description = "NSG rule (Allow Inbound HTTP) for internal load balancer subnet"
@@ -99,29 +112,44 @@ variable "nsg-1-rule-1" {
 
 variable "nsg-1-rule-2" {
   default = {
-    name = "allowOutbound-ALL"
-    priority = 300
-    direction = "Outbound"
-    access = "Allow"
-    protocol = "*"
-    source_port_range = "*"
-    destination_port_range = "*"
-    source_address_prefix = "10.0.1.0/24"
+    name                       = "allowOutbound-ALL"
+    priority                   = 300
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "10.0.1.0/24"
     destination_address_prefix = "*"
   }
   description = "NSG rule (Allow Outbound ALL) for internal load balancer subnet"
 }
 
+variable "nsg-1-rule-3" {
+  default = {
+    name                       = "allowInbound-SSH-RDP"
+    priority                   = 400
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = 3389
+    source_address_prefix      = "VirtualNetwork"
+    destination_address_prefix = "10.0.1.0/24"
+  }
+  description = "NSG rule (Allow Inbound SSH and RDP) for internal load balancer subnet"
+}
+
 variable "nsg-2-rule-1" {
   default = {
-    name = "allowInbound-HTTP"
-    priority = 220
-    direction = "Inbound"
-    access = "Allow"
-    protocol = "*"
-    source_port_range = "*"
-    destination_port_range = 80
-    source_address_prefix = "VirtualNetwork"
+    name                       = "allowInbound-HTTP"
+    priority                   = 220
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = 80
+    source_address_prefix      = "VirtualNetwork"
     destination_address_prefix = "10.0.2.0/24"
   }
   description = "NSG rule (Allow Inbound HTTP) for external load balancer subnet"
@@ -129,15 +157,30 @@ variable "nsg-2-rule-1" {
 
 variable "nsg-2-rule-2" {
   default = {
-    name = "allowOutbound-ALL"
-    priority = 330
-    direction = "Outbound"
-    access = "Allow"
-    protocol = "*"
-    source_port_range = "*"
-    destination_port_range = "*"
-    source_address_prefix = "10.0.2.0/24"
+    name                       = "allowOutbound-ALL"
+    priority                   = 330
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "10.0.2.0/24"
     destination_address_prefix = "*"
   }
   description = "NSG rule (Allow Outbound ALL) for external load balancer subnet"
+}
+
+variable "nsg-2-rule-3" {
+  default = {
+    name                       = "allowInbound-SSH-RDP"
+    priority                   = 440
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = 22
+    source_address_prefix      = "VirtualNetwork"
+    destination_address_prefix = "10.0.2.0/24"
+  }
+  description = "NSG rule (Allow Inbound SSH and RDP) for external load balancer subnet"
 }

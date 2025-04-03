@@ -38,9 +38,8 @@ stages:
                 -backend-config="container_name=$(ContainerName)" \
                 -backend-config="key=${{parameters.BlobName}}" \
                 -backend-config="use_azuread_auth=true"
-              terraform apply -auto-approve -input=false '-lock=false' '${{parameters.tfplan}}'
-              terraform state list -state=${{parameters.BlobName}}
-              rm -rf *  # Remove artifacts after use
+              terraform apply -auto-approve -input=false '-lock=false' '${{parameters.tfplan}}' \
+              && terraform state list -state=${{parameters.BlobName}}
             env:
               ARM_CLIENT_ID: $(SPN2-client-id)
               ARM_TENANT_ID: $(SPN2-tenant-id)
@@ -51,3 +50,8 @@ stages:
             displayName: 'terraform apply'
             workingDirectory: '$(Build.ArtifactStagingDirectory)'
             continueOnError: false
+
+          - bash: rm -rf *  
+            displayName: Remove artifacts after use
+            workingDirectory: '$(Build.ArtifactStagingDirectory)'
+            
