@@ -29,6 +29,8 @@ stages:
         ARM_CLIENT_SECRET: $(SPN2-client-secret)
         ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
         TF_VAR_vm_password: $(vm_password)
+        TF_VAR_sshkey-private: $(sshkey-private)
+        TF_VAR_sshkey-public: $(sshkey-public)
       workingDirectory: ${{parameters.TerraformDirectory}}
       displayName: 'terraform init, validate and plan'
       continueOnError: false

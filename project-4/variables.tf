@@ -154,3 +154,13 @@ variable "nsg-2-rule-2" {
   }
   description = "NSG rule (Allow Inbound SSH and RDP) for external load balancer subnet"
 }
+
+variable "linux-vmss" {
+  type        = any
+  description = "values for backend pool used behind external load balancer. values found in linux-vmss.tf file"
+}
+
+variable "windows-vmss" {
+  type        = any
+  description = "values for backend pool used behind internal load balancer. values found in windows-vmss.tf file"
+}

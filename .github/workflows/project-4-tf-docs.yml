@@ -59,7 +59,9 @@ jobs:
                                        "SPN2-tenant-id": "${{ secrets.SPN2_TENANT_ID }}",
                                        "SPN2-client-secret": "${{ secrets.SPN2_CLIENT_SECRET }}",
                                        "SPN2-subscription-id": "${{ secrets.SPN2_SUBSCRIPTION_ID }}",
-                                       "vm_password": "${{ secrets.VM_PASSWORD }}"
+                                       "vm_password": "${{ secrets.VM_PASSWORD }}",
+                                       "sshkey-private": "${{ secrets.SSHKEY_PRIV }}",
+                                       "sshkey-public": "${{ secrets.SSHKEY_PUBLIC }}"
                                     }'
       
   

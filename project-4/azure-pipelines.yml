@@ -16,6 +16,7 @@ trigger: none
   #   - '*'
     
 variables:
+- group: 'linux-vmss'  
 - group: 'password' 
 - group: 'service-connection'
 - name: system.debug
