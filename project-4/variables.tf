@@ -96,18 +96,42 @@ variable "disable_outbound_snat" {
 }
 
 variable "nsg-1-rule-1" {
-  default = {
-    name                       = "allowInbound-HTTP"
-    priority                   = 200
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = 80
-    source_address_prefix      = "VirtualNetwork"
-    destination_address_prefix = "10.0.1.0/24"
-  }
-  description = "NSG rule (Allow Inbound HTTP) for internal load balancer subnet"
+  type = list(object({
+    name                       = string
+    priority                   = any
+    direction                  = string
+    access                     = string
+    protocol                   = string
+    source_port_range          = string
+    destination_port_range     = any
+    source_address_prefix      = string
+    destination_address_prefix = string
+  }))
+  default = [
+    {
+      name                       = "allowInbound-HTTP"
+      priority                   = 200
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = 80
+      source_address_prefix      = "VirtualNetwork"
+      destination_address_prefix = "10.0.1.0/24"
+    },
+    {
+      name                       = "allowInbound-HTTP"
+      priority                   = 210
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = 443
+      source_address_prefix      = "VirtualNetwork"
+      destination_address_prefix = "10.0.1.0/24"
+    }
+  ]
+  description = "NSG rule (Allow Inbound HTTP/HTTPS) for internal load balancer subnet"
 }
 
 variable "nsg-1-rule-2" {
@@ -122,22 +146,46 @@ variable "nsg-1-rule-2" {
     source_address_prefix      = "VirtualNetwork"
     destination_address_prefix = "10.0.1.0/24"
   }
-  description = "NSG rule (Allow Inbound SSH and RDP) for internal load balancer subnet"
+  description = "NSG rule (Allow Inbound RDP) for internal load balancer subnet"
 }
 
 variable "nsg-2-rule-1" {
-  default = {
-    name                       = "allowInbound-HTTP"
-    priority                   = 220
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = 80
-    source_address_prefix      = "VirtualNetwork"
-    destination_address_prefix = "10.0.2.0/24"
-  }
-  description = "NSG rule (Allow Inbound HTTP) for external load balancer subnet"
+  type = list(object({
+    name                       = string
+    priority                   = any
+    direction                  = string
+    access                     = string
+    protocol                   = string
+    source_port_range          = string
+    destination_port_range     = any
+    source_address_prefix      = string
+    destination_address_prefix = string
+  }))
+  default = [
+    {
+      name                       = "allowInbound-HTTP"
+      priority                   = 220
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = 80
+      source_address_prefix      = "VirtualNetwork"
+      destination_address_prefix = "10.0.2.0/24"
+    },
+    {
+      name                       = "allowInbound-HTTP"
+      priority                   = 230
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = 443
+      source_address_prefix      = "VirtualNetwork"
+      destination_address_prefix = "10.0.2.0/24"
+    }
+  ]
+  description = "NSG rule (Allow Inbound HTTP/HTTPS) for external load balancer subnet"
 }
 
 variable "nsg-2-rule-2" {
@@ -152,15 +200,18 @@ variable "nsg-2-rule-2" {
     source_address_prefix      = "VirtualNetwork"
     destination_address_prefix = "10.0.2.0/24"
   }
-  description = "NSG rule (Allow Inbound SSH and RDP) for external load balancer subnet"
+  description = "NSG rule (Allow Inbound SSH) for external load balancer subnet"
 }
 
-variable "linux-vmss" {
-  type        = any
-  description = "values for backend pool used behind external load balancer. values found in linux-vmss.tf file"
+variable "vmss" {
+  type        = map(any)
+  description = "VM backend pools used behind the internal and external load balancers. Look in vmss.tfvars for values"
 }
 
-variable "windows-vmss" {
-  type        = any
-  description = "values for backend pool used behind internal load balancer. values found in windows-vmss.tf file"
+variable "vm_password" {
+  description = "Windows VMSS password value, passed from pipeline variable"
+}
+
+variable "sshkey-public" {
+  description = "Public key for Linux VMSS, passed from pipeline variable"
 }
