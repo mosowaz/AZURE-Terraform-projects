@@ -9,3 +9,5 @@
 **/.terraform.tfstate.lock.info
 
 **/.external_modules/*
+
+.infracost/*

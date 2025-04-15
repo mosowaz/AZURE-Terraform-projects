@@ -6,6 +6,7 @@ pr: none
 
 variables:
 - group: 'password'
+- group: 'linux-vmss' 
 - group: 'service-connection'
 - name: system.debug
   value: 'true'
@@ -44,13 +45,16 @@ stages:
           -backend-config="container_name=$(ContainerName)" \
           -backend-config="key=$(stateFile)" \
           -backend-config="use_azuread_auth=true"
-        terraform destroy -auto-approve -input=false '-lock-timeout=1m'
+        terraform destroy -auto-approve -input=false '-lock-timeout=1m' \
+          '-var-file=vmss.tfvars' '-var-file=autoscale.tfvars'
       env:
         ARM_CLIENT_ID: $(SPN2-client-id)
         ARM_TENANT_ID: $(SPN2-tenant-id)
         ARM_CLIENT_SECRET: $(SPN2-client-secret)
         ARM_SUBSCRIPTION_ID: $(SPN2-subscription-id)
         TF_VAR_vm_password: $(vm_password)
+        TF_VAR_sshkey-private: $(sshkey-private)
+        TF_VAR_sshkey-public: $(sshkey-public)
       workingDirectory: 'project-4'
       displayName: 'terraform destroy'
     

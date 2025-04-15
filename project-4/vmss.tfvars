@@ -7,26 +7,26 @@ vmss = {
 
   upgrade_mode                                      = "Rolling"
   do_not_run_extensions_on_overprovisioned_machines = true
-  enable_automatic_updates                          = false
+  windows_enable_automatic_updates                  = false
   extension_operations_enabled                      = true
   provision_vm_agent                                = true
-  timezone                                          = "Eastern Standard Time"
-  int_lb_health_probe_id                            = azurerm_lb_probe.int_lb_probe.id
+  windows_timezone                                  = "Eastern Standard Time"
   zones                                             = [1, 2, 3]
+  health_probe_id                                   = ""
 
   int_lb_network_interface = {
     nic1 = {
       name                  = "nic1"
       primary               = true
       ip_configuration_name = "ipConf-01"
-      subnet_id             = data.azurerm_subnet.int_lb_subnet.id
+      subnet_id             = ""
       version               = "IPv4"
     }
     nic2 = {
       name                  = "nic2"
       primary               = false
       ip_configuration_name = "ipConf-02"
-      subnet_id             = data.azurerm_subnet.int_lb_subnet.id
+      subnet_id             = ""
       version               = "IPv4"
     }
   }
@@ -36,14 +36,14 @@ vmss = {
       name                  = "nic1"
       primary               = true
       ip_configuration_name = "ipConf-01"
-      subnet_id             = data.azurerm_subnet.ext_lb_subnet.id
+      subnet_id             = ""
       version               = "IPv4"
     }
     nic2 = {
       name                  = "nic2"
       primary               = false
       ip_configuration_name = "ipConf-02"
-      subnet_id             = data.azurerm_subnet.ext_lb_subnet.id
+      subnet_id             = ""
       version               = "IPv4"
     }
   }
@@ -74,7 +74,7 @@ vmss = {
 
   automatic_instance_repair = {
     enabled      = true
-    grace_period = 30
+    grace_period = "PT30M"
   }
 
   boot_diagnostics = {
@@ -97,7 +97,7 @@ vmss = {
   }
 
   identity = {
-    type         = ["SystemAssigned", "UserAssigned"]
+    type         = "SystemAssigned, UserAssigned"
     identity_ids = []
   }
 

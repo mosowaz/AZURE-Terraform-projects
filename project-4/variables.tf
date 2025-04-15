@@ -96,7 +96,7 @@ variable "disable_outbound_snat" {
 }
 
 variable "nsg-1-rule-1" {
-  type = list(object({
+  type = map(object({
     name                       = string
     priority                   = any
     direction                  = string
@@ -107,8 +107,8 @@ variable "nsg-1-rule-1" {
     source_address_prefix      = string
     destination_address_prefix = string
   }))
-  default = [
-    {
+  default = {
+    first = {
       name                       = "allowInbound-HTTP"
       priority                   = 200
       direction                  = "Inbound"
@@ -118,8 +118,8 @@ variable "nsg-1-rule-1" {
       destination_port_range     = 80
       source_address_prefix      = "VirtualNetwork"
       destination_address_prefix = "10.0.1.0/24"
-    },
-    {
+    }
+    second = {
       name                       = "allowInbound-HTTP"
       priority                   = 210
       direction                  = "Inbound"
@@ -130,7 +130,7 @@ variable "nsg-1-rule-1" {
       source_address_prefix      = "VirtualNetwork"
       destination_address_prefix = "10.0.1.0/24"
     }
-  ]
+  }
   description = "NSG rule (Allow Inbound HTTP/HTTPS) for internal load balancer subnet"
 }
 
@@ -150,7 +150,7 @@ variable "nsg-1-rule-2" {
 }
 
 variable "nsg-2-rule-1" {
-  type = list(object({
+  type = map(object({
     name                       = string
     priority                   = any
     direction                  = string
@@ -161,8 +161,8 @@ variable "nsg-2-rule-1" {
     source_address_prefix      = string
     destination_address_prefix = string
   }))
-  default = [
-    {
+  default = {
+    first = {
       name                       = "allowInbound-HTTP"
       priority                   = 220
       direction                  = "Inbound"
@@ -172,8 +172,8 @@ variable "nsg-2-rule-1" {
       destination_port_range     = 80
       source_address_prefix      = "VirtualNetwork"
       destination_address_prefix = "10.0.2.0/24"
-    },
-    {
+    }
+    second = {
       name                       = "allowInbound-HTTP"
       priority                   = 230
       direction                  = "Inbound"
@@ -184,7 +184,7 @@ variable "nsg-2-rule-1" {
       source_address_prefix      = "VirtualNetwork"
       destination_address_prefix = "10.0.2.0/24"
     }
-  ]
+  }
   description = "NSG rule (Allow Inbound HTTP/HTTPS) for external load balancer subnet"
 }
 
@@ -204,14 +204,25 @@ variable "nsg-2-rule-2" {
 }
 
 variable "vmss" {
-  type        = map(any)
+  type        = any
+  default     = {}
   description = "VM backend pools used behind the internal and external load balancers. Look in vmss.tfvars for values"
 }
 
 variable "vm_password" {
+  type        = string
+  sensitive   = true
   description = "Windows VMSS password value, passed from pipeline variable"
 }
 
 variable "sshkey-public" {
+  type        = string
+  sensitive   = true
   description = "Public key for Linux VMSS, passed from pipeline variable"
+}
+
+variable "autoscale-vmss" {
+  type        = any
+  default     = {}
+  description = "AutoScale settings for VMSS"
 }

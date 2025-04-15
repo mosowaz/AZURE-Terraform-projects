@@ -39,29 +39,29 @@ jobs:
           config-file: project-4/docs/.terraform-docs.yml  # absolute path/to/file
           git-commit-message: "${{ steps.last_commit.outputs.message }}"  # use last commit message
           
-      # - name: Trigger a run in Azure pipelines    
-      #   uses: Azure/pipelines@v1
-      #   with:
-      #     azure-devops-project-url: 'https://dev.azure.com/MosesOwaseye/Load%20Balancers'
-      #     azure-pipeline-name: 'Deploy Resources' # name of the Azure pipeline to be triggered
-      #     azure-devops-token: '${{ secrets.AZURE_DEVOPS_TOKEN }}'
-      #     azure-pipeline-variables: '{
-      #                                  "TerraformDirectory": "${{ vars.TERRAFORMDIRECTORY }}", 
-      #                                  "infrastructure": "${{ vars.INFRASTRUCTURE }}",
-      #                                  "tfplan": "${{ vars.TFPLAN }}",
-      #                                  "BlobName": "${{ vars.BLOBNAME }}",
-      #                                  "RGName": "${{ vars.RGNAME }}",
-      #                                  "StorageAccName": "${{ vars.STORAGEACCNAME }}",
-      #                                  "ContainerName": "${{ vars.CONTAINERNAME }}",
-      #                                  "ADO_Environment": "${{ vars.ADO_ENVIRONMENT }}",
-      #                                  "Pipeline_Agent": "${{ vars.PIPELINE_AGENT }}",
-      #                                  "SPN2-client-id": "${{ secrets.SPN2_CLIENT_ID }}",
-      #                                  "SPN2-tenant-id": "${{ secrets.SPN2_TENANT_ID }}",
-      #                                  "SPN2-client-secret": "${{ secrets.SPN2_CLIENT_SECRET }}",
-      #                                  "SPN2-subscription-id": "${{ secrets.SPN2_SUBSCRIPTION_ID }}",
-      #                                  "vm_password": "${{ secrets.VM_PASSWORD }}",
-      #                                  "sshkey-private": "${{ secrets.SSHKEY_PRIV }}",
-      #                                  "sshkey-public": "${{ secrets.SSHKEY_PUBLIC }}"
-      #                               }'
+      - name: Trigger a run in Azure pipelines    
+        uses: Azure/pipelines@v1
+        with:
+          azure-devops-project-url: 'https://dev.azure.com/MosesOwaseye/Load%20Balancers'
+          azure-pipeline-name: 'Deploy Resources' # name of the Azure pipeline to be triggered
+          azure-devops-token: '${{ secrets.AZURE_DEVOPS_TOKEN }}'
+          azure-pipeline-variables: '{
+                                       "TerraformDirectory": "${{ vars.TERRAFORMDIRECTORY }}", 
+                                       "infrastructure": "${{ vars.INFRASTRUCTURE }}",
+                                       "tfplan": "${{ vars.TFPLAN }}",
+                                       "BlobName": "${{ vars.BLOBNAME }}",
+                                       "RGName": "${{ vars.RGNAME }}",
+                                       "StorageAccName": "${{ vars.STORAGEACCNAME }}",
+                                       "ContainerName": "${{ vars.CONTAINERNAME }}",
+                                       "ADO_Environment": "${{ vars.ADO_ENVIRONMENT }}",
+                                       "Pipeline_Agent": "${{ vars.PIPELINE_AGENT }}",
+                                       "SPN2-client-id": "${{ secrets.SPN2_CLIENT_ID }}",
+                                       "SPN2-tenant-id": "${{ secrets.SPN2_TENANT_ID }}",
+                                       "SPN2-client-secret": "${{ secrets.SPN2_CLIENT_SECRET }}",
+                                       "SPN2-subscription-id": "${{ secrets.SPN2_SUBSCRIPTION_ID }}",
+                                       "vm_password": "${{ secrets.VM_PASSWORD }}",
+                                       "sshkey-private": "${{ secrets.SSHKEY_PRIV }}",
+                                       "sshkey-public": "${{ secrets.SSHKEY_PUBLIC }}"
+                                    }'
       
   
