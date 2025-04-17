@@ -16,6 +16,7 @@
 - Create NAT gateway
 - Create a bastion host
 - Create 2 sets of backend pools ( windows and Linux VMSS)
-- Install IIS on Windows
-- Install Nginx on Linux
+- Create Autoscale settings for VMSS
+- Install IIS (as extention) in Windows
+- Install Nginx (as extention) in Linux
 - Test both load balancers

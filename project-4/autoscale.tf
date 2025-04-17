@@ -1,64 +1,66 @@
-# module "avm-res-insights-autoscalesetting" {
-#   source  = "git::https://github.com/Azure/avm-res-insights-autoscalesetting.git?f4e7e4b"
+module "avm-res-insights-autoscalesetting" {
+  for_each = local.autoscale-settings
+  source   = "git::https://github.com/Azure/terraform-azurerm-avm-res-insights-autoscalesetting.git?ref=f4e7e4b"
 
-#   location            = azurerm_resource_group.rg.location
-#   name                = "autoscale"
-#   resource_group_name = azurerm_resource_group.rg.name
-#   target_resource_id  = module.terraform_azurerm_avm_res_compute_virtualmachinescaleset.resource_id
-#   enabled             = true
-#   tags                = local.tags
+  name                = var.autoscale-vmss.name
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  target_resource_id  = each.value.target_resource_id
+  enabled             = var.autoscale-vmss.enabled
+  enable_telemetry    = var.autoscale-vmss.enable_telemetry
 
-#   profiles = {
-#     "profile1" = {
-#       name = "autoscale"
-#       capacity = {
-#         default = 2
-#         maximum = 4
-#         minimum = 2
-#       }
-#       rules = {
-#         rule1 = {
-#           metric_trigger = {
-#             metric_name        = "Percentage CPU"
-#             metric_resource_id = module.terraform_azurerm_avm_res_compute_virtualmachinescaleset.resource_id
-#             operator           = "LessThan"
-#             statistic          = "Average"
-#             threshold          = 10
-#             time_aggregation   = "Average"
-#             time_grain         = "PT1M"
-#             time_window        = "PT2M"
-#           }
-#           scale_action = {
-#             cooldown  = "PT1M"
-#             direction = "Decrease"
-#             type      = "ChangeCount"
-#             value     = "1"
-#           }
-#         }
-#         rule2 = {
-#           metric_trigger = {
-#             metric_name        = "Percentage CPU"
-#             metric_resource_id = module.terraform_azurerm_avm_res_compute_virtualmachinescaleset.resource_id
-#             operator           = "GreaterThan"
-#             statistic          = "Average"
-#             threshold          = 90
-#             time_aggregation   = "Average"
-#             time_grain         = "PT1M"
-#             time_window        = "PT2M"
-#           }
-#           scale_action = {
-#             cooldown  = "PT1M"
-#             direction = "Increase"
-#             type      = "ChangeCount"
-#             value     = "1"
-#           }
-#         }
-#       }
-#     }
-#   }
+  profiles = {
+    profile1 = {
+      name = var.autoscale-vmss.profiles.profile1.name
 
-#   predictive = {
-#     scale_mode      = "Enabled"
-#     look_ahead_time = "PT5M"
-#   }
-# }
+      capacity = {
+        default = var.autoscale-vmss.profiles.profile1.capacity.default
+        maximum = var.autoscale-vmss.profiles.profile1.capacity.maximum
+        minimum = var.autoscale-vmss.profiles.profile1.capacity.minimum
+      }
+
+      rules = {
+        rule1 = {
+          metric_trigger = {
+            metric_name        = var.autoscale-vmss.profiles.profile1.rules.rule1.metric_trigger.metric_name
+            metric_resource_id = each.value.target_resource_id
+            operator           = var.autoscale-vmss.profiles.profile1.rules.rule1.metric_trigger.operator
+            statistic          = var.autoscale-vmss.profiles.profile1.rules.rule1.metric_trigger.statistic
+            threshold          = var.autoscale-vmss.profiles.profile1.rules.rule1.metric_trigger.threshold
+            time_aggregation   = var.autoscale-vmss.profiles.profile1.rules.rule1.metric_trigger.time_aggregation
+            time_grain         = var.autoscale-vmss.profiles.profile1.rules.rule1.metric_trigger.time_grain
+            time_window        = var.autoscale-vmss.profiles.profile1.rules.rule1.metric_trigger.time_window
+          }
+          scale_action = {
+            cooldown  = var.autoscale-vmss.profiles.profile1.rules.rule1.scale_action.cooldown
+            direction = var.autoscale-vmss.profiles.profile1.rules.rule1.scale_action.direction
+            type      = var.autoscale-vmss.profiles.profile1.rules.rule1.scale_action.type
+            value     = var.autoscale-vmss.profiles.profile1.rules.rule1.scale_action.value
+          }
+        }
+        rule2 = {
+          metric_trigger = {
+            metric_name        = var.autoscale-vmss.profiles.profile1.rules.rule2.metric_trigger.metric_name
+            metric_resource_id = each.value.target_resource_id
+            operator           = var.autoscale-vmss.profiles.profile1.rules.rule2.metric_trigger.operator
+            statistic          = var.autoscale-vmss.profiles.profile1.rules.rule2.metric_trigger.statistic
+            threshold          = var.autoscale-vmss.profiles.profile1.rules.rule2.metric_trigger.threshold
+            time_aggregation   = var.autoscale-vmss.profiles.profile1.rules.rule2.metric_trigger.time_aggregation
+            time_grain         = var.autoscale-vmss.profiles.profile1.rules.rule2.metric_trigger.time_grain
+            time_window        = var.autoscale-vmss.profiles.profile1.rules.rule2.metric_trigger.time_window
+          }
+          scale_action = {
+            cooldown  = var.autoscale-vmss.profiles.profile1.rules.rule2.scale_action.cooldown
+            direction = var.autoscale-vmss.profiles.profile1.rules.rule2.scale_action.direction
+            type      = var.autoscale-vmss.profiles.profile1.rules.rule2.scale_action.type
+            value     = var.autoscale-vmss.profiles.profile1.rules.rule2.scale_action.value
+          }
+        }
+      }
+    }
+  }
+
+  predictive = {
+    scale_mode = var.autoscale-vmss.predictive.scale_mode
+  }
+}
