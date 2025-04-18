@@ -38,7 +38,8 @@ stages:
       
     - template: 'templates/installs.yml'
 
-    - bash: | 
+    - bash: |
+        set -exo pipefail
         terraform init -upgrade -reconfigure -input=false -lock=false \
           -backend-config="resource_group_name=$(RGName)" \
           -backend-config="storage_account_name=$(StorageAccName)" \
@@ -47,6 +48,7 @@ stages:
           -backend-config="use_azuread_auth=true"
         terraform destroy -auto-approve -input=false '-lock-timeout=1m' \
           '-var-file=vmss.tfvars' '-var-file=autoscale.tfvars'
+        terraform state list -state='$(stateFile)'
       env:
         ARM_CLIENT_ID: $(SPN2-client-id)
         ARM_TENANT_ID: $(SPN2-tenant-id)

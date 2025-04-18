@@ -7,7 +7,7 @@ on:
       - dev
       - main
     paths:
-      - project-4/*
+      - 'project-4/**'
       - '.github/workflows/project-4-tf-docs.yml'
     tags: 
       - '*'
