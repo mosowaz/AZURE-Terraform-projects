@@ -109,7 +109,7 @@ variable "nsg-1-rule-1" {
   }))
   default = {
     first = {
-      name                       = "allowInbound-HTTP"
+      name                       = "allowInbound-HTTP-int1"
       priority                   = 200
       direction                  = "Inbound"
       access                     = "Allow"
@@ -120,7 +120,7 @@ variable "nsg-1-rule-1" {
       destination_address_prefix = "10.0.1.0/24"
     }
     second = {
-      name                       = "allowInbound-HTTP"
+      name                       = "allowInbound-HTTP-int2"
       priority                   = 210
       direction                  = "Inbound"
       access                     = "Allow"
@@ -163,7 +163,7 @@ variable "nsg-2-rule-1" {
   }))
   default = {
     first = {
-      name                       = "allowInbound-HTTP"
+      name                       = "allowInbound-HTTP-ext1"
       priority                   = 220
       direction                  = "Inbound"
       access                     = "Allow"
@@ -174,7 +174,7 @@ variable "nsg-2-rule-1" {
       destination_address_prefix = "10.0.2.0/24"
     }
     second = {
-      name                       = "allowInbound-HTTP"
+      name                       = "allowInbound-HTTP-ext2"
       priority                   = 230
       direction                  = "Inbound"
       access                     = "Allow"

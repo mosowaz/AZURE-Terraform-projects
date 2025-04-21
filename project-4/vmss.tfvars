@@ -101,6 +101,14 @@ vmss = {
     identity_ids = []
   }
 
+  # This is Required and can only be specified when upgrade_mode is set to Automatic or Rolling
+  rolling_upgrade_policy = {  
+    max_batch_instance_percent = 50
+    max_unhealthy_instance_percent = 50
+    max_unhealthy_upgraded_instance_percent = 50
+    pause_time_between_batches = "PT10M"
+  }
+
   scale_in = {
     rule                   = "Default"
     force_deletion_enabled = false

@@ -76,6 +76,13 @@ resource "azurerm_windows_virtual_machine_scale_set" "windows_vmss" {
     force_deletion_enabled = var.vmss.scale_in.force_deletion_enabled
   }
 
+  rolling_upgrade_policy {
+    max_batch_instance_percent = var.vmss.rolling_upgrade_policy.max_batch_instance_percent
+    max_unhealthy_instance_percent = var.vmss.rolling_upgrade_policy.max_unhealthy_instance_percent
+    max_unhealthy_upgraded_instance_percent = var.vmss.rolling_upgrade_policy.max_unhealthy_upgraded_instance_percent
+    pause_time_between_batches = var.vmss.rolling_upgrade_policy.pause_time_between_batches
+  }
+
   lifecycle {
     ignore_changes = [instances]
   }
