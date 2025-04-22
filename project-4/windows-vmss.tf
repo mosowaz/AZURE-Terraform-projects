@@ -1,11 +1,12 @@
 resource "azurerm_windows_virtual_machine_scale_set" "windows_vmss" {
-  name                = var.vmss.windows_vmss_name
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  admin_password      = var.vm_password
-  admin_username      = var.vmss.admin_username
-  instances           = var.vmss.instances
-  sku                 = var.vmss.sku
+  name                 = var.vmss.windows_vmss_name
+  resource_group_name  = azurerm_resource_group.rg.name
+  location             = azurerm_resource_group.rg.location
+  admin_password       = var.vm_password
+  admin_username       = var.vmss.admin_username
+  instances            = var.vmss.instances
+  sku                  = var.vmss.sku
+  computer_name_prefix = var.vmss.computer_name_prefix
 
   upgrade_mode                                      = var.vmss.upgrade_mode
   do_not_run_extensions_on_overprovisioned_machines = var.vmss.do_not_run_extensions_on_overprovisioned_machines
@@ -22,9 +23,10 @@ resource "azurerm_windows_virtual_machine_scale_set" "windows_vmss" {
       name    = network_interface.value.name
       primary = network_interface.value.primary
       ip_configuration {
-        name      = network_interface.value.ip_configuration_name
-        subnet_id = data.azurerm_subnet.int_lb_subnet.id
-        version   = network_interface.value.version
+        name                                   = network_interface.value.ip_configuration_name
+        subnet_id                              = data.azurerm_subnet.int_lb_subnet.id
+        load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.int_lb_backEnd_pool.id]
+        version                                = network_interface.value.version
       }
     }
   }
@@ -77,10 +79,10 @@ resource "azurerm_windows_virtual_machine_scale_set" "windows_vmss" {
   }
 
   rolling_upgrade_policy {
-    max_batch_instance_percent = var.vmss.rolling_upgrade_policy.max_batch_instance_percent
-    max_unhealthy_instance_percent = var.vmss.rolling_upgrade_policy.max_unhealthy_instance_percent
+    max_batch_instance_percent              = var.vmss.rolling_upgrade_policy.max_batch_instance_percent
+    max_unhealthy_instance_percent          = var.vmss.rolling_upgrade_policy.max_unhealthy_instance_percent
     max_unhealthy_upgraded_instance_percent = var.vmss.rolling_upgrade_policy.max_unhealthy_upgraded_instance_percent
-    pause_time_between_batches = var.vmss.rolling_upgrade_policy.pause_time_between_batches
+    pause_time_between_batches              = var.vmss.rolling_upgrade_policy.pause_time_between_batches
   }
 
   lifecycle {

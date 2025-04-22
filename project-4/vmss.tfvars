@@ -1,9 +1,10 @@
 vmss = {
-  linux_vmss_name   = "linux-vmss"
-  windows_vmss_name = "windows-vmss"
-  admin_username    = "adminuser"
-  instances         = 4
-  sku               = "Standard_F2s_v2"
+  linux_vmss_name      = "Linux-VMs"
+  windows_vmss_name    = "Window-VMs"
+  admin_username       = "adminuser"
+  instances            = 4
+  sku                  = "Standard_F2s_v2"
+  computer_name_prefix = "vmss"
 
   upgrade_mode                                      = "Rolling"
   do_not_run_extensions_on_overprovisioned_machines = true
@@ -16,35 +17,39 @@ vmss = {
 
   int_lb_network_interface = {
     nic1 = {
-      name                  = "nic1"
-      primary               = true
-      ip_configuration_name = "ipConf-01"
-      subnet_id             = ""
-      version               = "IPv4"
+      name                                   = "nic1"
+      primary                                = true
+      ip_configuration_name                  = "ipConf-01"
+      subnet_id                              = ""
+      load_balancer_backend_address_pool_ids = [""]
+      version                                = "IPv4"
     }
     nic2 = {
-      name                  = "nic2"
-      primary               = false
-      ip_configuration_name = "ipConf-02"
-      subnet_id             = ""
-      version               = "IPv4"
+      name                                   = "nic2"
+      primary                                = false
+      ip_configuration_name                  = "ipConf-02"
+      subnet_id                              = ""
+      load_balancer_backend_address_pool_ids = [""]
+      version                                = "IPv4"
     }
   }
 
   ext_lb_network_interface = {
     nic1 = {
-      name                  = "nic1"
-      primary               = true
-      ip_configuration_name = "ipConf-01"
-      subnet_id             = ""
-      version               = "IPv4"
+      name                                   = "nic1"
+      primary                                = true
+      ip_configuration_name                  = "ipConf-01"
+      subnet_id                              = ""
+      load_balancer_backend_address_pool_ids = [""]
+      version                                = "IPv4"
     }
     nic2 = {
-      name                  = "nic2"
-      primary               = false
-      ip_configuration_name = "ipConf-02"
-      subnet_id             = ""
-      version               = "IPv4"
+      name                                   = "nic2"
+      primary                                = false
+      ip_configuration_name                  = "ipConf-02"
+      subnet_id                              = ""
+      load_balancer_backend_address_pool_ids = [""]
+      version                                = "IPv4"
     }
   }
 
@@ -102,11 +107,11 @@ vmss = {
   }
 
   # This is Required and can only be specified when upgrade_mode is set to Automatic or Rolling
-  rolling_upgrade_policy = {  
-    max_batch_instance_percent = 50
-    max_unhealthy_instance_percent = 50
+  rolling_upgrade_policy = {
+    max_batch_instance_percent              = 50
+    max_unhealthy_instance_percent          = 50
     max_unhealthy_upgraded_instance_percent = 50
-    pause_time_between_batches = "PT10M"
+    pause_time_between_batches              = "PT10M"
   }
 
   scale_in = {
