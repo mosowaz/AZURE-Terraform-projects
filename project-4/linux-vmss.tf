@@ -6,6 +6,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "linux_vmss" {
   instances                       = var.vmss.instances
   sku                             = var.vmss.sku
   disable_password_authentication = true
+  computer_name_prefix            = var.vmss.computer_name_prefix
 
   admin_ssh_key {
     username   = var.vmss.admin_username
@@ -25,9 +26,10 @@ resource "azurerm_linux_virtual_machine_scale_set" "linux_vmss" {
       name    = network_interface.value.name
       primary = network_interface.value.primary
       ip_configuration {
-        name      = network_interface.value.ip_configuration_name
-        subnet_id = data.azurerm_subnet.ext_lb_subnet.id
-        version   = network_interface.value.version
+        name                                   = network_interface.value.ip_configuration_name
+        subnet_id                              = data.azurerm_subnet.ext_lb_subnet.id
+        load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.ext_lb_backEnd_pool.id]
+        version                                = network_interface.value.version
       }
     }
   }
@@ -80,10 +82,10 @@ resource "azurerm_linux_virtual_machine_scale_set" "linux_vmss" {
   }
 
   rolling_upgrade_policy {
-    max_batch_instance_percent = var.vmss.rolling_upgrade_policy.max_batch_instance_percent
-    max_unhealthy_instance_percent = var.vmss.rolling_upgrade_policy.max_unhealthy_instance_percent
+    max_batch_instance_percent              = var.vmss.rolling_upgrade_policy.max_batch_instance_percent
+    max_unhealthy_instance_percent          = var.vmss.rolling_upgrade_policy.max_unhealthy_instance_percent
     max_unhealthy_upgraded_instance_percent = var.vmss.rolling_upgrade_policy.max_unhealthy_upgraded_instance_percent
-    pause_time_between_batches = var.vmss.rolling_upgrade_policy.pause_time_between_batches
+    pause_time_between_batches              = var.vmss.rolling_upgrade_policy.pause_time_between_batches
   }
 
   lifecycle {
