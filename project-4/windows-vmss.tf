@@ -88,4 +88,6 @@ resource "azurerm_windows_virtual_machine_scale_set" "windows_vmss" {
   lifecycle {
     ignore_changes = [instances]
   }
+
+  depends_on = [azurerm_lb_rule.int_lb_rule]
 }

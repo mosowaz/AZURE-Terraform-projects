@@ -91,4 +91,6 @@ resource "azurerm_linux_virtual_machine_scale_set" "linux_vmss" {
   lifecycle {
     ignore_changes = [instances]
   }
+
+  depends_on = [azurerm_lb_rule.ext_lb_rule]
 }
