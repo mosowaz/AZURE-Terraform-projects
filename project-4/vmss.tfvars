@@ -3,7 +3,7 @@ vmss = {
   windows_vmss_name    = "Window-VMs"
   admin_username       = "adminuser"
   instances            = 4
-  sku                  = "Standard_F2s_v2"
+  sku                  = "Standard_B2s"
   computer_name_prefix = "vmss"
 
   upgrade_mode                                      = "Rolling"
