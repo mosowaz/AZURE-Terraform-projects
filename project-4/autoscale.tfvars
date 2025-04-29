@@ -1,5 +1,5 @@
 autoscale-vmss = {
-  name             = "VMSS-Autoscale"
+  name             = ""
   enable_telemetry = false
   enabled          = true # (Optional) Specifies whether automatic scaling is enabled for the target resource. Defaults to true.
 

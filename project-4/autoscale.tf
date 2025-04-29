@@ -2,7 +2,7 @@ module "avm-res-insights-autoscalesetting" {
   for_each = local.autoscale-settings
   source   = "git::https://github.com/Azure/terraform-azurerm-avm-res-insights-autoscalesetting.git?ref=f4e7e4b"
 
-  name                = var.autoscale-vmss.name
+  name                = each.value.name
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   target_resource_id  = each.value.target_resource_id
