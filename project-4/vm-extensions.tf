@@ -1,0 +1,35 @@
+# VM Extension to install IIS on windows VMSS
+resource "azurerm_virtual_machine_extension" "windows_iis_install" {
+  name                       = "Install-IIS"
+  virtual_machine_id         = azurerm_windows_virtual_machine_scale_set.windows_vmss.id
+  publisher                  = "Microsoft.Compute"
+  type                       = "CustomScriptExtension"
+  type_handler_version       = "1.10"
+  auto_upgrade_minor_version = true
+  automatic_upgrade_enabled  = true
+
+  settings = <<SETTINGS
+    {
+      "fileUris": ["${path.root}/scripts/install_IIS.ps1"],
+      "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File install_IIS.ps1"
+    }
+  SETTINGS
+}
+
+# VM Extension to install NGINX on Linux VMSS
+resource "azurerm_virtual_machine_extension" "linux_nginx_install" {
+  name                       = "install-NGINX"
+  virtual_machine_id         = azurerm_linux_virtual_machine_scale_set.linux_vmss.id
+  publisher                  = "Microsoft.Azure.Extensions"
+  type                       = "CustomScript"
+  type_handler_version       = "2.1"
+  auto_upgrade_minor_version = true
+  automatic_upgrade_enabled  = true
+
+  settings = <<SETTINGS
+    {
+      "fileUris": ["${path.root}/scripts/install_nginx.sh"],
+      "commandToExecute": "bash install_nginx.sh"
+    }
+  SETTINGS
+}
