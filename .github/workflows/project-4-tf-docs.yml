@@ -22,7 +22,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1        # fetch last commit for all branches
+          fetch-depth: 0        # fetch all commits for all branches
           ref: ${{github.ref}}  # checkout branch that triggered the event
 
       - name: Get most recent commit message
