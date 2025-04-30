@@ -6,7 +6,7 @@ resource "azurerm_virtual_machine_scale_set_extension" "windows_iis_install" {
   type                         = "CustomScriptExtension"
   type_handler_version         = "1.10"
   auto_upgrade_minor_version   = true
-  automatic_upgrade_enabled    = true
+  automatic_upgrade_enabled    = false
 
   settings = <<SETTINGS
     {
@@ -24,7 +24,7 @@ resource "azurerm_virtual_machine_scale_set_extension" "linux_nginx_install" {
   type                         = "CustomScript"
   type_handler_version         = "2.1"
   auto_upgrade_minor_version   = true
-  automatic_upgrade_enabled    = true
+  automatic_upgrade_enabled    = false
 
   settings = <<SETTINGS
     {
