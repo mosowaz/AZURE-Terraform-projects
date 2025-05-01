@@ -6,7 +6,6 @@ stages:
 
   jobs:
   - deployment: apply
-    timeoutInMinutes: 15
     workspace:
       clean: all
     environment: $(ADO_Environment)        

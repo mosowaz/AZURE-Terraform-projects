@@ -13,6 +13,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "linux_vmss" {
     public_key = var.sshkey-public
   }
 
+  overprovision                                     = var.vmss.overprovision 
   upgrade_mode                                      = var.vmss.upgrade_mode
   do_not_run_extensions_on_overprovisioned_machines = var.vmss.do_not_run_extensions_on_overprovisioned_machines
   extension_operations_enabled                      = var.vmss.extension_operations_enabled
@@ -54,6 +55,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "linux_vmss" {
   automatic_instance_repair {
     enabled      = var.vmss.automatic_instance_repair.enabled
     grace_period = var.vmss.automatic_instance_repair.grace_period
+    action       = var.vmss.automatic_instance_repair.action 
   }
 
   boot_diagnostics {
@@ -86,6 +88,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "linux_vmss" {
     max_unhealthy_instance_percent          = var.vmss.rolling_upgrade_policy.max_unhealthy_instance_percent
     max_unhealthy_upgraded_instance_percent = var.vmss.rolling_upgrade_policy.max_unhealthy_upgraded_instance_percent
     pause_time_between_batches              = var.vmss.rolling_upgrade_policy.pause_time_between_batches
+    maximum_surge_instances_enabled         = var.vmss.rolling_upgrade_policy.maximum_surge_instances_enabled
   }
 
   lifecycle {

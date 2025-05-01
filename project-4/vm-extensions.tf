@@ -8,12 +8,16 @@ resource "azurerm_virtual_machine_scale_set_extension" "windows_iis_install" {
   auto_upgrade_minor_version   = true
   automatic_upgrade_enabled    = false
 
-  settings = <<SETTINGS
+  settings = jsonencode({
+    "fileUris": ["${path.root}/scripts/install_IIS.ps1"],
+    "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File install_IIS.ps1"
+  })
+
+  protected_settings = <<PROTECTED_SETTINGS
     {
-      "fileUris": ["${path.root}/scripts/install_IIS.ps1"],
-      "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File install_IIS.ps1"
+      "timeout": "PT30M"
     }
-  SETTINGS
+  PROTECTED_SETTINGS
 }
 
 # VM Extension to install NGINX on Linux VMSS
@@ -26,10 +30,14 @@ resource "azurerm_virtual_machine_scale_set_extension" "linux_nginx_install" {
   auto_upgrade_minor_version   = true
   automatic_upgrade_enabled    = false
 
-  settings = <<SETTINGS
+  settings = jsonencode({
+    "fileUris": ["${path.root}/scripts/install_nginx.sh"],
+    "commandToExecute": "bash install_nginx.sh"
+  })
+
+  protected_settings = <<PROTECTED_SETTINGS
     {
-      "fileUris": ["${path.root}/scripts/install_nginx.sh"],
-      "commandToExecute": "bash install_nginx.sh"
+      "timeout": "PT30M"
     }
-  SETTINGS
+  PROTECTED_SETTINGS
 }

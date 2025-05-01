@@ -6,13 +6,14 @@ vmss = {
   sku                  = "Standard_B2s"
   computer_name_prefix = "vmss"
 
+  overprovision                                     = false    #multiple Virtual Machines will be provisioned and Azure will keep the instances which become available first - which improves provisioning success rates and improves deployment time
   upgrade_mode                                      = "Rolling"
-  do_not_run_extensions_on_overprovisioned_machines = true
+  do_not_run_extensions_on_overprovisioned_machines = false  # (optional) Defaults to false
   windows_enable_automatic_updates                  = false
   extension_operations_enabled                      = true
   provision_vm_agent                                = true
   windows_timezone                                  = "Eastern Standard Time"
-  zones                                             = [1, 2, 3]
+  zones                                             = [1, 2]
   health_probe_id                                   = ""
 
   int_lb_network_interface = {
@@ -79,7 +80,8 @@ vmss = {
 
   automatic_instance_repair = {
     enabled      = true
-    grace_period = "PT30M"
+    grace_period = "PT10M"
+    action       = "Reimage"
   }
 
   boot_diagnostics = {
@@ -108,10 +110,11 @@ vmss = {
 
   # This is Required and can only be specified when upgrade_mode is set to Automatic or Rolling
   rolling_upgrade_policy = {
-    max_batch_instance_percent              = 25
-    max_unhealthy_instance_percent          = 50
-    max_unhealthy_upgraded_instance_percent = 50
-    pause_time_between_batches              = "PT10S"  # 10 seconds (PT10M signifies 10 minutes)
+    max_batch_instance_percent              = 50
+    max_unhealthy_instance_percent          = 100
+    max_unhealthy_upgraded_instance_percent = 100
+    pause_time_between_batches              = "PT5S"  # 5 seconds (PT10M signifies 10 minutes)
+    maximum_surge_instances_enabled         = true   # Create new virtual machines to upgrade the scale set, rather than updating the existing virtual machines. overprovision must be set to false when maximum_surge_instances_enabled is specified.
   }
 
   scale_in = {

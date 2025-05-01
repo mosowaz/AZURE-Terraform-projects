@@ -8,6 +8,7 @@ resource "azurerm_windows_virtual_machine_scale_set" "windows_vmss" {
   sku                  = var.vmss.sku
   computer_name_prefix = var.vmss.computer_name_prefix
 
+  overprovision                                     = var.vmss.overprovision 
   upgrade_mode                                      = var.vmss.upgrade_mode
   do_not_run_extensions_on_overprovisioned_machines = var.vmss.do_not_run_extensions_on_overprovisioned_machines
   enable_automatic_updates                          = var.vmss.windows_enable_automatic_updates
@@ -51,6 +52,7 @@ resource "azurerm_windows_virtual_machine_scale_set" "windows_vmss" {
   automatic_instance_repair {
     enabled      = var.vmss.automatic_instance_repair.enabled
     grace_period = var.vmss.automatic_instance_repair.grace_period
+    action       = var.vmss.automatic_instance_repair.action 
   }
 
   boot_diagnostics {
@@ -83,6 +85,7 @@ resource "azurerm_windows_virtual_machine_scale_set" "windows_vmss" {
     max_unhealthy_instance_percent          = var.vmss.rolling_upgrade_policy.max_unhealthy_instance_percent
     max_unhealthy_upgraded_instance_percent = var.vmss.rolling_upgrade_policy.max_unhealthy_upgraded_instance_percent
     pause_time_between_batches              = var.vmss.rolling_upgrade_policy.pause_time_between_batches
+    maximum_surge_instances_enabled         = var.vmss.rolling_upgrade_policy.maximum_surge_instances_enabled
   }
 
   lifecycle {
