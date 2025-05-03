@@ -9,15 +9,8 @@ resource "azurerm_virtual_machine_scale_set_extension" "windows_iis_install" {
   automatic_upgrade_enabled    = false
 
   settings = jsonencode({
-    "fileUris": ["${path.root}/scripts/install_IIS.ps1"],
-    "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File install_IIS.ps1"
+    "commandToExecute": "powershell -ExecutionPolicy Unrestricted -Command \"Install-WindowsFeature -Name Web-Server -IncludeManagementTools; Remove-Item 'C:\\inetpub\\wwwroot\\iisstart.htm'; Add-Content -Path 'C:\\inetpub\\wwwroot\\iisstart.htm' -Value $('Hello World from ' + $env:computername); Start-Service W3SVC; Set-NetFirewallProfile -Profile Domain,Private,Public -Enabled False\""
   })
-
-  protected_settings = <<PROTECTED_SETTINGS
-    {
-      "timeout": "PT30M"
-    }
-  PROTECTED_SETTINGS
 }
 
 # VM Extension to install NGINX on Linux VMSS
@@ -31,13 +24,25 @@ resource "azurerm_virtual_machine_scale_set_extension" "linux_nginx_install" {
   automatic_upgrade_enabled    = false
 
   settings = jsonencode({
-    "fileUris": ["${path.root}/scripts/install_nginx.sh"],
-    "commandToExecute": "bash install_nginx.sh"
-  })
+    "script" = base64encode(<<-EOF
+      #!/bin/bash
+      # Update package list
+      apt-get update
 
-  protected_settings = <<PROTECTED_SETTINGS
-    {
-      "timeout": "PT30M"
-    }
-  PROTECTED_SETTINGS
+      # Install Nginx
+      apt-get install -y nginx
+     
+      echo "Hello World from $(hostname)" > /var/www/html/index.html 
+
+      # restart Nginx service
+      systemctl restart nginx
+
+      # Enable Nginx to start on boot
+      systemctl enable nginx
+
+      # Disable the firewall
+      ufw disable 
+    EOF
+    )
+  })
 }

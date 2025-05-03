@@ -1,10 +1,19 @@
 #!/bin/bash
 
 # Update package list
-sudo apt update
+apt-get update
 
 # Install Nginx
-sudo apt install -y nginx
+apt-get install -y nginx
+
+# Start Nginx service
+systemctl start nginx
+
+# Enable Nginx to start on boot
+systemctl enable nginx
 
 # Disable the firewall
-sudo ufw disable
+ufw disable
+
+
+

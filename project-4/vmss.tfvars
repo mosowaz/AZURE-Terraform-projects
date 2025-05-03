@@ -6,9 +6,9 @@ vmss = {
   sku                  = "Standard_B2s"
   computer_name_prefix = "vmss"
 
-  overprovision                                     = false    #multiple Virtual Machines will be provisioned and Azure will keep the instances which become available first - which improves provisioning success rates and improves deployment time
+  overprovision                                     = false #multiple Virtual Machines will be provisioned and Azure will keep the instances which become available first - which improves provisioning success rates and improves deployment time
   upgrade_mode                                      = "Rolling"
-  do_not_run_extensions_on_overprovisioned_machines = false  # (optional) Defaults to false
+  do_not_run_extensions_on_overprovisioned_machines = false # (optional) Defaults to false
   windows_enable_automatic_updates                  = false
   extension_operations_enabled                      = true
   provision_vm_agent                                = true
@@ -113,7 +113,7 @@ vmss = {
     max_batch_instance_percent              = 50
     max_unhealthy_instance_percent          = 100
     max_unhealthy_upgraded_instance_percent = 100
-    pause_time_between_batches              = "PT5S"  # 5 seconds (PT10M signifies 10 minutes)
+    pause_time_between_batches              = "PT5S" # 5 seconds (PT10M signifies 10 minutes)
     maximum_surge_instances_enabled         = true   # Create new virtual machines to upgrade the scale set, rather than updating the existing virtual machines. overprovision must be set to false when maximum_surge_instances_enabled is specified.
   }
 

@@ -37,6 +37,21 @@ resource "azurerm_network_security_rule" "nsg_1_rule_2" {
   network_security_group_name = azurerm_network_security_group.nsg[0].name
 }
 
+# NSG rule (Allow all outbound access) for internal load balancer subnet
+resource "azurerm_network_security_rule" "nsg_1_rule_3" {
+  name                        = var.nsg-1-rule-3.name
+  priority                    = var.nsg-1-rule-3.priority
+  direction                   = var.nsg-1-rule-3.direction
+  access                      = var.nsg-1-rule-3.access
+  protocol                    = var.nsg-1-rule-3.protocol
+  source_port_range           = var.nsg-1-rule-3.source_port_range
+  destination_port_range      = var.nsg-1-rule-3.destination_port_range
+  source_address_prefix       = var.nsg-1-rule-3.source_address_prefix
+  destination_address_prefix  = var.nsg-1-rule-3.destination_address_prefix
+  resource_group_name         = azurerm_resource_group.rg.name
+  network_security_group_name = azurerm_network_security_group.nsg[0].name
+}
+
 resource "azurerm_subnet_network_security_group_association" "nsg-1-association" {
   subnet_id                 = data.azurerm_subnet.int_lb_subnet.id
   network_security_group_id = azurerm_network_security_group.nsg[0].id
@@ -69,6 +84,21 @@ resource "azurerm_network_security_rule" "nsg_2_rule_2" {
   destination_port_range      = var.nsg-2-rule-2.destination_port_range
   source_address_prefix       = var.nsg-2-rule-2.source_address_prefix
   destination_address_prefix  = var.nsg-2-rule-2.destination_address_prefix
+  resource_group_name         = azurerm_resource_group.rg.name
+  network_security_group_name = azurerm_network_security_group.nsg[1].name
+}
+
+# NSG rule (Allow all outbound access) for enternal load balancer subnet
+resource "azurerm_network_security_rule" "nsg_2_rule_3" {
+  name                        = var.nsg-2-rule-3.name
+  priority                    = var.nsg-2-rule-3.priority
+  direction                   = var.nsg-2-rule-3.direction
+  access                      = var.nsg-2-rule-3.access
+  protocol                    = var.nsg-2-rule-3.protocol
+  source_port_range           = var.nsg-2-rule-3.source_port_range
+  destination_port_range      = var.nsg-2-rule-3.destination_port_range
+  source_address_prefix       = var.nsg-2-rule-3.source_address_prefix
+  destination_address_prefix  = var.nsg-2-rule-3.destination_address_prefix
   resource_group_name         = azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.nsg[1].name
 }

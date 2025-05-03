@@ -104,14 +104,14 @@ resource "azurerm_network_security_rule" "bastion-rule-6" {
   network_security_group_name = azurerm_network_security_group.nsg[2].name
 }
 
-# rule-7 ALLOWS HTTP outbound from BastionSubnet 
+# rule-7 ALLOWS HTTP/HTTPS outbound from BastionSubnet 
 resource "azurerm_network_security_rule" "bastion-rule-7" {
   name                        = "Allow-Azure-Bastion-Host-Outbound-Communication"
   priority                    = 150
   direction                   = "Outbound"
   access                      = "Allow"
   protocol                    = "*"
-  source_port_range           = 80
+  source_port_ranges          = [80, 443]
   destination_port_range      = "*"
   source_address_prefix       = "*"
   destination_address_prefix  = "Internet"

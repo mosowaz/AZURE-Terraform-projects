@@ -149,6 +149,21 @@ variable "nsg-1-rule-2" {
   description = "NSG rule (Allow Inbound RDP) for internal load balancer subnet"
 }
 
+variable "nsg-1-rule-3" {
+  default = {
+    name                       = "allowOutbound-ALL-int"
+    priority                   = 300
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "10.0.1.0/24"
+    destination_address_prefix = "VirtualNetwork"
+  }
+  description = "NSG rule (Allow all outbound access) for internal load balancer subnet"
+}
+
 variable "nsg-2-rule-1" {
   type = map(object({
     name                       = string
@@ -201,6 +216,21 @@ variable "nsg-2-rule-2" {
     destination_address_prefix = "10.0.2.0/24"
   }
   description = "NSG rule (Allow Inbound SSH) for external load balancer subnet"
+}
+
+variable "nsg-2-rule-3" {
+  default = {
+    name                       = "allowOutbound-ALL-ext"
+    priority                   = 320
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "10.0.2.0/24"
+    destination_address_prefix = "VirtualNetwork"
+  }
+  description = "NSG rule (Allow all outbound access) for enternal load balancer subnet"
 }
 
 variable "vmss" {
