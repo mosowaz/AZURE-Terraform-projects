@@ -4,7 +4,7 @@ resource "azurerm_virtual_network" "vnet" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   address_space       = [var.vnet.address_space]
-  dns_servers         = ["8.8.8.8", "9.9.9.9"]
+  dns_servers         = ["168.63.129.16", "9.9.9.9"]
 
   subnet {
     name             = var.vnet.subnet_name_int
