@@ -95,7 +95,7 @@ variable "disable_outbound_snat" {
   description = "(Optional) Is snat enabled for this Load Balancer Rule?"
 }
 
-variable "nsg-1-rule-1" {
+variable "nsg-1-rules" {
   type = map(object({
     name                       = string
     priority                   = any
@@ -103,68 +103,38 @@ variable "nsg-1-rule-1" {
     access                     = string
     protocol                   = string
     source_port_range          = string
-    destination_port_ranges    = any
+    destination_port_range     = any
     source_address_prefix      = string
     destination_address_prefix = string
   }))
   default = {
     first = {
-      name                       = "allowInbound-HTTP-int1"
+      name                       = "allowInbound-HTTP-int"
       priority                   = 200
       direction                  = "Inbound"
       access                     = "Allow"
       protocol                   = "*"
       source_port_range          = "*"
-      destination_port_ranges    = [3389, 80, 443]
-      source_address_prefix      = "VirtualNetwork"
-      destination_address_prefix = "10.0.1.0/24"
+      destination_port_range     = 80
+      source_address_prefix      = "*"
+      destination_address_prefix = "*"
     }
     second = {
-      name                       = "allowInbound-HTTP-int2"
+      name                       = "allowInbound-RDP-int"
       priority                   = 210
       direction                  = "Inbound"
       access                     = "Allow"
       protocol                   = "*"
       source_port_range          = "*"
-      destination_port_ranges    = [80, 443]
-      source_address_prefix      = "AzureLoadBalancer"
-      destination_address_prefix = "10.0.1.0/24"
+      destination_port_range     = 3389
+      source_address_prefix      = "VirtualNetwork"
+      destination_address_prefix = "*"
     }
   }
-  description = "NSG rule (Allow Inbound HTTP/HTTPS) for internal load balancer subnet"
+  description = "NSG rule (Allow Inbound HTTP/RDP) for internal load balancer subnet"
 }
 
-# variable "nsg-1-rule-2" {
-#   default = {
-#     name                       = "allowInbound-SSH-RDP"
-#     priority                   = 400
-#     direction                  = "Inbound"
-#     access                     = "Allow"
-#     protocol                   = "*"
-#     source_port_range          = "*"
-#     destination_port_range     = 3389
-#     source_address_prefix      = "VirtualNetwork"
-#     destination_address_prefix = "10.0.1.0/24"
-#   }
-#   description = "NSG rule (Allow Inbound RDP) for internal load balancer subnet"
-# }
-
-variable "nsg-1-rule-2" {
-  default = {
-    name                       = "allowOutbound-ALL-int"
-    priority                   = 300
-    direction                  = "Outbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_ranges    = [80, 443]
-    source_address_prefix      = "10.0.1.0/24"
-    destination_address_prefix = "AzureLoadBalancer"
-  }
-  description = "NSG rule (Allow all outbound access) for internal load balancer subnet"
-}
-
-variable "nsg-2-rule-1" {
+variable "nsg-2-rules" {
   type = map(object({
     name                       = string
     priority                   = any
@@ -172,65 +142,35 @@ variable "nsg-2-rule-1" {
     access                     = string
     protocol                   = string
     source_port_range          = string
-    destination_port_ranges    = any
+    destination_port_range     = any
     source_address_prefix      = string
     destination_address_prefix = string
   }))
   default = {
     first = {
-      name                       = "allowInbound-HTTP-ext1"
+      name                       = "allowInbound-HTTP-ext"
       priority                   = 220
       direction                  = "Inbound"
       access                     = "Allow"
       protocol                   = "*"
       source_port_range          = "*"
-      destination_port_ranges    = [22, 80, 443]
-      source_address_prefix      = "VirtualNetwork"
-      destination_address_prefix = "10.0.2.0/24"
+      destination_port_range     = 80
+      source_address_prefix      = "*"
+      destination_address_prefix = "*"
     }
     second = {
-      name                       = "allowInbound-HTTP-ext2"
+      name                       = "allowInbound-RDP-ext"
       priority                   = 230
       direction                  = "Inbound"
       access                     = "Allow"
       protocol                   = "*"
       source_port_range          = "*"
-      destination_port_ranges    = [80, 443]
-      source_address_prefix      = "AzureLoadBalancer"
-      destination_address_prefix = "10.0.2.0/24"
+      destination_port_range     = 22
+      source_address_prefix      = "VirtualNetwork"
+      destination_address_prefix = "*"
     }
   }
-  description = "NSG rule (Allow Inbound HTTP/HTTPS) for external load balancer subnet"
-}
-
-# variable "nsg-2-rule-2" {
-#   default = {
-#     name                       = "allowInbound-SSH-RDP"
-#     priority                   = 440
-#     direction                  = "Inbound"
-#     access                     = "Allow"
-#     protocol                   = "*"
-#     source_port_range          = "*"
-#     destination_port_range     = 22
-#     source_address_prefix      = "VirtualNetwork"
-#     destination_address_prefix = "10.0.2.0/24"
-#   }
-#   description = "NSG rule (Allow Inbound SSH) for external load balancer subnet"
-# }
-
-variable "nsg-2-rule-2" {
-  default = {
-    name                       = "allowOutbound-ALL-ext"
-    priority                   = 320
-    direction                  = "Outbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_ranges    = [80, 443]
-    source_address_prefix      = "10.0.2.0/24"
-    destination_address_prefix = "AzureLoadBalancer"
-  }
-  description = "NSG rule (Allow all outbound access) for enternal load balancer subnet"
+  description = "NSG rule (Allow Inbound HTTP/SSH) for external load balancer subnet"
 }
 
 variable "vmss" {

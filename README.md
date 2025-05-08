@@ -10,15 +10,15 @@ Links to scenerios and details can be found in each sub-directory of this reposi
    
 ## Contents
 
-1 - [Connect virtual networks with virtual network peering](project-1/)
+Project-1 - [Connect virtual networks with virtual network peering](project-1/)
     [![Build Status](https://dev.azure.com/MosesOwaseye/hub%20and%20spokes%20vnet%20peering/_apis/build/status%2Fhub%20and%20spokes%20vnet%20peering?branchName=main)](https://dev.azure.com/MosesOwaseye/hub%20and%20spokes%20vnet%20peering/_build/latest?definitionId=10&branchName=main)
   
-2 - [Create and associate service endpoint policies](project-2/)
+Project-2 - [Create and associate service endpoint policies](project-2/)
     [![Build Status](https://dev.azure.com/MosesOwaseye/azure-104-terraform-projects/_apis/build/status%2Fmosowaz.AZURE-Terraform-projects?branchName=main)](https://dev.azure.com/MosesOwaseye/azure-104-terraform-projects/_build/latest?definitionId=19&branchName=main)
 
-3 - [Restrict network access to PaaS resources with virtual network service endpoints](project-3/)
+Project-3 - [Restrict network access to PaaS resources with virtual network service endpoints](project-3/)
 
-4 - [Create public and private load balancers with Virtual Machine Scale Set as the backend pool](project-4/)
+Project-4 - [Create public and private load balancers with Virtual Machine Scale Set as the backend pool](project-4/)
     [![Build Status](https://dev.azure.com/MosesOwaseye/Load%20Balancers/_apis/build/status%2FDeploy%20Resources?branchName=main)](https://dev.azure.com/MosesOwaseye/Load%20Balancers/_build/latest?definitionId=28&branchName=main)
 
 ## Terraform Commands 
