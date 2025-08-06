@@ -1,16 +1,13 @@
 name: Generate terraform docs
 
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - dev
-      - main
-    paths:
-      - 'project-4/**'
-      - '.github/workflows/project-4-tf-docs.yml'
-    tags: 
-      - '*'
+# on:
+#   workflow_dispatch:
+#   push:
+#     branches:
+#       - dev
+#       - main
+#     paths:
+#       - 'project-5/**'
 
 jobs:
   terraform-docs:

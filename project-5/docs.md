@@ -1,0 +1,1 @@
+https://learn.microsoft.com/en-us/azure/application-gateway/media/quick-create-portal/application-gateway-qs-resources.png

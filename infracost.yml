@@ -2,7 +2,4 @@
 version: 0.1
 currency: CAD
 projects:
-  - path: project-4
-    terraform_var_files:
-      - vmss.tfvars
-      - autoscale.tfvars
+  - path: project-5
