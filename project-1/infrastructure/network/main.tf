@@ -45,47 +45,47 @@ resource "azurerm_virtual_network" "vnet3" {
 }
 
 resource "azurerm_virtual_network_peering" "peering1-2" {
-  name                      = format("peering-%s-to-%s", var.vnet1.vnet_name, var.vnet2.vnet_name)
-  resource_group_name       = azurerm_virtual_network.vnet1.resource_group_name
-  virtual_network_name      = azurerm_virtual_network.vnet1.name
-  remote_virtual_network_id = data.azurerm_virtual_network.vnet2.id
+  name                         = format("peering-%s-to-%s", var.vnet1.vnet_name, var.vnet2.vnet_name)
+  resource_group_name          = azurerm_virtual_network.vnet1.resource_group_name
+  virtual_network_name         = azurerm_virtual_network.vnet1.name
+  remote_virtual_network_id    = data.azurerm_virtual_network.vnet2.id
   allow_virtual_network_access = true
-  allow_forwarded_traffic   = true
-  allow_gateway_transit     = false
-  depends_on = [ azurerm_virtual_network.vnet1, data.azurerm_virtual_network.vnet2 ]
+  allow_forwarded_traffic      = true
+  allow_gateway_transit        = false
+  depends_on                   = [azurerm_virtual_network.vnet1, data.azurerm_virtual_network.vnet2]
 }
 
 resource "azurerm_virtual_network_peering" "peering2-1" {
-  name                      = format("peering-%s-to-%s", var.vnet2.vnet_name, var.vnet1.vnet_name)
-  resource_group_name       = azurerm_virtual_network.vnet2.resource_group_name
-  virtual_network_name      = azurerm_virtual_network.vnet2.name
-  remote_virtual_network_id = data.azurerm_virtual_network.vnet1.id
+  name                         = format("peering-%s-to-%s", var.vnet2.vnet_name, var.vnet1.vnet_name)
+  resource_group_name          = azurerm_virtual_network.vnet2.resource_group_name
+  virtual_network_name         = azurerm_virtual_network.vnet2.name
+  remote_virtual_network_id    = data.azurerm_virtual_network.vnet1.id
   allow_virtual_network_access = true
-  allow_forwarded_traffic   = true
-  allow_gateway_transit     = false
-  depends_on = [ azurerm_virtual_network.vnet2, data.azurerm_virtual_network.vnet1 ]
+  allow_forwarded_traffic      = true
+  allow_gateway_transit        = false
+  depends_on                   = [azurerm_virtual_network.vnet2, data.azurerm_virtual_network.vnet1]
 }
 
 resource "azurerm_virtual_network_peering" "peering1-3" {
-  name                      = format("peering-%s-to-%s", var.vnet1.vnet_name, var.vnet3.vnet_name)
-  resource_group_name       = azurerm_virtual_network.vnet1.resource_group_name
-  virtual_network_name      = azurerm_virtual_network.vnet1.name
-  remote_virtual_network_id = data.azurerm_virtual_network.vnet3.id
+  name                         = format("peering-%s-to-%s", var.vnet1.vnet_name, var.vnet3.vnet_name)
+  resource_group_name          = azurerm_virtual_network.vnet1.resource_group_name
+  virtual_network_name         = azurerm_virtual_network.vnet1.name
+  remote_virtual_network_id    = data.azurerm_virtual_network.vnet3.id
   allow_virtual_network_access = true
-  allow_forwarded_traffic   = true
-  allow_gateway_transit     = false
-  depends_on = [ azurerm_virtual_network.vnet1, data.azurerm_virtual_network.vnet3 ]
+  allow_forwarded_traffic      = true
+  allow_gateway_transit        = false
+  depends_on                   = [azurerm_virtual_network.vnet1, data.azurerm_virtual_network.vnet3]
 }
 
 resource "azurerm_virtual_network_peering" "peering3-1" {
-  name                      = format("peering-%s-to-%s", var.vnet3.vnet_name, var.vnet1.vnet_name)
-  resource_group_name       = azurerm_virtual_network.vnet3.resource_group_name
-  virtual_network_name      = azurerm_virtual_network.vnet3.name
-  remote_virtual_network_id = data.azurerm_virtual_network.vnet1.id
+  name                         = format("peering-%s-to-%s", var.vnet3.vnet_name, var.vnet1.vnet_name)
+  resource_group_name          = azurerm_virtual_network.vnet3.resource_group_name
+  virtual_network_name         = azurerm_virtual_network.vnet3.name
+  remote_virtual_network_id    = data.azurerm_virtual_network.vnet1.id
   allow_virtual_network_access = true
-  allow_forwarded_traffic   = true
-  allow_gateway_transit     = false
-  depends_on = [ azurerm_virtual_network.vnet3, data.azurerm_virtual_network.vnet1 ]
+  allow_forwarded_traffic      = true
+  allow_gateway_transit        = false
+  depends_on                   = [azurerm_virtual_network.vnet3, data.azurerm_virtual_network.vnet1]
 }
 
 resource "azurerm_subnet" "subnet1" {

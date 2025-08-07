@@ -158,7 +158,7 @@ resource "azapi_resource" "storage" {
         ipRules = [
           {
             action = "Allow"
-            value = "${var.mypublic_ip}"
+            value  = "${var.mypublic_ip}"
           }
         ]
         virtualNetworkRules = [
@@ -171,7 +171,7 @@ resource "azapi_resource" "storage" {
       }
 
       #### Public network access from selected network/IPrules
- 
+
       publicNetworkAccess = "Enabled"
     }
     sku = {
@@ -187,8 +187,8 @@ resource "azapi_resource" "storage" {
 # ******* Create a container (with access restriction) in Storage account to host local file *********
 
 resource "azapi_resource" "blobService" {
-  type = "Microsoft.Storage/storageAccounts/blobServices@2023-01-01"
-  name = "default"
+  type      = "Microsoft.Storage/storageAccounts/blobServices@2023-01-01"
+  name      = "default"
   parent_id = azapi_resource.storage.id
   body = jsonencode({
     properties = {

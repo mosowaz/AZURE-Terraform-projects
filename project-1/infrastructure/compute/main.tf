@@ -11,19 +11,19 @@ resource "azurerm_resource_group" "rg2" {
 resource "azurerm_network_interface" "spoke-nic" {
   for_each = tomap({
     spoke1 = {
-      name       = "${data.azurerm_subnet.subnet2.name}-nic"
-      location   = azurerm_resource_group.rg2.location
-      rg_name    = azurerm_resource_group.rg2.name
-      subnet_id  = data.azurerm_subnet.subnet2.id
-      private_ip = local.spokes-vm.spoke1.private_ip
+      name                 = "${data.azurerm_subnet.subnet2.name}-nic"
+      location             = azurerm_resource_group.rg2.location
+      rg_name              = azurerm_resource_group.rg2.name
+      subnet_id            = data.azurerm_subnet.subnet2.id
+      private_ip           = local.spokes-vm.spoke1.private_ip
       public_ip_address_id = data.azurerm_public_ip.spoke1_pub_ip.id
     }
     spoke2 = {
-      name       = "${data.azurerm_subnet.subnet3.name}-nic"
-      location   = azurerm_resource_group.rg1.location
-      rg_name    = azurerm_resource_group.rg1.name
-      subnet_id  = data.azurerm_subnet.subnet3.id
-      private_ip = local.spokes-vm.spoke2.private_ip
+      name                 = "${data.azurerm_subnet.subnet3.name}-nic"
+      location             = azurerm_resource_group.rg1.location
+      rg_name              = azurerm_resource_group.rg1.name
+      subnet_id            = data.azurerm_subnet.subnet3.id
+      private_ip           = local.spokes-vm.spoke2.private_ip
       public_ip_address_id = data.azurerm_public_ip.spoke2_pub_ip.id
     }
   })

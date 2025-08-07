@@ -1,15 +1,9 @@
 name: Generate terraform docs
 
 on:
-  workflow_dispatch:
   pull_request:
     branches:
       - main
-    paths:
-      - 'project-5/**'
-  push:
-    branches:
-      - '*'
     paths:
       - 'project-5/**'
 

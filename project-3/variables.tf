@@ -103,8 +103,8 @@ variable "my_file" {
   default = "my-main.tf"
 }
 
-variable "subscription_id" {  #TF_VAR_subscription_id
-  type		= string
+variable "subscription_id" { #TF_VAR_subscription_id
+  type = string
 }
 
 variable "my_source_file" {

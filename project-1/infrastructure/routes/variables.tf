@@ -1,11 +1,11 @@
 variable "location1" {
-  type = string
-  default = "canadacentral" 
+  type    = string
+  default = "canadacentral"
 }
 
 variable "location2" {
-  type = string
-  default = "canadaeast" 
+  type    = string
+  default = "canadaeast"
 }
 
 variable "lab_tag" {
@@ -17,17 +17,17 @@ variable "mypublic-ip" {
 }
 
 variable "hub_ip" {
-  type = string
+  type    = string
   default = "10.0.1.11"
 }
 
 variable "rt-spoke1-2" {
-  type = string
+  type    = string
   default = "spoke1-to-spoke2"
 }
 
 variable "rt-spoke2-1" {
-  type = string
+  type    = string
   default = "spoke2-to-spoke1"
 }
 

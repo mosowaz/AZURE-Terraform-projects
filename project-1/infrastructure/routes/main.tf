@@ -15,31 +15,31 @@ resource "azurerm_network_security_group" "hub-nsg" {
 }
 
 resource "azurerm_network_security_rule" "hub-rule1" {
-    name                       = "hub-outbound-private"
-    priority                   = 200
-    direction                  = "Outbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*" #Any IP in the subnet associated with NSG rule
-    destination_address_prefixes = [ var.spoke1_address_prefix, var.spoke2_address_prefix ] #spokes address prefix
-    resource_group_name         = azurerm_resource_group.rg1.name
-    network_security_group_name = azurerm_network_security_group.hub-nsg.name 
+  name                         = "hub-outbound-private"
+  priority                     = 200
+  direction                    = "Outbound"
+  access                       = "Allow"
+  protocol                     = "*"
+  source_port_range            = "*"
+  destination_port_range       = "*"
+  source_address_prefix        = "*"                                                    #Any IP in the subnet associated with NSG rule
+  destination_address_prefixes = [var.spoke1_address_prefix, var.spoke2_address_prefix] #spokes address prefix
+  resource_group_name          = azurerm_resource_group.rg1.name
+  network_security_group_name  = azurerm_network_security_group.hub-nsg.name
 }
 
 resource "azurerm_network_security_rule" "hub-rule2" {
-    name                       = "hub-inbound-public"
-    priority                   = 100
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = var.mypublic-ip
-    destination_address_prefix = "*" #Any IP in the subnet associated with NSG rule
-    resource_group_name         = azurerm_resource_group.rg1.name
-    network_security_group_name = azurerm_network_security_group.hub-nsg.name 
+  name                        = "hub-inbound-public"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "22"
+  source_address_prefix       = var.mypublic-ip
+  destination_address_prefix  = "*" #Any IP in the subnet associated with NSG rule
+  resource_group_name         = azurerm_resource_group.rg1.name
+  network_security_group_name = azurerm_network_security_group.hub-nsg.name
 }
 
 resource "azurerm_subnet_network_security_group_association" "hub-rule-association" {
@@ -60,31 +60,31 @@ resource "azurerm_network_security_group" "spoke2-nsg" {
 }
 
 resource "azurerm_network_security_rule" "spoke1-rule" {
-    name                       = "spoke-inbound-public"
-    priority                   = 100
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = var.mypublic-ip
-    destination_address_prefix = "*" #Any IP in the subnet associated with NSG rule
-    resource_group_name         = azurerm_resource_group.rg2.name
-    network_security_group_name = azurerm_network_security_group.spoke1-nsg.name 
+  name                        = "spoke-inbound-public"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "22"
+  source_address_prefix       = var.mypublic-ip
+  destination_address_prefix  = "*" #Any IP in the subnet associated with NSG rule
+  resource_group_name         = azurerm_resource_group.rg2.name
+  network_security_group_name = azurerm_network_security_group.spoke1-nsg.name
 }
 
 resource "azurerm_network_security_rule" "spoke2-rule" {
-    name                       = "spoke-inbound-public"
-    priority                   = 100
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = var.mypublic-ip
-    destination_address_prefix = "*" #Any IP in the subnet associated with NSG rule
-    resource_group_name         = azurerm_resource_group.rg1.name
-    network_security_group_name = azurerm_network_security_group.spoke2-nsg.name 
+  name                        = "spoke-inbound-public"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "22"
+  source_address_prefix       = var.mypublic-ip
+  destination_address_prefix  = "*" #Any IP in the subnet associated with NSG rule
+  resource_group_name         = azurerm_resource_group.rg1.name
+  network_security_group_name = azurerm_network_security_group.spoke2-nsg.name
 }
 
 

@@ -153,7 +153,7 @@ resource "azapi_resource" "storage" {
         ipRules = [
           {
             action = "Allow"
-            value = "${var.mypublic_ip}"
+            value  = "${var.mypublic_ip}"
           }
         ]
         virtualNetworkRules = [
@@ -182,8 +182,8 @@ resource "azapi_resource" "storage" {
 # ******* Create a container (with access restriction) in Storage account to host local file *********
 
 resource "azapi_resource" "blobService" {
-  type = "Microsoft.Storage/storageAccounts/blobServices@2023-01-01"
-  name = "default"
+  type      = "Microsoft.Storage/storageAccounts/blobServices@2023-01-01"
+  name      = "default"
   parent_id = azapi_resource.storage.id
   body = jsonencode({
     properties = {
@@ -241,7 +241,7 @@ resource "azurerm_network_interface" "vm1-nic1" {
     subnet_id                     = azurerm_subnet.subnet1.id
     private_ip_address_allocation = "Static"
     private_ip_address            = var.vm1_nic1_private_ip
-    public_ip_address_id 	  = azurerm_public_ip.pub-ip.id
+    public_ip_address_id          = azurerm_public_ip.pub-ip.id
   }
   depends_on = [
     azurerm_subnet.subnet1, azurerm_public_ip.pub-ip
