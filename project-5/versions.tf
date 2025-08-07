@@ -55,6 +55,6 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "app-gateway"
+  name     = "appGW"
   location = "canadacentral"
 }
