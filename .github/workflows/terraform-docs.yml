@@ -1,6 +1,12 @@
 name: Generate terraform docs
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'project-5/**'
+
   pull_request:
     branches:
       - main
@@ -20,7 +26,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.ref }} 
+          fetch-depth: 0        # fetch all commits for all branches
+          ref: ${{ github.ref }}  # checkout branch that triggered the even
+          # ref: ${{ github.event.pull_request.head.ref }} 
 
       - name: Render terraform docs inside the README.md and push changes back to PR branch
         uses: terraform-docs/gh-actions@v1.4.1
