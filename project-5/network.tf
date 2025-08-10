@@ -7,7 +7,7 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 resource "azurerm_subnet" "backend" {
-  name                 = "backend-subnet"
+  name                 = "backendPool-subnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.21.1.0/24"]
@@ -21,7 +21,7 @@ resource "azurerm_subnet" "jumpbox" {
 }
 
 resource "azurerm_subnet" "frontend" {
-  name                 = "frontend-subnet"
+  name                 = "AGW-subnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.21.3.0/24"]
