@@ -5,7 +5,6 @@ resource "azurerm_resource_group" "rg" {
 
 # This ensures we have unique CAF compliant names for our resources.
 module "naming" {
-  source  = "Azure/naming/azurerm"
-  version = "0.4.2"
+  source = "git::https://github.com/Azure/terraform-azurerm-naming.git?ref=75d5afae"
   suffix  = ["agw"]
 }  
