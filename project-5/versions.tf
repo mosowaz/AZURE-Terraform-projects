@@ -54,7 +54,3 @@ provider "azurerm" {
   storage_use_azuread = true
 }
 
-resource "azurerm_resource_group" "rg" {
-  name     = "appGW"
-  location = "canadacentral"
-}

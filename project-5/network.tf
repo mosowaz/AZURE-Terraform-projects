@@ -2,7 +2,7 @@ resource "azurerm_virtual_network" "vnet" {
   name                = "${azurerm_resource_group.rg.name}-vnet"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  address_space       = ["10.21.0.0/16"]
+  address_space       = ["10.0.0.0/16"]
   dns_servers         = ["168.63.129.16", "9.9.9.9"]
 }
 
@@ -10,21 +10,21 @@ resource "azurerm_subnet" "backend" {
   name                 = "backendPool-subnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.21.1.0/24"]
+  address_prefixes     = ["10.0.1.0/24"]
 }
 
 resource "azurerm_subnet" "jumpbox" {
   name                 = "jumpbox-subnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.21.2.0/27"]
+  address_prefixes     = ["10.0.2.0/27"]
 }
 
 resource "azurerm_subnet" "frontend" {
   name                 = "AGW-subnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.21.3.0/24"]
+  address_prefixes     = ["10.0.3.0/24"]
 }
 
 # Create public IP for the frontend
