@@ -1,11 +1,13 @@
-# since these variables are re-used - a locals block makes this more maintainable
 locals {
-  backend_address_pool_name      = "${azurerm_virtual_network.example.name}-beap"
-  frontend_port_name             = "${azurerm_virtual_network.example.name}-feport"
-  frontend_ip_configuration_name = "${azurerm_virtual_network.example.name}-feip"
-  http_setting_name              = "${azurerm_virtual_network.example.name}-be-htst"
-  listener_name                  = "${azurerm_virtual_network.example.name}-httplstn"
-  request_routing_rule_name      = "${azurerm_virtual_network.example.name}-rqrt"
-  redirect_configuration_name    = "${azurerm_virtual_network.example.name}-rdrcfg"
+  backend_address_pool_name      = "mydomain-beap"
+  backend_http_settings_name     = "appGatewayBackendHttpSettings"
+  frontend_ip_configuration_name = "Frontend-http"
+  frontend_port_name             = "frontend-port-80"
+  gateway_ip_configuration_name  = "gw-IPconfig"
+  http_listener_name             = "agw-listener"
+  request_routing_rule_name      = "agw-routing-rule"
+  #   redirect_configuration_name = ""
+  #   rewrite_rule_set_name = ""
+  #   url_path_map_name = ""
+  
 }
-

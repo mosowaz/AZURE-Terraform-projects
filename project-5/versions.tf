@@ -1,30 +1,28 @@
 terraform {
+  backend "local" {
+    path = "../terraform.tfstate"
+  }
   required_providers {
     # azuread = {
     #   source  = "hashicorp/azuread"
     #   version = "~> 3.3.0"
     # }
-
     azurerm = {
       source  = "hashicorp/azurerm"
       version = "~> 4.28"
     }
-
     # time = {
     #   source  = "hashicorp/time"
     #   version = "0.12.1"
     # }
-
     random = {
       source  = "hashicorp/random"
       version = "~> 3.5"
     }
-
     http = {
       source  = "hashicorp/http"
       version = "~> 3.5"
     }
-
     # tls = {
     #   source  = "hashicorp/tls"
     #   version = "4.1.0"
