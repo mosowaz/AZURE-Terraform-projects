@@ -23,7 +23,7 @@ resource "azurerm_network_security_rule" "jumpbox_rule1" {
   source_port_range            = "*"
   destination_port_range       = 22
   source_address_prefix        = data.http.ip.response_body
-  destination_address_prefixes = azurerm_subnet.jumpbox.address_prefixes
+  destination_address_prefixes = azurerm_linux_virtual_machine.linux_vm.public_ip_addresses
   resource_group_name          = azurerm_resource_group.rg.name
   network_security_group_name  = azurerm_network_security_group.jumpbox_nsg.name
 }

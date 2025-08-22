@@ -10,12 +10,10 @@ resource "azurerm_application_gateway" "appGW" {
 
   #----------Backend Address Pool Configuration for the application gateway -----------
   backend_address_pool {
-    name         = "${local.backend_address_pool_name}-1"
-    ip_addresses = azurerm_subnet.backend.address_prefixes
+    name = "${local.backend_address_pool_name}-1"
   }
   backend_address_pool {
-    name         = "${local.backend_address_pool_name}-2"
-    ip_addresses = azurerm_subnet.backend.address_prefixes
+    name = "${local.backend_address_pool_name}-2"
   }
 
   #----------Backend Http Settings Configuration for the application gateway -----------
@@ -25,7 +23,9 @@ resource "azurerm_application_gateway" "appGW" {
     port                  = 80
     protocol              = "Http"
     path                  = "/"
-    request_timeout       = 30
+    request_timeout       = 5
+    probe_name            = local.probe_name
+    pick_host_name_from_backend_address = true
 
     connection_draining {
       enabled           = true
@@ -36,10 +36,10 @@ resource "azurerm_application_gateway" "appGW" {
   #------------Frontend IP configuration --------------
   frontend_ip_configuration {
     name                          = local.frontend_ip_configuration_name
-    private_ip_address            = "10.0.3.13"
-    private_ip_address_allocation = "Static"
-    subnet_id                     = azurerm_subnet.frontend.id
-    public_ip_address_id          = azurerm_public_ip.pip.id
+    public_ip_address_id          = azurerm_public_ip.agw_pip.id
+    # private_ip_address            = "10.0.3.13" # Either public or private IP, not both.
+    # private_ip_address_allocation = "Static"
+    # subnet_id                     = azurerm_subnet.frontend.id
   }
 
   # Frontend IP Port configuration
@@ -60,14 +60,14 @@ resource "azurerm_application_gateway" "appGW" {
     frontend_port_name             = local.frontend_port_name
     name                           = "${local.http_listener_name}-1"
     protocol                       = "Http"
-    host_name                      = "www.myFirstdomain.com"
+    host_name                      = "www.myfirstdomain.com"
   }
   http_listener {
     frontend_ip_configuration_name = local.frontend_ip_configuration_name
     frontend_port_name             = local.frontend_port_name
     name                           = "${local.http_listener_name}-2"
     protocol                       = "Http"
-    host_name                      = "www.mySeconddomain.com"
+    host_name                      = "www.myseconddomain.com"
     # host_names           = []
     # ssl_certificate_name = http_listener.value.ssl_certificate_name
     # ssl_profile_name     = http_listener.value.ssl_profile_name
@@ -93,7 +93,7 @@ resource "azurerm_application_gateway" "appGW" {
     rule_type                  = "Basic" # or PathBasedRouting
     backend_address_pool_name  = "${local.backend_address_pool_name}-2"
     backend_http_settings_name = local.backend_http_settings_name
-    priority                   = 10 # 1 to 20000
+    priority                   = 11 # 1 to 20000
     # redirect_configuration_name = local.redirect_configuration_name
     # rewrite_rule_set_name       = request_routing_rule.value.rewrite_rule_set_name
     # url_path_map_name           = request_routing_rule.value.url_path_map_name
@@ -115,7 +115,7 @@ resource "azurerm_application_gateway" "appGW" {
   #----------Optional Configuration  -----------
   probe {
     interval            = 10
-    name                = "Health-Probe"
+    name                = local.probe_name
     path                = "/"
     protocol            = "Http"
     timeout             = 5

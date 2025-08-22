@@ -11,3 +11,5 @@
 **/.external_modules/*
 
 .infracost/*
+
+**/SSH Keys/*
