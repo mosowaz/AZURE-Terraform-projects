@@ -1,12 +1,12 @@
-resource "azurerm_linux_virtual_machine_scale_set" "linux_vmss" {
-  name                            = "linux-Backend"
+resource "azurerm_linux_virtual_machine_scale_set" "backend1" {
+  name                            = "Backend-1"
   resource_group_name             = azurerm_resource_group.rg.name
   location                        = azurerm_resource_group.rg.location
   admin_username                  = "adminuser"
   instances                       = 2
   sku                             = "Standard_B2s"
   disable_password_authentication = true
-  computer_name_prefix            = "vmss"
+  computer_name_prefix            = "myfirstdomain.com"
 
   admin_ssh_key {
     username   = "adminuser"

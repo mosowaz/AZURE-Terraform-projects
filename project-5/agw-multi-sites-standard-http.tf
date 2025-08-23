@@ -18,13 +18,13 @@ resource "azurerm_application_gateway" "appGW" {
 
   #----------Backend Http Settings Configuration for the application gateway -----------
   backend_http_settings {
-    cookie_based_affinity = "Disabled"
-    name                  = local.backend_http_settings_name
-    port                  = 80
-    protocol              = "Http"
-    path                  = "/"
-    request_timeout       = 5
-    probe_name            = local.probe_name
+    cookie_based_affinity               = "Disabled"
+    name                                = local.backend_http_settings_name
+    port                                = 80
+    protocol                            = "Http"
+    path                                = "/"
+    request_timeout                     = 5
+    probe_name                          = local.probe_name
     pick_host_name_from_backend_address = true
 
     connection_draining {
@@ -35,8 +35,8 @@ resource "azurerm_application_gateway" "appGW" {
 
   #------------Frontend IP configuration --------------
   frontend_ip_configuration {
-    name                          = local.frontend_ip_configuration_name
-    public_ip_address_id          = azurerm_public_ip.agw_pip.id
+    name                 = local.frontend_ip_configuration_name
+    public_ip_address_id = azurerm_public_ip.agw_pip.id
     # private_ip_address            = "10.0.3.13" # Either public or private IP, not both.
     # private_ip_address_allocation = "Static"
     # subnet_id                     = azurerm_subnet.frontend.id
@@ -60,15 +60,15 @@ resource "azurerm_application_gateway" "appGW" {
     frontend_port_name             = local.frontend_port_name
     name                           = "${local.http_listener_name}-1"
     protocol                       = "Http"
-    host_name                      = "www.myfirstdomain.com"
+    host_names                     = ["www.myfirstdomain.com", "myfirstdomain.com"]
   }
   http_listener {
     frontend_ip_configuration_name = local.frontend_ip_configuration_name
     frontend_port_name             = local.frontend_port_name
     name                           = "${local.http_listener_name}-2"
     protocol                       = "Http"
-    host_name                      = "www.myseconddomain.com"
-    # host_names           = []
+    # host_name                      = "www.myseconddomain.com"
+    host_names = ["www.myseconddomain.com", "myseconddomain.com"]
     # ssl_certificate_name = http_listener.value.ssl_certificate_name
     # ssl_profile_name     = http_listener.value.ssl_profile_name
 

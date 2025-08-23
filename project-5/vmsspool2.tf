@@ -1,79 +1,81 @@
-# resource "azurerm_windows_virtual_machine_scale_set" "windows_vmss" {
-#   name                 = var.vmss.windows_vmss_name
-#   resource_group_name  = azurerm_resource_group.rg.name
-#   location             = azurerm_resource_group.rg.location
-#   admin_password       = var.vm_password
-#   admin_username       = var.vmss.admin_username
-#   instances            = var.vmss.instances
-#   sku                  = var.vmss.sku
-#   computer_name_prefix = var.vmss.computer_name_prefix
+resource "azurerm_linux_virtual_machine_scale_set" "backend2" {
+  name                            = "Backend-2"
+  resource_group_name             = azurerm_resource_group.rg.name
+  location                        = azurerm_resource_group.rg.location
+  admin_username                  = "adminuser"
+  instances                       = 2
+  sku                             = "Standard_B2s"
+  disable_password_authentication = true
+  computer_name_prefix            = "myseconddomain.com"
 
-#   overprovision                                     = var.vmss.overprovision
-#   upgrade_mode                                      = var.vmss.upgrade_mode
-#   do_not_run_extensions_on_overprovisioned_machines = var.vmss.do_not_run_extensions_on_overprovisioned_machines
-#   enable_automatic_updates                          = var.vmss.windows_enable_automatic_updates
-#   extension_operations_enabled                      = var.vmss.extension_operations_enabled
-#   provision_vm_agent                                = var.vmss.provision_vm_agent
-#   timezone                                          = var.vmss.windows_timezone
-#   health_probe_id                                   = azurerm_lb_probe.int_lb_probe.id
-#   zones                                             = try(var.vmss.zones, var.availability_zones)
+  admin_ssh_key {
+    username   = "adminuser"
+    public_key = file("${path.root}/../SSH Keys/ssh_keys.pub")
+  }
 
-#   dynamic "network_interface" {
-#     for_each = var.vmss.int_lb_network_interface
-#     content {
-#       name    = network_interface.value.name
-#       primary = network_interface.value.primary
-#       ip_configuration {
-#         name                                   = network_interface.value.ip_configuration_name
-#         subnet_id                              = data.azurerm_subnet.int_lb_subnet.id
-#         load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.int_lb_backEnd_pool.id]
-#         version                                = network_interface.value.version
-#       }
-#     }
-#   }
+  overprovision                                     = true
+  upgrade_mode                                      = "Manual"
+  do_not_run_extensions_on_overprovisioned_machines = false
+  extension_operations_enabled                      = true
+  provision_vm_agent                                = true
+  zones                                             = [1, 2, 3]
 
-#   source_image_reference {
-#     publisher = "MicrosoftWindowsServer"
-#     offer     = "WindowsServer"
-#     sku       = "2022-datacenter-azure-edition"
-#     version   = "latest"
-#   }
+  network_interface {
+    name    = "linux-nic"
+    primary = true
+    ip_configuration {
+      name      = "linux-nic-config"
+      subnet_id = azurerm_subnet.backend.id
+      version   = "IPv4"
+      application_gateway_backend_address_pool_ids = [
+        for pool in azurerm_application_gateway.appGW.backend_address_pool : pool.id
+        if pool.name == "${local.backend_address_pool_name}-2"
+      ]
+    }
+  }
 
-#   os_disk {
-#     caching              = "ReadWrite"
-#     storage_account_type = "StandardSSD_LRS"
-#   }
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts-gen2"
+    version   = "latest"
+  }
 
-#   automatic_os_upgrade_policy {
-#     disable_automatic_rollback  = true
-#     enable_automatic_os_upgrade = true
-#   }
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "StandardSSD_LRS"
+  }
 
-#   automatic_instance_repair {
-#     enabled      = true
-#     grace_period = "PT10M"
-#     action       = "Reimage"
-#   }
+  # automatic_os_upgrade_policy {
+  #   disable_automatic_rollback  = true
+  #   enable_automatic_os_upgrade = true
+  # }
 
-#   boot_diagnostics {
-#     storage_account_uri = var.vmss.boot_diagnostics.storage_account_uri
-#   }
+  # automatic_instance_repair {
+  #   enabled      = true
+  #   grace_period = "PT10M"
+  #   action       = "Reimage"
+  # }
 
-#   scale_in {
-#     rule                   = "Default"
-#     force_deletion_enabled = false
-#   }
+  boot_diagnostics {
+    storage_account_uri = null
+  }
 
-#   rolling_upgrade_policy {
-#     max_batch_instance_percent              = 50
-#     max_unhealthy_instance_percent          = 100
-#     max_unhealthy_upgraded_instance_percent = 100
-#     pause_time_between_batches              = "PT5S" # 5 seconds (PT10M signifies 10 minutes)
-#     maximum_surge_instances_enabled         = true   # Create new virtual machines to upgrade the scale set, 
-#     # rather than updating the existing virtual machines. overprovision must be set to false when maximum_surge_instances_enabled is specified.
-#   }
+  scale_in {
+    rule                   = "Default"
+    force_deletion_enabled = false
+  }
 
-#   lifecycle {
-#     ignore_changes = [instances]
-#   }
-# }
+  # rolling_upgrade_policy {
+  #   max_batch_instance_percent              = 50
+  #   max_unhealthy_instance_percent          = 100
+  #   max_unhealthy_upgraded_instance_percent = 100
+  #   pause_time_between_batches              = "PT5S" # 5 seconds (PT10M signifies 10 minutes)
+  #   maximum_surge_instances_enabled         = true   # Create new virtual machines to upgrade the scale set, 
+  #   # rather than updating the existing virtual machines. overprovision must be set to false when maximum_surge_instances_enabled is specified.
+  # }
+
+  lifecycle {
+    ignore_changes = [instances]
+  }
+}
