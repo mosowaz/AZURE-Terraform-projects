@@ -1,5 +1,5 @@
-## Direct web traffic with Azure Application Gateway
-## Azure Application Gateway is a load balancer that enables you to manage and optimize the traffic to your web applications.
+## Direct web traffic to multiple web sites with Azure Application Gateway
+### Azure Application Gateway is a load balancer that enables you to manage and optimize the traffic to your web applications.
 
 ### Demo Link: https://learn.microsoft.com/en-us/azure/application-gateway/create-multiple-sites-portal
 

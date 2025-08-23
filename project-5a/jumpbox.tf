@@ -11,8 +11,8 @@ resource "azurerm_network_interface" "jumpbox_nic" {
   }
 }
 
-resource "azurerm_linux_virtual_machine" "linux_vm" {
-  name                            = "linux-server"
+resource "azurerm_linux_virtual_machine" "jumpbox_vm" {
+  name                            = "jumpbox-vm"
   resource_group_name             = azurerm_resource_group.rg.name
   location                        = azurerm_resource_group.rg.location
   size                            = "Standard_F2"
@@ -29,7 +29,9 @@ resource "azurerm_linux_virtual_machine" "linux_vm" {
   user_data = base64encode(<<-EOF
               #!/bin/bash
               echo -e \\n"${azurerm_public_ip.agw_pip.ip_address} www.myfirstdomain.com"\\n >> /etc/hosts
+              echo -e \\n"${azurerm_public_ip.agw_pip.ip_address} myfirstdomain.com"\\n >> /etc/hosts
               echo -e \\n"${azurerm_public_ip.agw_pip.ip_address} www.myseconddomain.com"\\n >> /etc/hosts
+              echo -e \\n"${azurerm_public_ip.agw_pip.ip_address} myseconddomain.com"\\n >> /etc/hosts
               EOF
   )
 

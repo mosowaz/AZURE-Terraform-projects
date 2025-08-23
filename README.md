@@ -21,7 +21,7 @@ Project-3 - [Restrict network access to PaaS resources with virtual network serv
 Project-4 - [Create public and private load balancers with Virtual Machine Scale Set as the backend pool](project-4/)
     [![Build Status](https://dev.azure.com/MosesOwaseye/Load%20Balancers/_apis/build/status%2FDeploy%20Resources?branchName=main)](https://dev.azure.com/MosesOwaseye/Load%20Balancers/_build/latest?definitionId=28&branchName=main)
 
-Project-5 - [Direct web traffic with Azure Application Gateway](project-5/)
+Project-5a - [Host multiple web sites with Azure Application Gateway Standard_v2](project-5a/)
 
 ## Terraform Commands 
 ```
