@@ -19,13 +19,16 @@ resource "azurerm_virtual_machine_scale_set_extension" "nginx_install_be1" {
   virtual_machine_scale_set_id = azurerm_linux_virtual_machine_scale_set.backend1.id
   publisher                    = "Microsoft.Azure.Extensions"
   type                         = "CustomScript"
-  type_handler_version         = "2.0"
-  auto_upgrade_minor_version   = true
+  type_handler_version         = "2.1"
+  auto_upgrade_minor_version   = false
   automatic_upgrade_enabled    = false
 
   settings = jsonencode({
     "script" : "${base64encode(file("${path.root}/scripts/install_nginx.sh"))}"
   })
+  lifecycle {
+    ignore_changes = [type_handler_version]
+  }
 }
 
 resource "azurerm_virtual_machine_scale_set_extension" "nginx_install_be2" {
@@ -33,11 +36,14 @@ resource "azurerm_virtual_machine_scale_set_extension" "nginx_install_be2" {
   virtual_machine_scale_set_id = azurerm_linux_virtual_machine_scale_set.backend2.id
   publisher                    = "Microsoft.Azure.Extensions"
   type                         = "CustomScript"
-  type_handler_version         = "2.0"
-  auto_upgrade_minor_version   = true
+  type_handler_version         = "2.1"
+  auto_upgrade_minor_version   = false
   automatic_upgrade_enabled    = false
 
   settings = jsonencode({
     "script" : "${base64encode(file("${path.root}/scripts/install_nginx.sh"))}"
   })
+  lifecycle {
+    ignore_changes = [type_handler_version]
+  }
 }

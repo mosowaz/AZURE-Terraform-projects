@@ -13,3 +13,5 @@
 .infracost/*
 
 **/SSH Keys/*
+
+sshconnect.sh
