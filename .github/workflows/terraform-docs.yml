@@ -5,16 +5,16 @@ on:
     branches:
       - '*'
     paths:
-      - 'project-5/**'
+      - 'project-5a/**'
 
   pull_request:
     branches:
       - main
     paths:
-      - 'project-5/**'
+      - 'project-5a/**'
 
 env:
-   TERRAFORM_DIR: 'project-5'
+   TERRAFORM_DIR: 'project-5a'
    SKIP_CHECKS: 'CKV_AZURE_183,CKV2_AZURE_31,CKV_AZURE_218,CKV_AZURE_217,CKV_AZURE_120,CKV_AZURE_119,CKV_AZURE_97,CKV_AZURE_50'
 
 jobs:
@@ -41,7 +41,7 @@ jobs:
                   source ~/.bashrc
               fi     
 
-              checkov --dir project-5 \
+              checkov --dir ${{ env.TERRAFORM_DIR }} \
               --output sarif \
               --quiet \
               --deep-analysis \

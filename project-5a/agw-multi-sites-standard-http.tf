@@ -10,10 +10,12 @@ resource "azurerm_application_gateway" "appGW" {
 
   #----------Backend Address Pool Configuration for the application gateway -----------
   backend_address_pool {
-    name = "${local.backend_address_pool_name}-1"
+    name  = "${local.backend_address_pool_name}-1"
+    fqdns = ["www.myfirstdomain.com", "myfirstdomain.com"]
   }
   backend_address_pool {
-    name = "${local.backend_address_pool_name}-2"
+    name  = "${local.backend_address_pool_name}-2"
+    fqdns = ["www.myseconddomain.com", "myseconddomain.com"]
   }
 
   #----------Backend Http Settings Configuration for the application gateway -----------

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Update package list
-apt-get update
+apt-get update && apt-get dist-upgrade -y
 
 # Install Nginx
 apt-get install -y nginx

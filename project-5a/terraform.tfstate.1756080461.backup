@@ -1,0 +1,63 @@
+{
+  "version": 4,
+  "terraform_version": "1.12.2",
+  "serial": 407,
+  "lineage": "bc95838a-9a98-9bc0-e6a4-a5854978217c",
+  "outputs": {},
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "azurerm_network_security_group",
+      "name": "jumpbox_nsg",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "/subscriptions/11649d79-dc83-4c7a-bc5e-5db43ae9f9ab/resourceGroups/agw/providers/Microsoft.Network/networkSecurityGroups/jumpbox-nsg",
+            "location": "canadacentral",
+            "name": "jumpbox-nsg",
+            "resource_group_name": "agw",
+            "security_rule": [],
+            "tags": {},
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "name": "jumpbox-nsg",
+            "resource_group_name": "agw",
+            "subscription_id": "11649d79-dc83-4c7a-bc5e-5db43ae9f9ab"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "azurerm_resource_group.rg"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_resource_group",
+      "name": "rg",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "/subscriptions/11649d79-dc83-4c7a-bc5e-5db43ae9f9ab/resourceGroups/agw",
+            "location": "canadacentral",
+            "managed_by": "",
+            "name": "agw",
+            "tags": {},
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo1NDAwMDAwMDAwMDAwLCJkZWxldGUiOjU0MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjo1NDAwMDAwMDAwMDAwfX0="
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}
