@@ -51,4 +51,5 @@ resource "azurerm_linux_virtual_machine" "jumpbox_vm" {
     sku       = "22_04-lts"
     version   = "latest"
   }
+  depends_on = [azurerm_network_interface.jumpbox_nic]
 }
