@@ -6,7 +6,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "backend2" {
   instances                       = 1
   sku                             = "Standard_B2s"
   disable_password_authentication = true
-  computer_name_prefix            = "mydomain.com"
+  computer_name_prefix            = "backend-2"
 
   admin_ssh_key {
     username   = "adminuser"
