@@ -47,3 +47,20 @@ resource "azurerm_virtual_machine_scale_set_extension" "nginx_install_be2" {
     ignore_changes = [type_handler_version]
   }
 }
+
+resource "azurerm_virtual_machine_scale_set_extension" "nginx_install_be3" {
+  name                         = "install-NGINX"
+  virtual_machine_scale_set_id = azurerm_linux_virtual_machine_scale_set.backend3.id
+  publisher                    = "Microsoft.Azure.Extensions"
+  type                         = "CustomScript"
+  type_handler_version         = "2.1"
+  auto_upgrade_minor_version   = false
+  automatic_upgrade_enabled    = false
+
+  settings = jsonencode({
+    "script" : "${base64encode(file("${path.root}/scripts/default-path.sh"))}"
+  })
+  lifecycle {
+    ignore_changes = [type_handler_version]
+  }
+}

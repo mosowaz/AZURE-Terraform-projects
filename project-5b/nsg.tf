@@ -58,7 +58,8 @@ resource "azurerm_network_security_rule" "backend_rule" {
 
   depends_on = [
     azurerm_linux_virtual_machine_scale_set.backend1,
-    azurerm_linux_virtual_machine_scale_set.backend2
+    azurerm_linux_virtual_machine_scale_set.backend2,
+    azurerm_linux_virtual_machine_scale_set.backend3
   ]
 }
 

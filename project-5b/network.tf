@@ -13,15 +13,23 @@ resource "azurerm_subnet" "backend" {
   address_prefixes     = ["10.1.1.0/24"]
 }
 
+resource "azurerm_virtual_network" "jumpbox_vnet" {
+  name                = "${azurerm_resource_group.rg.name}-vnet-2"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  address_space       = ["10.2.0.0/16"]
+  dns_servers         = ["168.63.129.16", "9.9.9.9"]
+}
+
 resource "azurerm_subnet" "jumpbox" {
   name                 = "jumpbox-subnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.1.2.0/27"]
+  address_prefixes     = ["10.2.1.0/27"]
 }
 
 resource "azurerm_virtual_network" "agw_vnet" {
-  name                = "${azurerm_resource_group.rg.name}-vnet-2"
+  name                = "${azurerm_resource_group.rg.name}-vnet-3"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   address_space       = ["10.10.0.0/16"]
@@ -82,6 +90,10 @@ resource "azurerm_nat_gateway_public_ip_association" "association" {
 
 # Associate Nat gateway with subnets
 resource "azurerm_subnet_nat_gateway_association" "association" {
-  subnet_id      = azurerm_subnet.backend.id
+  for_each = {
+    backend = azurerm_subnet.backend.id
+    jumpbox = azurerm_subnet.jumpbox.id
+  }
+  subnet_id      = each.value
   nat_gateway_id = azurerm_nat_gateway.nat_gw.id
 }

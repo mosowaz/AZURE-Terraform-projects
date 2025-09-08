@@ -1,12 +1,12 @@
 resource "azurerm_linux_virtual_machine_scale_set" "backend2" {
-  name                            = "Backend-2"
+  name                            = "Backend-videos"
   resource_group_name             = azurerm_resource_group.rg.name
   location                        = azurerm_resource_group.rg.location
   admin_username                  = "adminuser"
   instances                       = 1
   sku                             = "Standard_B2s"
   disable_password_authentication = true
-  computer_name_prefix            = "backend-2"
+  computer_name_prefix            = "videos"
 
   admin_ssh_key {
     username   = "adminuser"

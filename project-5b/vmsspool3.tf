@@ -1,12 +1,12 @@
-resource "azurerm_linux_virtual_machine_scale_set" "backend1" {
-  name                            = "Backend-images"
+resource "azurerm_linux_virtual_machine_scale_set" "backend3" {
+  name                            = "backend-default"
   resource_group_name             = azurerm_resource_group.rg.name
   location                        = azurerm_resource_group.rg.location
   admin_username                  = "adminuser"
   instances                       = 1
   sku                             = "Standard_B2s"
   disable_password_authentication = true
-  computer_name_prefix            = "images"
+  computer_name_prefix            = "default"
 
   admin_ssh_key {
     username   = "adminuser"
@@ -29,7 +29,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "backend1" {
       version   = "IPv4"
       application_gateway_backend_address_pool_ids = [
         for pool in azurerm_application_gateway.appGW.backend_address_pool : pool.id
-        if pool.name == "${local.backend_address_pool_name}-images"
+        if pool.name == "${local.backend_address_pool_name}-default"
       ]
     }
   }

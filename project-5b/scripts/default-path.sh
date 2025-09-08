@@ -6,7 +6,7 @@ apt-get update && apt-get dist-upgrade -y
 apt-get install -y nginx
 
 # Display content from default and images page
-echo "Welcome to the VIDEOS page hosted by $(hostname)" > /var/www/html/index.html
+echo "Welcome to the DEFAULT page hosted by $(hostname)" > /var/www/html/index.html
 
 # restart Nginx service
 systemctl restart nginx

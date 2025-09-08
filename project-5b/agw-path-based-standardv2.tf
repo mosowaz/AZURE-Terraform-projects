@@ -10,6 +10,9 @@ resource "azurerm_application_gateway" "appGW" {
 
   #----------Backend Address Pool Configuration for the application gateway -----------
   backend_address_pool {
+    name = "${local.backend_address_pool_name}-default"
+  }
+  backend_address_pool {
     name = "${local.backend_address_pool_name}-images"
   }
   backend_address_pool {
@@ -22,7 +25,7 @@ resource "azurerm_application_gateway" "appGW" {
     name                                = local.backend_http_settings_name
     port                                = 80
     protocol                            = "Http"
-    request_timeout                     = 5
+    request_timeout                     = 30
     probe_name                          = local.probe_name
     pick_host_name_from_backend_address = true
 
@@ -84,8 +87,8 @@ resource "azurerm_application_gateway" "appGW" {
 
   url_path_map {
     name                               = local.url_path_map_name
-    default_backend_address_pool_name  = "${local.backend_address_pool_name}-images" # (Optional) for default routes
-    default_backend_http_settings_name = local.backend_http_settings_name            # (Optional) for default routes
+    default_backend_address_pool_name  = "${local.backend_address_pool_name}-default" # (Optional) for default routes
+    default_backend_http_settings_name = local.backend_http_settings_name             # (Optional) for default routes
 
     path_rule {
       name                       = "images-path-rule"
