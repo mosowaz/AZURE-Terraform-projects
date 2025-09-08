@@ -23,6 +23,8 @@ Project-4 - [Create public and private load balancers with Virtual Machine Scale
 
 Project-5a - [Host multiple web sites with Azure Application Gateway Standard_v2](project-5a/)
 
+project-5b - [Application gateway with path-based routing rules](project-5b/)
+
 ## Terraform Commands 
 ```
 terraform init -upgrade

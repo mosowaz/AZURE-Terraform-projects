@@ -120,7 +120,7 @@ resource "azurerm_application_gateway" "appGW" {
     name                = local.probe_name
     path                = "/"
     protocol            = "Http"
-    timeout             = 5
+    timeout             = 30
     unhealthy_threshold = 2
     # host                                      = probe.value.host
     minimum_servers                           = 80
