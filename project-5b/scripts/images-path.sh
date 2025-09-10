@@ -5,8 +5,9 @@ apt-get update && apt-get dist-upgrade -y
 # Install Nginx
 apt-get install -y nginx
 
-# Display content from default and images page
-echo "Welcome to the IMAGES page hosted by $(hostname)" > /var/www/html/index.html
+chmod -R 777 /var/www/html
+mkdir -p /var/www/html/images
+echo "Welcome to the IMAGES subpage hosted by $(hostname)" > /var/www/html/images/index.html
 
 # restart Nginx service
 systemctl restart nginx

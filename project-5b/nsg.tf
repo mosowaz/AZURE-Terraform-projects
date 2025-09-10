@@ -45,13 +45,13 @@ resource "azurerm_network_security_group" "backend_nsg" {
 
 resource "azurerm_network_security_rule" "backend_rule" {
   name                        = "backend-allow-80-443"
-  priority                    = 500
+  priority                    = 300
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "Tcp"
   source_port_range           = "*"
   destination_port_ranges     = [80, 443]
-  source_address_prefixes     = azurerm_subnet.frontend.address_prefixes
+  source_address_prefix       = "*"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.backend_nsg.name

@@ -27,7 +27,7 @@ resource "azurerm_application_gateway" "appGW" {
     protocol                            = "Http"
     request_timeout                     = 30
     probe_name                          = local.probe_name
-    pick_host_name_from_backend_address = true
+    pick_host_name_from_backend_address = false
 
     connection_draining {
       enabled           = true
@@ -79,7 +79,7 @@ resource "azurerm_application_gateway" "appGW" {
     rule_type          = "PathBasedRouting" # or Basic 
     # backend_address_pool_name  = "${local.backend_address_pool_name}-2" # applicable only if rule_type = basic
     # backend_http_settings_name = local.backend_http_settings_name       # applicable only if rule_type = basic
-    priority = 11 # 1 to 20000
+    priority = 10 # 1 to 20000
     # redirect_configuration_name = local.redirect_configuration_name     # applicable only if rule_type = basic
     # rewrite_rule_set_name       = request_routing_rule.value.rewrite_rule_set_name  # applicable only if rule_type = basic
     url_path_map_name = local.url_path_map_name
@@ -106,9 +106,9 @@ resource "azurerm_application_gateway" "appGW" {
 
   #----------SKU and configuration for the application gateway-----------
   sku {
-    name     = "Standard_v2" # or WAF_v2
-    tier     = "Standard_v2" # or WAF_v2
-    capacity = null          # optional if autoscale_configuration is set.
+    name = "Standard_v2" # or WAF_v2
+    tier = "Standard_v2" # or WAF_v2
+    # capacity =           # optional if autoscale_configuration is set.
   }
 
   autoscale_configuration {
@@ -119,16 +119,16 @@ resource "azurerm_application_gateway" "appGW" {
   #----------Health Probes to detect backend availability -----------
   #----------Optional Configuration  -----------
   probe {
-    interval            = 10
-    name                = local.probe_name
-    path                = "/"
-    protocol            = "Http"
-    timeout             = 30
-    unhealthy_threshold = 2
-    # host                                      = probe.value.host
-    minimum_servers                           = 80
-    pick_host_name_from_backend_http_settings = true
+    interval                                  = 10
+    name                                      = local.probe_name
+    host                                      = "127.0.0.1"
+    protocol                                  = "Http"
+    timeout                                   = 30
+    unhealthy_threshold                       = 2
+    path                                      = "/"
+    minimum_servers                           = 1
     port                                      = 80
+    pick_host_name_from_backend_http_settings = false
   }
 
   # authentication_certificate {

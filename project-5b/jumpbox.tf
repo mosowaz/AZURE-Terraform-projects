@@ -28,12 +28,8 @@ resource "azurerm_linux_virtual_machine" "jumpbox_vm" {
 
   user_data = base64encode(<<-EOF
               #!/bin/bash
-              echo -e \\n"${azurerm_public_ip.agw_pip.ip_address} www.mydomain.com"\\n >> /etc/hosts
-              echo -e \\n"${azurerm_public_ip.agw_pip.ip_address} mydomain.com"\\n >> /etc/hosts
-              echo -e \\n"${azurerm_public_ip.agw_pip.ip_address} www.mydomain.com/images"\\n >> /etc/hosts
-              echo -e \\n"${azurerm_public_ip.agw_pip.ip_address} mydomain.com/images"\\n >> /etc/hosts
-              echo -e \\n"${azurerm_public_ip.agw_pip.ip_address} www.mydomain.com/videos"\\n >> /etc/hosts
-              echo -e \\n"${azurerm_public_ip.agw_pip.ip_address} mydomain.com/videos"\\n >> /etc/hosts
+              echo -e "${azurerm_public_ip.agw_pip.ip_address} www.mydomain.com"\\n >> /etc/hosts
+              echo -e "${azurerm_public_ip.agw_pip.ip_address} mydomain.com"\\n >> /etc/hosts
               EOF
   )
 

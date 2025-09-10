@@ -13,6 +13,13 @@ resource "azurerm_subnet" "backend" {
   address_prefixes     = ["10.1.1.0/24"]
 }
 
+resource "azurerm_subnet" "frontend" {
+  name                 = "AGW-subnet"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.1.2.0/24"]
+}
+
 resource "azurerm_virtual_network" "jumpbox_vnet" {
   name                = "${azurerm_resource_group.rg.name}-vnet-2"
   location            = azurerm_resource_group.rg.location
@@ -24,23 +31,8 @@ resource "azurerm_virtual_network" "jumpbox_vnet" {
 resource "azurerm_subnet" "jumpbox" {
   name                 = "jumpbox-subnet"
   resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.vnet.name
+  virtual_network_name = azurerm_virtual_network.jumpbox_vnet.name
   address_prefixes     = ["10.2.1.0/27"]
-}
-
-resource "azurerm_virtual_network" "agw_vnet" {
-  name                = "${azurerm_resource_group.rg.name}-vnet-3"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  address_space       = ["10.10.0.0/16"]
-  dns_servers         = ["168.63.129.16", "9.9.9.9"]
-}
-
-resource "azurerm_subnet" "frontend" {
-  name                 = "AGW-subnet"
-  resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.agw_vnet.name
-  address_prefixes     = ["10.10.1.0/24"]
 }
 
 # Create public IP for the jumpbox
@@ -72,9 +64,9 @@ resource "azurerm_public_ip" "nat_gw_pip" {
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-# Nat gateway resource
-resource "azurerm_nat_gateway" "nat_gw" {
-  name                    = "nat-gateway"
+# Backend Nat gateway resource
+resource "azurerm_nat_gateway" "backend_nat_gw" {
+  name                    = "backend-nat-gateway"
   location                = azurerm_resource_group.rg.location
   resource_group_name     = azurerm_resource_group.rg.name
   sku_name                = "Standard"
@@ -82,18 +74,14 @@ resource "azurerm_nat_gateway" "nat_gw" {
   # Nat Gateways are zonal resources. Only one zone can be specified for nat gateway
 }
 
-# Associate Nat gateway with public IP
-resource "azurerm_nat_gateway_public_ip_association" "association" {
-  nat_gateway_id       = azurerm_nat_gateway.nat_gw.id
+# Associate Nat gateways with public IP
+resource "azurerm_nat_gateway_public_ip_association" "backend_assoc" {
+  nat_gateway_id       = azurerm_nat_gateway.backend_nat_gw.id
   public_ip_address_id = azurerm_public_ip.nat_gw_pip.id
 }
 
-# Associate Nat gateway with subnets
-resource "azurerm_subnet_nat_gateway_association" "association" {
-  for_each = {
-    backend = azurerm_subnet.backend.id
-    jumpbox = azurerm_subnet.jumpbox.id
-  }
-  subnet_id      = each.value
-  nat_gateway_id = azurerm_nat_gateway.nat_gw.id
+# Associate Nat gateways with subnet
+resource "azurerm_subnet_nat_gateway_association" "backend_assoc" {
+  subnet_id      = azurerm_subnet.backend.id
+  nat_gateway_id = azurerm_nat_gateway.backend_nat_gw.id
 }
