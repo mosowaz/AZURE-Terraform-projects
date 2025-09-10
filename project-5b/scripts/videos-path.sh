@@ -7,7 +7,7 @@ apt-get install -y nginx
 
 chmod -R 777 /var/www/html
 mkdir -p /var/www/html/videos
-echo "Welcome to the IMAGES subpage hosted by $(hostname)" > /var/www/html/videos/index.html
+echo "Welcome to the VIDEOS subpage hosted by $(hostname)" > /var/www/html/videos/index.html
 
 # restart Nginx service
 systemctl restart nginx
